@@ -28,5 +28,5 @@ flappy_capybara/
   progress_log.md
   runner.html
   runner.js
-  style.css
+  style_v2.css
   tree.txt

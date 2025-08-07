@@ -14,7 +14,7 @@ Ce journal retrace les différentes étapes de développement du jeu **Flappy C
 
 * Mise en place de l’ossature du jeu en HTML, CSS et JavaScript :
   * Création de `index.html` avec un canvas pour afficher le jeu et deux overlays (menu principal et écran Game Over) comportant boutons et score.
-  * Élaboration de `style.css` pour styliser le fond, les boutons et les overlays de manière simple et cohérente.
+  * Élaboration de `style_v2.css` pour styliser le fond, les boutons et les overlays de manière simple et cohérente.
   * Implémentation du fichier `main.js` contenant l’ensemble de la logique du jeu : gestion des états (menu, jeu, fin de partie), classe Capybara avec sa propre physique (gravité, saut, rotation pour l’inertie), génération et dessin des obstacles ainsi que des bonus, détection de collisions et gestion des scores.
   * Ajout d’un système de bonus (« score » et « invincible ») et d’une invincibilité temporaire après ramassage, conformément aux recommandations du plan【443107290259958†screenshot】. Les bonus s’attachent occasionnellement à un obstacle et sont récupérés lorsque le capybara les touche, accordant des points supplémentaires ou une invincibilité temporaire.
   * Intégration d’effets sonores simples grâce à l’API Web Audio (bip de saut, score, bonus et fin de partie). La première interaction de l’utilisateur déclenche l’initialisation de l’AudioContext, en accord avec les contraintes des navigateurs mobiles.
@@ -25,7 +25,7 @@ Ce journal retrace les différentes étapes de développement du jeu **Flappy C
 
 **Agent Gestionnaire / Documentaliste**
 
-* Compression finale du projet en archive `flappy_capybara.tar.gz` pour distribution.  La structure complète comprend le code du jeu (`index.html`, `main.js`, `style.css`), les fichiers de documentation (`README.md`, `agents.md`, `progress_log.md`, `CHANGELOG.md` et `tree.txt`) et un dossier `assets/` prêt à recevoir d’éventuelles ressources supplémentaires.
+* Compression finale du projet en archive `flappy_capybara.tar.gz` pour distribution.  La structure complète comprend le code du jeu (`index.html`, `main.js`, `style_v2.css`), les fichiers de documentation (`README.md`, `agents.md`, `progress_log.md`, `CHANGELOG.md` et `tree.txt`) et un dossier `assets/` prêt à recevoir d’éventuelles ressources supplémentaires.
 * Test rapide du jeu dans un navigateur local pour vérifier le bon fonctionnement du menu, du gameplay, de la génération d’obstacles et de bonus, des sons et des écrans de fin de partie.
 * Synchronisation du fichier archive avec l’utilisateur via l’outil `computer.sync_file`.
 
@@ -51,7 +51,7 @@ Ce journal retrace les différentes étapes de développement du jeu **Flappy C
 * Renommage complet du mode « Enedis » en **mode « Ragondin Véhicule »** afin de supprimer toute référence textuelle à une marque.  Les clés de stockage du score ont été renommées en `capyVehicleHighScore` et les fichiers `enedis.html`/`enedis.js` sont désormais remplacés par `energy.html`/`energy.js`.
 * **Amélioration du runner** : repositionnement des pattes du capybara du mode course pour qu’elles soient attachées au corps et animation plus rapide des pattes au sol.  Limitation du saut à deux impulsions avant de toucher le sol.  Ajustement de la taille du canvas (environ 80 % de la hauteur de l’écran) pour une meilleure utilisation de l’espace sur mobile et desktop.
 * **Ajout de messages ludiques** : les écrans de Game Over affichent désormais une anecdote humoristique sur le fromage accompagnée d’un visuel réutilisé (capybara ou marais), sélectionnés aléatoirement parmi une liste variée afin d’offrir un contenu différent à chaque fin de partie.
-* **Mise à jour de `style.css`** : le sélecteur du canvas pour le mode véhicule est passé de `#enedisCanvas` à `#energyCanvas` et de légers ajustements ont été réalisés pour harmoniser les marges et le centrage des canvases.
+* **Mise à jour de `style_v2.css`** : le sélecteur du canvas pour le mode véhicule est passé de `#enedisCanvas` à `#energyCanvas` et de légers ajustements ont été réalisés pour harmoniser les marges et le centrage des canvases.
 * Mise à jour de `README.md`, `tree.txt` et du `CHANGELOG.md` pour documenter ces évolutions.
 
 **Agent Designer / Développeur**
@@ -199,7 +199,7 @@ Ce journal retrace les différentes étapes de développement du jeu **Flappy C
 * **Interface tactile** : ajout d’un conteneur `mobile-controls` dans `platform.html` comportant des boutons circulaires gauche/droite/saut afin de jouer au nouveau mode sur mobile sans clavier.  Les événements `touchstart` et `touchend` ont été ajoutés dans `platform.js` pour gérer ces contrôles.
 * **Amélioration du capybara vectoriel** : repositionnement et agrandissement de l’oreille du capybara dans les dessins vectoriels de tous les modes (`main.js`, `runner.js`, `energy.js` et `platform.js`).  La forme et la couleur de l’oreille ont été revues pour éviter l’effet de museau mal placé.
 * **Prolongation du mode ragondin fatigué** : allongement de la durée avant que le chat ne rattrape le capybara (1 400 frames au lieu de 800) et prolongation de la pluie de cœurs (360 frames au lieu de 240) afin que le joueur puisse profiter plus longtemps de la promenade.  Mise à jour de la logique dans `runner.js` pour refléter ces changements.
-* **Amélioration de l’interface et des graphismes** : restructuration du CSS (`style.css`) pour accueillir le nouveau menu et les cartes de jeux.  Le fond du site est désormais un dégradé pastel et les cartes ont été ombrées pour mieux ressortir.  Ajout d’une image héroïque dans les assets (`menu_hero.png`) et mise à jour de l’arborescence dans `tree.txt` pour inclure toutes les nouvelles ressources et fichiers (`platform.html`, `platform.js`, nouveaux PNG de capybaras et obstacles).  Mise à jour de la documentation (`README.md`, `CHANGELOG.md`, `tree.txt`) pour décrire ces changements.
+* **Amélioration de l’interface et des graphismes** : restructuration du CSS (`style_v2.css`) pour accueillir le nouveau menu et les cartes de jeux.  Le fond du site est désormais un dégradé pastel et les cartes ont été ombrées pour mieux ressortir.  Ajout d’une image héroïque dans les assets (`menu_hero.png`) et mise à jour de l’arborescence dans `tree.txt` pour inclure toutes les nouvelles ressources et fichiers (`platform.html`, `platform.js`, nouveaux PNG de capybaras et obstacles).  Mise à jour de la documentation (`README.md`, `CHANGELOG.md`, `tree.txt`) pour décrire ces changements.
 
 ## 6 août 2025
 
