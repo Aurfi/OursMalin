@@ -168,7 +168,8 @@ h1 {
   transition: background-color 0.2s, transform 0.1s;
 }
 
-.upgrade button:disabled {
+.upgrade button:disabled,
+.upgrade button.unaffordable {
   background-color: #bdc3c7;
   cursor: default;
 }
@@ -674,6 +675,11 @@ body.high-contrast .upgrade button {
 }
 body.high-contrast .upgrade button:not(:disabled):hover {
   background-color: #2e7d32;
+}
+body.high-contrast .upgrade button:disabled,
+body.high-contrast .upgrade button.unaffordable {
+  background-color: #555;
+  cursor: default;
 }
 
 /* Icon inside upgrade cards */
