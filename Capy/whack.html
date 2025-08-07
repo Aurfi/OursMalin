@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Whack‑a‑Capy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="false">
+    <div id="whack-container">
+      <canvas id="whackCanvas" width="480" height="360"></canvas>
+      <div id="whack-hud">
+        <span>Score : <span id="whack-score">0</span></span>
+        <span>Temps : <span id="whack-time">30</span>s</span>
+      </div>
+    </div>
+
+    <div id="whack-start" class="overlay">
+      <div class="menu-card">
+        <h1>Whack‑a‑Capy</h1>
+        <p>Attrape les capybaras qui apparaissent avant la fin du temps !</p>
+        <div class="button-group">
+          <button id="whack-start-btn" class="btn">Démarrer</button>
+          <button id="whack-menu-start" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="whack-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Terminé !</h1>
+        <p><strong>Score :</strong> <span id="whack-final-score">0</span></p>
+        <p><strong>Record :</strong> <span id="whack-high-score">0</span></p>
+        <div class="button-group">
+          <button id="whack-replay" class="btn">Rejouer</button>
+          <button id="whack-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+
+    <script src="config.js"></script>
+    <script src="whack.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

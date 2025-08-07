@@ -1128,3 +1128,31 @@ body.dark-mode .dark-mode-toggle:hover {
   border-bottom: 10px solid transparent;
   border-left: 14px solid currentColor;
 }
+/* ---------------------- Whack-a-Capy ---------------------- */
+#whack-container {
+  position: relative;
+  margin: 0 auto;
+  width: 480px;
+  height: 360px;
+}
+#whackCanvas {
+  width: 100%;
+  height: 100%;
+  background: #c8e6c9;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+#whack-hud {
+  position: absolute;
+  top: 8px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  padding: 4px 8px;
+  font-size: 1.1em;
+  background: rgba(0,0,0,0.4);
+  color: #fff;
+  border-radius: 4px;
+  pointer-events: none;
+}
