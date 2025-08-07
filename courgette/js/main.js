@@ -3402,7 +3402,9 @@ function renderSeedUpgrades() {
     // Button
     const btn = document.createElement('button');
     btn.textContent = purchased ? t('bought') : t('buy');
-    btn.disabled = purchased || state.seeds < upg.cost;
+    const cannotAfford = !state.godMode && state.seeds < upg.cost;
+    btn.disabled = purchased || cannotAfford;
+    btn.classList.toggle('unaffordable', !purchased && cannotAfford);
     btn.addEventListener('click', () => buySeedUpgrade(idx));
     item.appendChild(info);
     item.appendChild(costEl);
@@ -3572,21 +3574,18 @@ function updateGlobalUpgradeButtons() {
     if (!btn || !costEl) return;
     // Mise à jour du coût (pas dynamique pour l'instant)
     costEl.textContent = t('costUnits', { cost: formatNumber(upg.cost) });
-    // Désactiver si l'amélioration est déjà achetée ou si la condition n'est pas remplie
-    if (state.globalUpgrades[idx]) {
+    const purchased = state.globalUpgrades[idx];
+    const insufficient = !state.godMode && state.score < upg.cost;
+    const locked = !upg.condition();
+    if (purchased) {
       btn.disabled = true;
       btn.textContent = '✔';
+      btn.classList.remove('unaffordable');
     } else {
-      // Désactiver si le joueur n’a pas assez de courgettes (sauf en mode Dieu)
-      // ou si la condition de déblocage n’est pas remplie.
-      const insufficient = !state.godMode && state.score < upg.cost;
-      if (insufficient || !upg.condition()) {
-        btn.disabled = true;
-        btn.textContent = t('buy');
-      } else {
-        btn.disabled = false;
-        btn.textContent = t('buy');
-      }
+      btn.disabled = insufficient || locked;
+      btn.textContent = t('buy');
+      // Gray out the button when the player lacks funds.
+      btn.classList.toggle('unaffordable', insufficient);
     }
   });
 }
