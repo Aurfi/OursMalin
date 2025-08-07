@@ -123,7 +123,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.85);
@@ -134,8 +134,19 @@ body {
   z-index: 1000;
 }
 
-.orientation-warning.hidden {
-  display: none;
+/* Gérer l'orientation via CSS plutôt que JavaScript */
+@media (orientation: portrait) {
+  body[data-force-landscape="true"] #orientation-warning {
+    display: flex;
+  }
+  body[data-force-landscape="true"] #menu,
+  body[data-force-landscape="true"] canvas {
+    display: none;
+  }
+  /* Empiler les cartes du menu verticalement sur écran étroit */
+  .game-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .btn {
