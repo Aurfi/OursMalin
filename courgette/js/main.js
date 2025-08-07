@@ -1789,25 +1789,35 @@ let initialized = false;
 // Audio context for sound effects
 let audioCtx;
 
+// Déterminer dynamiquement le chemin vers le dossier audio en se basant sur
+// l'emplacement du script courant. Ainsi, les sons fonctionnent aussi bien
+// lorsque le jeu est servi depuis la racine que depuis le sous‑dossier
+// "/clicker/" où les chemins relatifs diffèrent.
+const audioBasePath = (() => {
+  const script = document.currentScript;
+  if (!script) return 'assets/audio/';
+  return new URL('../assets/audio/', script.src).href;
+})();
+
 // Preload sound files.  These audio elements point to files in the
 // assets/audio/ directory.  If a file is missing or cannot be loaded,
 // playback will fail silently.  Background music loops indefinitely
 // when sound is enabled.  Additional sounds can be added by extending
 // this object and creating corresponding play functions.
 const audioFiles = {
-  click: new Audio('assets/audio/click.mp3'),
-  purchase: new Audio('assets/audio/purchase.mp3'),
-  achievement: new Audio('assets/audio/achievement.mp3'),
+  click: new Audio(`${audioBasePath}click.mp3`),
+  purchase: new Audio(`${audioBasePath}purchase.mp3`),
+  achievement: new Audio(`${audioBasePath}achievement.mp3`),
   // Son joué lors des événements aléatoires (bonus temporaires). Ce fichier doit
   // rester distinct du gémissement de Courgette‑Chan afin de permettre aux
   // utilisateurs de personnaliser facilement chaque effet.
-  event: new Audio('assets/audio/event.mp3'),
+  event: new Audio(`${audioBasePath}event.mp3`),
   // Placeholder de gémissement. Ce fichier est joué après un nombre aléatoire de
   // clics et peut être remplacé par le joueur. Placez votre propre fichier
   // MP3 nommé `moan.mp3` dans le dossier assets/audio pour personnaliser le
   // gémissement de Courgette‑Chan.
-  moan: new Audio('assets/audio/moan.mp3'),
-  music: new Audio('assets/audio/background_music.mp3'),
+  moan: new Audio(`${audioBasePath}moan.mp3`),
+  music: new Audio(`${audioBasePath}background_music.mp3`),
 };
 // Loop the background music if it exists
 if (audioFiles.music) {
