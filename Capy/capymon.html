@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Mon</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Styles spécifiques pour Capy Mon */
+      .capymon-container {
+        max-width: 480px;
+        margin: 0 auto;
+        padding: 8px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 8px;
+      }
+      #capymon-canvas {
+        /* Conservez le fond sombre pour faire ressortir les pixels mais
+           harmonisez le cadre avec l'orange pastel des autres jeux. */
+        background-color: #000;
+        image-rendering: pixelated;
+        width: 100%;
+        max-width: 480px;
+        height: 320px;
+        border: 4px solid #ffb74d;
+        border-radius: 12px;
+        box-shadow: 0 4px 8px rgba(0,0,0,0.25);
+      }
+      /* Contrôles tactiles pour Capy Mon.  La zone des contrôles se
+         répartit sur la largeur disponible et maintient un aspect
+         ergonomique sur mobile comme sur PC. */
+      #capymon-controls {
+        display: flex;
+        justify-content: space-between;
+        width: 100%;
+        max-width: 480px;
+        margin-top: 6px;
+      }
+      .dpad {
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+      }
+      .dpad-middle {
+        display: flex;
+        align-items: center;
+        justify-content: center;
+      }
+      .dpad-btn {
+        width: 44px;
+        height: 44px;
+        margin: 2px;
+        border-radius: 22px;
+        border: 2px solid #ffb74d;
+        background: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        font-size: 20px;
+        color: #333;
+        cursor: pointer;
+        transition: background 0.2s;
+      }
+      .dpad-btn:hover {
+        background: #fff4e5;
+      }
+      .dpad-btn:active {
+        background: #ffe0b2;
+      }
+      .gameboy-buttons {
+        display: flex;
+        flex-direction: column;
+        gap: 8px;
+        align-items: center;
+        justify-content: center;
+      }
+      .gameboy-buttons .btn {
+        width: 50px;
+        height: 50px;
+        border-radius: 25px;
+        padding: 0;
+        font-size: 20px;
+        border: none;
+        background: #ffb74d;
+        color: #ffffff;
+        box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        transition: background 0.2s;
+      }
+      .gameboy-buttons .btn:hover {
+        background: #ffa726;
+      }
+      .gameboy-buttons .btn:active {
+        background: #fb8c00;
+      }
+      #capymon-menu {
+        display: flex;
+        gap: 12px;
+        margin-top: 8px;
+      }
+
+      /* Indicateurs de braconnier : petites boules colorées symbolisant les
+         animaux restants.  Les boules vertes représentent les animaux en
+         vie, les rouges ceux qui ont été vaincus. */
+      .trainer-ball {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+      .trainer-ball.alive { background-color: #4CAF50; }
+      .trainer-ball.defeated { background-color: #f44336; }
+
+      /* Aura de paillettes pour les mutants.  Le conteneur enveloppe
+         entièrement le sprite ennemi et affiche plusieurs étoiles
+         tournantes provenant des assets.  La classe hidden masque
+         l’aura lorsque l’ennemi n’est pas mutant. */
+      .sparkle-container {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        pointer-events: none;
+      }
+      .sparkle-container.hidden {
+        display: none;
+      }
+      .sparkle {
+        position: absolute;
+        width: 24px;
+        height: 24px;
+        animation: spinSparkle 2s linear infinite;
+        opacity: 0.9;
+      }
+      .sparkle:nth-child(1) { transform: translate(-30px, -30px); }
+      .sparkle:nth-child(2) { transform: translate(30px, -30px); }
+      .sparkle:nth-child(3) { transform: translate(-30px, 30px); }
+      .sparkle:nth-child(4) { transform: translate(30px, 30px); }
+      .sparkle:nth-child(5) { transform: translate(0px, -40px); }
+
+      @keyframes spinSparkle {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+
+      /* Animations d’apparition et de disparition des introductions et des évolutions */
+      .battle-intro,
+      .evolution-overlay {
+        animation: fadeInOut 1s ease;
+      }
+      @keyframes fadeInOut {
+        0% { opacity: 0; }
+        20% { opacity: 1; }
+        80% { opacity: 1; }
+        100% { opacity: 0; }
+      }
+    </style>
+  </head>
+  <body data-force-landscape="false">
+    <div class="capymon-container">
+      <canvas id="capymon-canvas" width="480" height="320"></canvas>
+      <!-- Bouton pour ouvrir le menu des options.  Placé en haut à droite de l’écran
+           de jeu, il utilise le style audio-toggle afin d’harmoniser avec les
+           contrôles du site.  Un emoji engrenage sert d’icône. -->
+      <button id="capymon-settings-btn" class="audio-toggle" title="Réglages" style="position:fixed; top:10px; right:10px; z-index:100; width:44px; height:44px; border-radius:22px; font-size:24px; display:flex; align-items:center; justify-content:center;">
+        ⚙️
+      </button>
+      <!-- Zone de contrôles tactile pour Capy Mon : flèches directionnelles et
+           boutons A/B à la manière d'une Game Boy.  Elle apparaît sous le
+           canvas et s'adapte à la largeur de l'écran. -->
+      <div id="capymon-controls" class="capymon-controls">
+        <div class="dpad">
+          <button id="capymon-up" class="dpad-btn">↑</button>
+          <div class="dpad-middle">
+            <button id="capymon-left" class="dpad-btn">←</button>
+            <button id="capymon-down" class="dpad-btn">↓</button>
+            <button id="capymon-right" class="dpad-btn">→</button>
+          </div>
+        </div>
+        <div class="gameboy-buttons">
+          <!-- Les boutons A et B sont renommés O et K pour correspondre aux nouvelles
+               commandes clavier.  Leur comportement reste identique : le
+               premier bouton sélectionne l’action par défaut, le second sert
+               à revenir ou fuir. -->
+          <button id="capymon-btn-a" class="btn">O</button>
+          <button id="capymon-btn-b" class="btn">K</button>
+        <!-- Bouton Enter virtuel pour ouvrir l'inventaire sur mobile -->
+        <button id="capymon-btn-enter" class="btn">↵</button>
+        </div>
+      </div>
+      <!-- Le bouton menu d'origine a été retiré afin que l'accès au menu se fasse via
+           la touche Entrée, conformément aux nouvelles spécifications. -->
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <!-- Les scripts communs -->
+    <script src="config.js"></script>
+    <script src="orientation.js"></script>
+    <!-- Script du jeu Capy Mon -->
+    <script src="capymon.js"></script>
+  </body>
+</html>

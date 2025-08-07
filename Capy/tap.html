@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Ninja</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Capy Tap fonctionne en portrait et paysage.  On ne force pas
+       l'orientation. -->
+  <body data-force-landscape="false">
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <div id="tap-container" class="courgette-container">
+      <canvas id="tapCanvas" width="480" height="640"></canvas>
+      <div class="courgette-sidebar">
+        <p>Score : <span id="tap-score">0</span></p>
+        <p>Temps : <span id="tap-time">30</span>s</p>
+        <button id="tap-restart" class="btn">Rejouer</button>
+        <button id="tap-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <div id="tap-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1 id="tap-gameover-title">Fin du temps !</h1>
+        <p><strong>Score :</strong> <span id="tap-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="tap-high-score">0</span></p>
+        <p id="tap-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="tap-over-replay" class="btn">Rejouer</button>
+          <button id="tap-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Fenêtre d'instructions pour Capy Ninja : affichée lors du
+         premier lancement pour expliquer les règles.  Un bouton
+         permet de fermer la fenêtre et d'enregistrer l'affichage. -->
+    <div id="tap-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Ninja – Règles</h2>
+        <p>Des légumes et des bombes tombent du ciel. Tranchez les
+          légumes avec votre doigt ou votre souris pour marquer des
+          points. Évitez de toucher les bombes et ne laissez pas
+          tomber plus de cinq légumes : vous avez cinq vies
+          représentées en haut de l'écran. Si un légume atteint
+          le bas de l'écran sans être tranché, vous perdez une
+          vie. La partie s'arrête lorsque vous n'avez plus de vies
+          ou que le temps est écoulé.</p>
+        <button id="tap-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="tap.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

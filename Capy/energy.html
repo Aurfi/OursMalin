@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ragon électrique</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="true">
+    <!-- Bouton de volume toujours visible -->
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <!-- Écran de game over pour le mode Ragon électrique -->
+    <div id="energy-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Game Over</h1>
+        <p><strong>Score :</strong> <span id="energy-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="energy-high-score">0</span></p>
+        <p id="energy-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="energy-replay-button" class="btn">Rejouer</button>
+          <button id="energy-menu-button" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Canvas du jeu -->
+    <canvas id="energyCanvas" width="480" height="640"></canvas>
+
+    <!-- Avertissement d'orientation pour Ragon électrique : ce jeu
+         nécessite une vue horizontale. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="energy.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

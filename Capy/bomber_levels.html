@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Bomber Capy – Niveaux</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- La sélection de niveaux de Bomber Capy peut être utilisée en mode
+       portrait ou paysage.  Aucune contrainte d'orientation n'est
+       appliquée. -->
+  <body data-force-landscape="false" data-no-prestart="true">
+    <div id="bomber-level-menu" class="overlay">
+      <div class="menu-card">
+        <h1>Bomber Capy : Choisis ton niveau</h1>
+        <p>Termine un niveau pour débloquer le suivant.</p>
+        <div id="bomber-level-grid" class="level-grid"></div>
+        <!-- Bouton pour lancer directement le dernier niveau débloqué -->
+        <div style="display:flex; gap:12px; justify-content:center; margin-top:12px; flex-wrap:wrap;">
+          <button id="bomber-level-play" class="btn play-btn">Jouer</button>
+          <button id="bomber-level-back" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="bomber_levels.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

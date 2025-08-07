@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Super Capy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="true">
+    <!-- Bouton muet (communs à tous les modes) -->
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <!-- Écran de Game Over pour Jumping Capy -->
+    <div id="platform-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <!-- Titre de l'écran de fin de partie pour Jumping Capy.  L'ID
+             permet de modifier le texte dynamiquement selon que le joueur
+             a perdu ou gagné (niveau réussi). -->
+        <h1 id="platform-gameover-title">Game Over</h1>
+        <p><strong>Score :</strong> <span id="platform-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="platform-high-score">0</span></p>
+        <p id="platform-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="platform-replay-button" class="btn">Rejouer</button>
+          <!-- Le bouton suivant apparaît uniquement lorsqu'un niveau a été remporté
+               et qu'un niveau ultérieur existe. -->
+          <button id="platform-next-button" class="btn" style="display:none;">Niveau suivant</button>
+          <button id="platform-menu-button" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Canvas pour Jumping Capy -->
+    <canvas id="platformCanvas" width="480" height="640"></canvas>
+    <!-- Contrôles tactiles pour mobile (flèches gauche/droite et saut) -->
+    <div id="mobile-controls" class="mobile-controls">
+      <button id="btn-left" class="mobile-btn">←</button>
+      <button id="btn-jump" class="mobile-btn">↑</button>
+      <button id="btn-right" class="mobile-btn">→</button>
+    </div>
+
+    <!-- Flèche directionnelle en début de niveau.  Plutôt que d'utiliser
+         un élément HTML qui pourrait être masqué par le score ou d'autres
+         éléments, la flèche est maintenant dessinée directement sur le
+         canvas par le script.  Ce conteneur reste en place pour une
+         compatibilité future mais est volontairement caché par défaut. -->
+    <div id="direction-arrow" class="direction-arrow" style="display:none;">→</div>
+
+    <!-- Avertissement d'orientation pour Jumping Capy : jeu de
+         plateforme nécessitant une vue horizontale. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <!-- Charger la configuration avant le jeu -->
+    <script src="config.js"></script>
+    <script src="platform.js?v=9"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Balise noindex afin de limiter l'indexation et le scraping automatique. -->
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Capy Roulette</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Mise en forme spécifique à la roulette.  Utilise une palette
+         sobre et un conteneur responsive pour assurer une bonne
+         lisibilité. */
+      .roulette-container {
+        width: 92%;
+        max-width: 600px;
+        margin: 16px auto;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        background: linear-gradient(135deg, #004d40, #00251a);
+        color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+      }
+      #roulette-scoreboard {
+        font-size: 1.2em;
+        font-weight: bold;
+      }
+      #roulette-result {
+        font-size: 2.4em;
+        font-weight: bold;
+        min-height: 1.8em;
+        /* Ajouter un fond semi-transparent pour améliorer la lisibilité du numéro
+           tiré sur un fond sombre.  Le rembourrage crée un cadre doux
+           autour du chiffre. */
+        padding: 8px 12px;
+        background: rgba(0, 0, 0, 0.4);
+        border-radius: 8px;
+      }
+      #roulette-message {
+        font-size: 1.4em;
+        min-height: 1.8em;
+        color: #ffe082;
+        text-align: center;
+      }
+      #roulette-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+      #roulette-buttons .btn {
+        min-width: 120px;
+        font-size: 1em;
+      }
+      #roulette-bet-area {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+        width: 100%;
+      }
+      #roulette-bet-input {
+        flex: 1 1 180px;
+        padding: 8px 12px;
+        border: none;
+        border-radius: 8px;
+        font-size: 1em;
+      }
+      #roulette-place-bet {
+        padding: 10px 16px;
+        border: none;
+        border-radius: 8px;
+        background: #ffb74d;
+        color: #fff;
+        font-size: 1em;
+        cursor: pointer;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+        transition: background 0.2s;
+      }
+      #roulette-place-bet:hover {
+        background: #ffa000;
+      }
+      /* Canvas décoratif représentant une petite roue de roulette.
+         La taille est réduite et centrée pour ne pas monopoliser l'espace. */
+      #roulette-wheel {
+        width: 140px;
+        height: 140px;
+        display: block;
+        margin: 8px auto;
+      }
+      /* Bouton d'aide pour la roulette */
+      #roulette-help {
+        align-self: flex-end;
+        background: rgba(255,255,255,0.2);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        color: #fff;
+        font-size: 1.2em;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body data-force-landscape="false">
+    <div class="roulette-container">
+      <!-- Bouton d’aide pour afficher les règles de la roulette -->
+      <button id="roulette-help" class="help-btn" style="align-self:flex-end;">?</button>
+      <!-- Petite roue vectorielle décorative pour rappeler la roulette.
+           Elle est dessinée via canvas dans roulette.js et n'interfère pas
+           avec la mécanique du jeu.  La taille réduite et son placement
+           central permettent de décorer l'interface sans l'alourdir. -->
+      <canvas id="roulette-wheel" width="140" height="140"></canvas>
+      <div id="roulette-scoreboard">
+        Victoires : <span id="rl-score">0</span> | Record : <span id="rl-record">0</span>
+      </div>
+      <!-- Ajout d'un conteneur pour le résultat avec un fond semi-transparent
+           afin de mieux faire ressortir les numéros sur le décor sombre. -->
+      <div id="roulette-result" class="roulette-result"></div>
+      <div id="roulette-message"></div>
+      <!-- Zone de mise : saisissez un nombre (1–99), « rouge », « noir »,
+           « pair » ou « impair » puis cliquez sur Parier. -->
+      <div id="roulette-bet-area" class="bet-area">
+        <!-- Champ de mise : uniquement les numéros entre 0 et 36 -->
+        <input id="roulette-bet-input" type="text" maxlength="2" placeholder="Numéro (0‑36)" />
+        <button id="roulette-place-bet" class="btn">Parier</button>
+      </div>
+      <!-- Boutons de pari pour les couleurs et la parité -->
+      <div id="roulette-choice-buttons" class="bet-area" style="display:flex; flex-wrap:wrap; justify-content:center; gap:8px;">
+        <button id="roulette-bet-red" class="btn">Rouge</button>
+        <button id="roulette-bet-black" class="btn">Noir</button>
+        <button id="roulette-bet-pair" class="btn">Pair</button>
+        <button id="roulette-bet-impair" class="btn">Impair</button>
+      </div>
+      <div id="roulette-buttons">
+        <button id="rl-replay" class="btn hidden">Rejouer</button>
+        <button id="rl-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+      <!-- Overlay d’aide : affiche les règles de la roulette.  Se ferme
+           automatiquement après quelques secondes ou via le bouton Fermer. -->
+      <div id="roulette-help-overlay" class="overlay hidden">
+        <div class="menu-card">
+          <h2>Règles de la roulette</h2>
+          <p>Pariez sur un numéro entre 0 et 36, une couleur (rouge ou noir) ou sur « pair/impair ». Si le tirage correspond à votre mise, vous marquez un point et votre série continue. Sinon, la série est remise à zéro.</p>
+          <button id="roulette-help-close" class="btn">Fermer</button>
+        </div>
+      </div>
+    <script src="config.js"></script>
+    <script src="roulette.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

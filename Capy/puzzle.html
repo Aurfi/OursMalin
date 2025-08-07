@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Puzzle</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Le puzzle est un jeu calme et accessible, jouable aussi bien en portrait
+       qu'en paysage.  On ne force pas l'orientation. -->
+  <body data-force-landscape="false">
+    <!-- Bouton de volume générique.  Même si ce jeu ne comporte pas
+         d'effets sonores pour l'instant, il permet de respecter la cohérence
+         de l'interface avec les autres jeux. -->
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <!-- Conteneur principal : canvas et barre latérale.  Le canvas est
+         redimensionné dynamiquement par puzzle.js pour s'adapter à
+         l'écran. -->
+    <div id="puzzle-container" class="courgette-container">
+      <canvas id="puzzleCanvas" width="480" height="480"></canvas>
+      <div class="courgette-sidebar">
+        <p>Temps : <span id="puzzle-time">0</span>s</p>
+        <p>Coups : <span id="puzzle-moves">0</span></p>
+        <!-- Sélecteur de difficulté : permet de choisir la taille du puzzle (2×2 à 6×6).
+             Le label affiche la dimension courante.  Cette section est insérée ici
+             afin de laisser l'utilisateur sélectionner un niveau de difficulté
+             directement depuis l'interface. -->
+        <div style="display:flex; flex-direction:column; align-items:center; gap:4px; width:100%;">
+          <label for="puzzle-size-slider" style="font-size:0.9em;">Taille :</label>
+          <input type="range" id="puzzle-size-slider" min="2" max="6" value="4" step="1" style="width:100%;" />
+          <span id="puzzle-size-label" style="font-size:0.9em;">4×4</span>
+        </div>
+        <button id="puzzle-restart" class="btn">Rejouer</button>
+        <button id="puzzle-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <!-- Écran de fin de partie lorsque le puzzle est résolu.  Affiche
+         le temps de résolution et le record stocké localement. -->
+    <div id="puzzle-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Puzzle terminé !</h1>
+        <p><strong>Temps :</strong> <span id="puzzle-current-time">0</span>s</p>
+        <p><strong>Record :</strong> <span id="puzzle-high-score">–</span>s</p>
+        <p id="puzzle-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="puzzle-over-replay" class="btn">Rejouer</button>
+          <button id="puzzle-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Fenêtre d'instructions affichée au premier lancement. -->
+    <div id="puzzle-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Puzzle – Règles</h2>
+        <p>Réorganisez les tuiles numérotées pour remettre le puzzle en ordre de 1 à 15.
+          Cliquez ou touchez une tuile adjacente à la case vide pour la déplacer.
+          Terminez le puzzle en un minimum de temps et de coups !</p>
+        <button id="puzzle-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <!-- Message d'orientation : le puzzle est jouable dans n'importe quelle
+         orientation, mais nous conservons la structure pour cohérence. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="puzzle.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

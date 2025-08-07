@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courgette Crush</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="false">
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <!-- Conteneur principal pour le plateau et la barre latérale.  La classe
+         courgette-container assure l'alignement et l'espacement. -->
+    <div id="courgette-container" class="courgette-container">
+      <div class="courgette-board">
+        <canvas id="courgetteCanvas" width="480" height="640"></canvas>
+      </div>
+      <div class="courgette-sidebar">
+        <p>Mouvements : <span id="moves-left">30</span></p>
+        <!-- Ajout d'un compteur de points en temps réel pour Courgette Crush.  Le score
+             est mis à jour après chaque combinaison, comme dans Candy Crush. -->
+        <p>Score : <span id="courgette-score">0</span></p>
+        <button id="courgette-sidebar-restart" class="btn">Rejouer</button>
+        <button id="courgette-sidebar-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <!-- Écran de fin de partie pour Courgette Crush.  Affiche le score, le record
+         et un message amusant. -->
+    <div id="courgette-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1 id="courgette-gameover-title">Bravo !</h1>
+        <p><strong>Score :</strong> <span id="courgette-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="courgette-high-score">0</span></p>
+        <p id="courgette-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="courgette-over-replay" class="btn">Rejouer</button>
+          <button id="courgette-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Message d'orientation pour les appareils mobiles.  Pour
+         Courgette Crush, l'affichage s'adapte à toutes les
+         orientations, donc ce message ne sera pas affiché. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="courgette.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Empêcher l'indexation automatique de cette page de jeu. -->
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Flying Capy</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="true" data-game="flappy">
+    <!-- Bouton muet : masque le son du jeu.  Utilisé uniquement pour les effets
+         sonores car la musique est remplacée par un bruitage d’ambiance -->
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <!-- Écran de Game Over pour le mode volant.  Il contient un message amusant
+         et des boutons pour rejouer ou revenir au menu. -->
+    <div id="gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Game Over</h1>
+        <!-- Affiche la valeur du score et du record.  Les libellés sont présents
+             dans le DOM pour assurer la compatibilité avec le script, mais
+             masqués via un style afin de ne pas apparaître à l’écran. -->
+        <p><strong style="display:none;">Score :</strong> <span id="current-score">0</span></p>
+        <p><strong style="display:none;">Record :</strong> <span id="high-score">0</span></p>
+        <p id="flappy-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="replay-button" class="btn">Rejouer</button>
+          <button id="menu-button" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Canvas du jeu Flying Capy.  Le script main.js prend en charge le
+         redimensionnement et le gameplay.  -->
+    <canvas id="gameCanvas" width="480" height="640"></canvas>
+
+    <!-- Message d'orientation pour les appareils mobiles.  Flying Capy
+         nécessite une vue horizontale.  Cette alerte apparaît si
+         l'appareil est en mode portrait. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <!-- Charge la configuration globale avant le script du jeu -->
+    <script src="config.js"></script>
+    <script src="main.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

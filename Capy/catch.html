@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Catch</title>
+    <!-- Feuille de style partagée par tous les jeux -->
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Ce jeu peut être joué aussi bien en portrait qu'en paysage.  On
+       utilise data‑force‑landscape="false" pour que l'overlay
+       d'orientation ne bloque pas l'accès en portrait. -->
+  <body data-force-landscape="false">
+    <!-- Bouton muet permettant de couper le son.  Il s'affiche en haut à droite -->
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <!-- Conteneur principal alignant le canvas et la barre d'information. -->
+    <div id="catch-container" class="courgette-container">
+      <!-- Zone de jeu.  La taille du canvas est ajustée dynamiquement en
+           fonction de l'orientation par catch.js -->
+      <canvas id="catchCanvas" width="480" height="640"></canvas>
+      <!-- Barre latérale affichant le score et les vies restantes -->
+      <div class="courgette-sidebar">
+        <p>Score : <span id="catch-score">0</span></p>
+        <p>Vies : <span id="catch-lives">3</span></p>
+        <button id="catch-restart" class="btn">Rejouer</button>
+        <button id="catch-menu" class="btn">Menu</button>
+      </div>
+      <!-- Contrôles mobiles : flèches gauche et droite.  Ces boutons
+           apparaissent sur les appareils tactiles pour permettre le
+           déplacement du joueur sans clavier. -->
+      <div id="catch-controls" class="mobile-controls">
+        <button id="catch-left" class="mobile-btn">◀</button>
+        <button id="catch-right" class="mobile-btn">▶</button>
+      </div>
+    </div>
+    <!-- Écran de fin de partie.  Il apparaît lorsque le joueur a perdu
+         toutes ses vies.  Il affiche le score obtenu, le record et un
+         message humoristique. -->
+    <div id="catch-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1 id="catch-gameover-title">Terminé !</h1>
+        <p><strong>Score :</strong> <span id="catch-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="catch-high-score">0</span></p>
+        <p id="catch-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="catch-over-replay" class="btn">Rejouer</button>
+          <button id="catch-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Fenêtre d'instructions : affichée lors du premier lancement
+         pour expliquer les règles du jeu.  Elle reste cachée par défaut
+         et n'apparaît plus après validation. -->
+    <div id="catch-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Catch – Règles</h2>
+        <p>Déplacez le capybara pour attraper les légumes qui tombent du ciel tout en
+          évitant les fourches. Chaque légume capturé rapporte des points,
+          tandis qu’une fourche vous fait perdre une vie. La partie se
+          termine lorsque toutes les vies sont perdues. Sur mobile,
+          utilisez les boutons flèches pour vous déplacer.</p>
+        <button id="catch-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <!-- Message d'orientation affiché si le jeu impose le paysage.  Ici
+         nous ne forçons pas l'orientation, mais la structure est conservée
+         pour l'uniformité -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <!-- Charger la configuration globale et le script du jeu -->
+    <script src="config.js"></script>
+    <script src="catch.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Bomber</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Ce jeu impose le mode paysage car le labyrinthe est large. -->
+  <body data-force-landscape="true">
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <div id="bomber-container" class="courgette-container">
+      <!-- Canvas du jeu Bomber Capy.  Le labyrinthe est dessiné
+           directement sur ce canvas ; aucun conteneur supplémentaire
+           n’est nécessaire car le dessin fournit suffisamment de
+           contraste avec le fond. -->
+      <canvas id="bomberCanvas" width="480" height="480"></canvas>
+      <div class="courgette-sidebar">
+        <p>Niveau : <span id="bomber-level">1</span></p>
+        <p>Score : <span id="bomber-score">0</span></p>
+        <p>Bombes : <span id="bomber-bombs">0</span></p>
+        <button id="bomber-restart" class="btn">Rejouer</button>
+        <button id="bomber-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <div id="bomber-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1 id="bomber-gameover-title">Game Over</h1>
+        <p><strong>Score :</strong> <span id="bomber-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="bomber-high-score">0</span></p>
+        <p id="bomber-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="bomber-over-replay" class="btn">Rejouer</button>
+          <button id="bomber-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Fenêtre d'instructions pour Capy Bomber : explique les bases
+         du gameplay et se ferme lorsque l'utilisateur clique sur Ok. -->
+    <div id="bomber-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Bomber – Règles</h2>
+        <p>Déplacez votre capybara dans le labyrinthe à l'aide des
+          flèches ou du clavier ZQSD. Posez des bombes (barre
+          espace ou touche Entrée) pour détruire les blocs et
+          éliminer les chats noirs. Les flammes s'étendent dans
+          quatre directions ; ne restez pas dans leur trajectoire.
+          Éliminez tous les chats pour passer au niveau suivant.</p>
+        <button id="bomber-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="bomber.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

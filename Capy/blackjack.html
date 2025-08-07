@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Limiter l'indexation des moteurs de recherche pour cette page de jeu.  En
+         ajoutant noindex,nofollow, on réduit la probabilité de scraping
+         automatique des URLs internes. -->
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Capy Blackjack</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      /* Mise en forme spécifique au blackjack avec une palette sobre et
+         responsive.  Le conteneur est centré et occupe la majorité de
+         l'écran sans dépasser 600px pour conserver une bonne lisibilité sur
+         tablette et bureau. */
+      .blackjack-container {
+        width: 92%;
+        max-width: 600px;
+        margin: 16px auto;
+        padding: 20px 16px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        gap: 16px;
+        /* Fond vert foncé inspiré des tables de casino */
+        background: linear-gradient(135deg, #2e7d32, #1b5e20);
+        color: #fff;
+        border-radius: 16px;
+        box-shadow: 0 4px 14px rgba(0, 0, 0, 0.45);
+      }
+      /* Ligne de cartes pour le joueur et le croupier.  Les cartes se
+         disposent automatiquement sur plusieurs lignes si l'espace est
+         restreint. */
+      .card-row {
+        display: flex;
+        flex-wrap: wrap;
+        gap: 8px;
+        justify-content: center;
+      }
+      .bj-card {
+        background: #fff;
+        border: none;
+        border-radius: 8px;
+        width: 48px;
+        height: 70px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-weight: bold;
+        font-size: 1.3em;
+        color: #263238;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.3);
+      }
+      /* Scoreboard et message.  Ajustements de taille de police pour un
+         meilleur contraste. */
+      #bj-scoreboard {
+        font-size: 1.2em;
+        font-weight: bold;
+        text-align: center;
+      }
+      #bj-buttons {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 12px;
+      }
+      #bj-buttons .btn {
+        min-width: 110px;
+        font-size: 1em;
+      }
+      #bj-message {
+        font-size: 1.3em;
+        text-align: center;
+        min-height: 1.8em;
+        color: #ffd740;
+      }
+      /* Bouton d'aide placé à droite */
+      #bj-help {
+        align-self: flex-end;
+        background: rgba(255,255,255,0.2);
+        border: none;
+        border-radius: 50%;
+        width: 32px;
+        height: 32px;
+        color: #fff;
+        font-size: 1.2em;
+        cursor: pointer;
+      }
+    </style>
+  </head>
+  <body data-force-landscape="false">
+    <div id="blackjack-container" class="blackjack-container">
+      <!-- Bouton d’aide pour afficher les règles du blackjack -->
+      <button id="bj-help" class="help-btn" style="align-self:flex-end;">?</button>
+      <div id="bj-scoreboard">
+        Score : <span id="bj-score">0</span> | Record : <span id="bj-record">0</span>
+      </div>
+      <div id="dealer-hand" class="card-row"></div>
+      <div id="player-hand" class="card-row"></div>
+      <div id="bj-buttons">
+        <button id="hit-btn" class="btn">Piocher</button>
+        <button id="stand-btn" class="btn">Rester</button>
+        <button id="bj-replay-btn" class="btn hidden">Rejouer</button>
+        <button id="bj-menu-btn" class="btn">Menu</button>
+      </div>
+      <div id="bj-message"></div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <!-- Overlay d’aide : affiche les règles du blackjack. Se ferme
+         automatiquement après quelques secondes ou via le bouton Fermer. -->
+    <div id="bj-help-overlay" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Règles du Blackjack</h2>
+        <p>L’objectif du blackjack est d’obtenir une somme de cartes plus proche de 21 que celle de la banque sans la dépasser. Les cartes 2 à 10 valent leur valeur, les figures valent 10 et l’As vaut 1 ou 11 selon ce qui vous avantage.</p>
+        <button id="bj-help-close" class="btn">Fermer</button>
+      </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="blackjack.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

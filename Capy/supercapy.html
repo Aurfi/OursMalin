@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Empêcher l'indexation automatique de cette page de sélection de niveaux -->
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Super Capy – Niveaux</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="false" data-no-prestart="true">
+    <div id="supercapy-menu" class="overlay">
+      <div class="menu-card">
+        <h1>Super Capy : Choisis ton niveau</h1>
+        <p>Complète un niveau pour débloquer le suivant.</p>
+        <div id="level-grid" class="level-grid"></div>
+        <button id="back-to-menu" class="btn">Retour au menu</button>
+      </div>
+    </div>
+
+    <!-- Avertissement d'orientation : la sélection de niveau s'adapte
+         aux deux orientations, donc ce message ne sera pas affiché. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="melodies.js"></script>
+    <script src="supercapy.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

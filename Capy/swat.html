@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Swat</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Capy Swat peut être joué en mode portrait ou paysage -->
+  <body data-force-landscape="false">
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <div id="swat-container" class="courgette-container">
+      <!-- Zone de jeu -->
+      <canvas id="swatCanvas" width="480" height="480"></canvas>
+      <!-- Barre latérale pour les bombes restantes, le temps et les boutons -->
+      <div class="courgette-sidebar">
+        <p>Bombes : <span id="swat-bombs">0</span></p>
+        <p>Temps : <span id="swat-time">0</span></p>
+        <button id="swat-restart" class="btn">Rejouer</button>
+        <button id="swat-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <!-- Écran de fin de partie -->
+    <div id="swat-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1 id="swat-gameover-title">Terminé !</h1>
+        <p><strong>Temps :</strong> <span id="swat-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="swat-high-score">0</span></p>
+        <p id="swat-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="swat-over-replay" class="btn">Rejouer</button>
+          <button id="swat-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <!-- Fenêtre d'instructions -->
+    <div id="swat-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Swat – Règles</h2>
+        <p>Votre mission : nettoyer la grille de mines sans les déclencher.
+          Cliquez sur une case pour révéler le nombre de mines dans les 8
+          cases adjacentes. Si vous pensez qu'une case contient une
+          mine, utilisez le mode drapeau (bouton Drapeau) ou un
+          clic droit pour marquer la case. Révélez toutes les cases
+          sûres pour gagner. Le capybara du SWAT surveille vos progrès
+          depuis la droite de la grille.</p>
+        <button id="swat-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="swat.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

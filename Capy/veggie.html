@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Veggie Crush</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="false">
+    <button id="volume-toggle" class="volume-btn">🔊</button>
+    <button id="music-toggle" class="volume-btn">🎵</button>
+    <div id="veggie-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Partie terminée</h1>
+        <p><strong>Score :</strong> <span id="veggie-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="veggie-high-score">0</span></p>
+        <div class="button-group">
+          <button id="veggie-replay-button" class="btn">Rejouer</button>
+          <button id="veggie-menu-button" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <canvas id="veggieCanvas" width="480" height="640"></canvas>
+
+    <!-- Message d'orientation : Veggie Crush s'adapte aux deux
+         orientations, donc ce message restera masqué. -->
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="melodies.js"></script>
+    <script src="veggie.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

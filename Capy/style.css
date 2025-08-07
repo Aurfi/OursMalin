@@ -1,0 +1,1112 @@
+/* Styles généraux */
+html,
+body {
+  margin: 0;
+  padding: 0;
+  height: 100%;
+  /* Fond clair et chaleureux pour le site : dégradé pastel.  Ce fond
+     améliore l'accueil et se marie avec les décors des jeux. */
+  background: linear-gradient(#e3f2fd, #ffffff);
+  font-family: Arial, sans-serif;
+  overflow: hidden;
+}
+
+/* Les canvas des différents jeux doivent être centrés et sans fond pour s'intégrer
+   dans la page.  On applique les mêmes règles aux deux jeux. */
+/* Centrer horizontalement les canvas et leur donner une petite marge supérieure
+   pour ne pas coller au bord supérieur de la fenêtre.  L'ajout de margin‑top
+   permet d'occuper l'espace vertical de manière plus équilibrée, surtout sur mobile. */
+#gameCanvas,
+#runnerCanvas,
+#energyCanvas,
+#platformCanvas,
+#courgetteCanvas {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 3vh;
+  background: transparent;
+}
+
+/* Conteneur pour Courgette Crush : aligne le plateau et la barre
+   latérale horizontalement et centre l'ensemble de la zone de jeu. */
+.courgette-container {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  gap: 20px;
+  margin-top: 6vh;
+  width: 100%;
+  flex-wrap: wrap;
+}
+
+/* Cadre autour du plateau : ajoute une bordure blanche semi‑transparente
+   et un arrondi pour détacher le canvas du fond. */
+.courgette-board {
+  padding: 8px;
+  border: 3px solid rgba(255,255,255,0.8);
+  border-radius: 12px;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  background: rgba(255,255,255,0.1);
+}
+
+/* Barre latérale à droite du plateau.  Affiche le nombre de mouvements
+   restants et fournit des boutons pour recommencer ou retourner au menu. */
+.courgette-sidebar {
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-start;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border: 3px solid rgba(255,255,255,0.8);
+  border-radius: 12px;
+  background: rgba(255,255,255,0.15);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.25);
+  min-width: 140px;
+  color: #333;
+}
+
+.courgette-sidebar p {
+  margin: 0;
+  font-size: 1.2em;
+  font-weight: bold;
+}
+
+.courgette-sidebar button {
+  width: 100%;
+  padding: 8px 0;
+  border: none;
+  border-radius: 8px;
+  background: #ff9800;
+  color: #fff;
+  font-size: 1em;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.courgette-sidebar button:hover {
+  background: #e67e00;
+}
+
+/* Overlays pour le menu et le game over */
+.overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  /* Fond semi‑transparent par défaut : éclairci pour laisser transparaître
+     davantage le décor tout en préservant la lisibilité des textes. */
+  background: rgba(0, 0, 0, 0.35);
+  color: #fff;
+  z-index: 10;
+}
+.overlay.hidden {
+  display: none;
+}
+
+/*
+ * Message d'orientation pour les appareils mobiles.  Cet overlay
+ * s'affiche lorsqu'une page nécessite le mode paysage et que
+ * l'utilisateur tient son appareil en mode portrait.  Le texte est
+ * centré et invite l'utilisateur à faire pivoter son appareil.
+ */
+.orientation-warning {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.85);
+  color: #fff;
+  font-size: 1.6em;
+  text-align: center;
+  padding: 20px;
+  z-index: 1000;
+}
+
+.orientation-warning.hidden {
+  display: none;
+}
+
+.btn {
+  padding: 10px 20px;
+  margin: 8px;
+  font-size: 1.1em;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  /* Ton orangé légèrement plus doux pour les boutons afin d'harmoniser
+     l'interface avec la nouvelle palette du jeu. */
+  background: #ffb74d;
+  color: #fff;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s;
+}
+.btn:hover {
+  background: #ffa000;
+}
+
+/* Style spécifique pour le bouton Courgette Clicker sur la page d'accueil.
+   Le but est de coller la largeur du bouton au texte sans marge
+   excessive, tout en conservant l'apparence générale des autres
+   boutons. */
+#courgette-clicker-btn {
+  display: inline-block;
+  padding: 6px 14px;
+  margin: 4px auto;
+  font-size: 1.05em;
+}
+
+/*
+ * Personnalisation du canvas de Capy Mon.  La carte bénéficie de
+ * coins arrondis, d’une ombre douce et d’une transition de zoom
+ * lorsqu’on la survole.  L’overflow hidden garantit que le coin
+ * arrondi masque correctement les tuiles.  Ces styles sont séparés
+ * afin de ne pas impacter les autres jeux.
+ */
+#capymon-canvas {
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+  overflow: hidden;
+  transition: transform 0.15s ease;
+}
+#capymon-canvas:hover {
+  transform: scale(1.01);
+}
+
+/* Boutons de contrôle audio dans l'en‑tête du menu.  Chaque bouton
+   représente un interrupteur on/off pour la musique d'ambiance ou les
+   effets sonores.  Les états actifs affichent un fond plus opaque. */
+.audio-toggle {
+  width: 36px;
+  height: 36px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.5);
+  color: #333;
+  font-size: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background 0.2s;
+}
+.audio-toggle.active {
+  background: rgba(255, 255, 255, 0.9);
+}
+
+/* Barre de catégories dans le menu principal.  Permet de préparer un
+   filtrage des jeux par type.  Les boutons se disposent sur une
+   ligne centrée et changent de couleur lorsqu'ils sont actifs. */
+.menu-categories {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-top: 8px;
+  flex-wrap: wrap;
+}
+.category-btn {
+  background: #eceff1;
+  border: none;
+  border-radius: 12px;
+  padding: 6px 14px;
+  font-size: 0.9em;
+  color: #333;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.category-btn:hover {
+  background: #cfd8dc;
+}
+.category-btn.active {
+  background: #ffd54f;
+  color: #333;
+}
+
+/* Contrôles mobiles spécifiques à Capy Catch.  Ce conteneur est
+   positionné par rapport au canvas et inclut deux boutons fléchés. */
+#catch-controls {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 20px;
+  z-index: 5;
+}
+#catch-controls .mobile-btn {
+  width: 50px;
+  height: 50px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  color: #333;
+  font-size: 1.5em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+  transition: background 0.2s;
+}
+#catch-controls .mobile-btn:active {
+  background: rgba(255, 255, 255, 0.8);
+}
+.button-group {
+  display: flex;
+  gap: 10px;
+}
+
+/* Style spécifique pour l’écran de menu : afficher le visuel humoristique en arrière‑plan */
+#menu.overlay {
+  /* Remplace le fond de l'accueil par une illustration pastel couvrant
+     complètement l'écran.  L'image menu_background.png a été générée via
+     imagegen et présente des nuages et un ciel doux. */
+  /* Utilise un décor de ville doux comme fond plutôt que de réutiliser
+     l'illustration du héros. */
+  background-image: url('assets/city_background.png');
+  background-position: center center;
+  background-repeat: no-repeat;
+  background-size: cover;
+  /* Superposer une légère teinte sombre pour améliorer la lisibilité du texte */
+  background-color: rgba(0, 0, 0, 0.4);
+  background-blend-mode: multiply;
+}
+
+/* Bouton de volume : placé en haut à droite, circulaire et semi‑transparent */
+.volume-btn {
+  position: fixed;
+  top: 10px;
+  right: 10px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  border-radius: 50%;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 20;
+}
+
+/* Positionner le bouton de volume différemment pour Flying Capy afin
+   d’éviter qu’il chevauche le bouton de changement de thème.  Sur
+   cette page (identifiée via l’attribut data-game="flappy" sur le body),
+   on décale le bouton de volume de 60 px vers la gauche. */
+body[data-game="flappy"] .volume-btn {
+  right: 60px;
+  left: auto;
+}
+.volume-btn:hover {
+  background: rgba(0, 0, 0, 0.7);
+}
+
+/* Bouton de réglage de la musique.  Il hérite des styles de volume-btn
+   mais est décalé vers la gauche pour ne pas chevaucher l'autre. */
+#music-toggle {
+  right: 60px;
+}
+
+/* Message amusant dans la carte de Game Over */
+.fun-message {
+  margin-top: 10px;
+  font-size: 1em;
+  color: #ffe082;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Les images des messages amusants sont placées dans des bulles rondes
+   blanches afin de masquer leur contour d'origine.  La classe
+   fun-message s'applique déjà au conteneur textuel, mais les images
+   internes reçoivent un style spécifique pour créer un cercle blanc. */
+.fun-message img {
+  width: 140px;
+  height: 140px;
+  object-fit: cover;
+  border-radius: 50%;
+  background: #fff;
+  padding: 10px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+  margin-bottom: 8px;
+}
+
+/* Carte centrale pour le menu d’accueil */
+.menu-card {
+  /* Carte centrale sur l'accueil.  Les couleurs sont claires et
+     conviviales.  Le fond est légèrement plus opaque pour assurer
+     une bonne lisibilité des textes sur mobile. */
+  background: rgba(255, 255, 255, 0.95);
+  padding: 24px 32px;
+  border-radius: 20px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.25);
+  text-align: center;
+  max-width: 480px;
+  width: 90%;
+  backdrop-filter: blur(4px);
+  color: #333;
+  position: relative;
+}
+.menu-card h1 {
+  margin-top: 12px;
+  margin-bottom: 16px;
+  font-size: 2.2em;
+  font-weight: bold;
+  color: #2c3e50;
+}
+.menu-card p {
+  margin-top: 4px;
+  margin-bottom: 10px;
+  font-size: 1em;
+  color: #444;
+}
+
+/* Masquer la citation initiale en bas du menu car les phrases sont
+   désormais affichées en splash au-dessus. */
+#menu-quote {
+  display: none;
+}
+
+/* Splash text façon Minecraft – une petite phrase inclinée en jaune qui
+   apparaît au dessus de la carte du menu.  Il utilise une animation
+   de pulsation pour attirer subtilement l'œil. */
+#splash-text {
+  position: absolute;
+  top: -40px;
+  /* Déplace le texte légèrement vers la droite pour rappeler le placement
+     du splash dans Minecraft.  En fixant left à 70 %, le centre du
+     texte se positionne plus à droite sur la carte du menu, tout en
+     conservant l’effet d’oscillation et l’inclinaison. */
+  /* Positionne le splash légèrement plus à gauche pour équilibrer la nouvelle
+     inclinaison (de haut gauche vers bas droite). Le centre du texte est
+     aligné via translateX(-50%) pour compenser la largeur du texte. */
+  /* Positionné un peu plus bas et à droite afin de mieux équilibrer
+     l'illustration du menu. */
+  /* Abaisser légèrement le splash et le décaler vers la droite pour
+     qu'il ne chevauche pas le titre. */
+  top: -20px;
+  left: 75%;
+  /* Oriente le texte dans l’autre sens (vers le bas à droite) en appliquant
+     une rotation positive.  L’animation se charge de conserver cette
+     rotation lors du zoom pulsé. */
+  transform: translateX(-50%) rotate(15deg);
+  color: #ffd700;
+  /* Agrandir légèrement la taille pour un effet accentué */
+  font-size: 2.2em;
+  font-weight: bold;
+  pointer-events: none;
+  text-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+  animation: splash-pulse 2.5s infinite ease-in-out;
+}
+
+@keyframes splash-pulse {
+  0% { transform: translateX(-50%) rotate(15deg) scale(1); }
+  50% { transform: translateX(-50%) rotate(15deg) scale(1.1); }
+  100% { transform: translateX(-50%) rotate(15deg) scale(1); }
+}
+
+/* Image en haut de la carte du menu.  Elle est centrée et arrondie. */
+.menu-image {
+  width: 120px;
+  height: 120px;
+  object-fit: contain;
+  border-radius: 50%;
+  margin: 0 auto 10px auto;
+  display: block;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* Nouvel agencement du menu : une image héro au dessus et des cartes de jeux
+   générées dynamiquement. */
+/* Taille de l'image héros sur la page d'accueil.  Agrandie à 200 px pour
+   qu'elle soit plus visible et en harmonie avec la nouvelle charte. */
+/*
+ * Image de mascotte sur la page d'accueil.  On utilise la même taille qu'avant
+ * (200 px), mais on passe `object-fit: cover` et `object-position: center`
+ * afin de cadrer sur le visage de l'animal et éviter que l'image
+ * d'arrière‑plan et la mascotte aient l'air identiques.  Le cercle
+ * garde une ombre pour un effet de relief.
+ */
+.menu-hero {
+  width: 200px;
+  height: 200px;
+  /* Zoom et recadrage sur le centre de l'image plutôt que l'intégralité */
+  object-fit: cover;
+  object-position: center;
+  border-radius: 50%;
+  /* Centrer horizontalement la mascotte.  Les marges verticales
+     permettent un espacement régulier entre l'image et les éléments
+     situés en dessous. */
+  margin: 0 auto 10px auto;
+  display: block;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.3);
+}
+
+/* Conteneur de la mascotte et du bouton externe sur l’écran d’accueil.  Le
+   flexbox permet d’aligner l’image circulaire et le bouton sur une
+   même ligne avec un espacement constant. */
+.hero-container {
+  /* L'ancien conteneur alignait la mascotte et un bouton sur une même ligne.
+     Comme le bouton Courgette Clicker a été déplacé, ce conteneur ne
+     nécessite plus d'affichage en flex.  On retire les règles flex
+     et les marges afin qu'il n'affecte plus la mise en page. */
+  display: block;
+  margin: 0;
+}
+
+/* Retirer le soulignement sur les liens utilisés comme boutons et s’assurer
+   qu’ils héritent du style .btn. */
+.hero-container a.btn {
+  text-decoration: none;
+}
+
+/* Grille des niveaux pour Super Capy */
+.level-grid {
+  margin: 20px auto;
+  width: 100%;
+}
+
+/* Style des cellules de niveau */
+.level-cell {
+  font-size: 1.2em;
+  padding: 14px 0;
+  border-radius: 8px;
+  text-align: center;
+}
+
+/* Cellules verrouillées grises */
+.level-locked {
+  background: #ccc !important;
+  color: #666 !important;
+  cursor: not-allowed;
+  box-shadow: none !important;
+}
+
+/* Citation aléatoire sous le titre du menu */
+.menu-quote {
+  margin-top: 8px;
+  font-style: italic;
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* Conteneur pour la liste des jeux */
+/*
+ * Conteneur de la liste des jeux sur la page d'accueil.  Plutôt que
+ * d'utiliser un affichage en flex-wrap (qui pouvait provoquer des
+ * chevauchements lorsqu'un grand nombre de cartes était présent), on
+ * passe en mode grille responsive.  Chaque carte occupe au minimum
+ * 220 px et s'étire pour remplir l'espace disponible.  Le grid-gap
+ * assure un espacement constant entre les cartes, et le layout
+ * s'adapte automatiquement aux différentes largeurs d'écran (une
+ * colonne en mode portrait sur mobile, plusieurs en paysage ou sur PC).
+ */
+.game-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 16px;
+  width: 100%;
+  margin-top: 16px;
+
+  /* Lorsque la liste contient de nombreux jeux, permettre le défilement
+     vertical pour éviter que les cartes ne débordent de l'écran.
+     La hauteur maximale est calculée en soustrayant une marge pour le titre,
+     les catégories et les citations.  Sur les écrans plus grands, la
+     grille adaptera automatiquement la hauteur. */
+  max-height: calc(100vh - 300px);
+  overflow-y: auto;
+}
+
+/* Carte représentant un jeu dans la liste du menu */
+/*
+ * Cartes de jeu sur la page d'accueil.
+ * Chaque carte est interactive : l'ensemble de la carte est
+ * cliquable pour lancer le jeu.  Les cartes affichent une petite
+ * illustration à gauche, le nom du jeu et le record.  Elles
+ * s'agencent en grille responsive via .game-list et ne fixent plus
+ * de largeur manuellement ; le navigateur se charge de les répartir.
+ */
+.game-card {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 12px;
+  padding: 12px 16px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.25);
+  color: #333;
+  cursor: pointer;
+  transition: transform 0.15s ease, box-shadow 0.15s ease;
+
+  /* Permet d’ancrer les éléments décoratifs (trophées, étoiles) en
+     position absolue à l’intérieur des cartes. */
+  position: relative;
+}
+.game-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+}
+.game-card img {
+  width: 60px;
+  height: 60px;
+  object-fit: contain;
+  border-radius: 8px;
+  flex-shrink: 0;
+}
+.game-card-info {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.game-card-title {
+  font-size: 1.1em;
+  font-weight: bold;
+  color: #2c3e50;
+  margin-bottom: 2px;
+}
+.game-card-record {
+  font-size: 0.9em;
+  color: #555;
+}
+
+/* Icône de trophée en surimpression sur les cartes vedettes.  Elle
+   apparaît dans l’angle supérieur droit et ne perturbe pas la mise
+   en page du contenu. */
+.trophy-icon {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  width: 28px;
+  height: 28px;
+  z-index: 2;
+}
+
+/* Étoile d’animation de célébration pour le jeu Courgette Crush.  Elle
+   tournoie en continu et crée un effet dynamique autour de la carte. */
+.celebration-star {
+  position: absolute;
+  bottom: -12px;
+  left: -12px;
+  width: 40px;
+  height: 40px;
+  z-index: 2;
+  animation: celebration-spin 3s linear infinite;
+}
+
+@keyframes celebration-spin {
+  0% {
+    transform: rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: rotate(180deg) scale(1.3);
+    opacity: 0.7;
+  }
+  100% {
+    transform: rotate(360deg) scale(1);
+    opacity: 1;
+  }
+}
+
+/*
+ * Icône de trophée en ligne à côté du titre du jeu.  Ces icônes sont
+ * plus petites que celles en surimpression et sont positionnées à la
+ * suite du texte.  Un léger espacement est ajouté à gauche pour
+ * séparer l’icône du nom.
+ */
+.trophy-inline {
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/* Limiter explicitement la taille de toutes les images insérées dans
+ * un titre de carte afin d’éviter qu’un trophée ne dépasse la hauteur
+ * de la ligne.  Cela agit comme une seconde barrière si un attribut
+ * inline n’est pas suffisant. */
+.game-card-title img {
+  width: 14px;
+  height: 14px;
+  margin-left: 4px;
+  vertical-align: middle;
+}
+
+/*
+ * Disposition en grille pour la section Vedette.  Lorsqu’on affiche
+ * uniquement les jeux marqués vedettes, la liste adopte une grille
+ * fluide qui se réorganise en fonction de la largeur d’écran.  On
+ * utilise minmax pour créer des cartes de taille similaire.
+ */
+.featured-grid {
+  display: grid !important;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  grid-gap: 16px;
+}
+
+/*
+ * Overlay de pré-lancement affiché sur toutes les pages de jeux.
+ * Il bloque l’interaction tant que le joueur n’a pas cliqué sur le
+ * bouton « Jouer ».  La boîte utilise une carte de menu pour rester
+ * cohérente avec l’UI générale.
+ */
+.prestart-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.7);
+  z-index: 10000;
+}
+.prestart-overlay .menu-card {
+  background: rgba(255, 255, 255, 0.95);
+  padding: 24px 32px;
+  border-radius: 12px;
+  text-align: center;
+  color: #333;
+  box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+}
+
+/*
+ * Thème sombre : lorsqu’un utilisateur active le mode sombre, les
+ * couleurs de fond et de texte sont inversées pour réduire la
+ * luminosité.  On ajuste également la couleur des boutons et des
+ * cartes.  L’overlay demeure plus sombre dans ce mode.
+ */
+body.dark-mode {
+  background: linear-gradient(#0b1e27, #202c39);
+  color: #e6e6e6;
+}
+body.dark-mode .menu-card,
+body.dark-mode .game-card,
+body.dark-mode .courgette-sidebar,
+body.dark-mode .courgette-board {
+  /* Augmenter légèrement l'opacité pour améliorer la lisibilité des cartes en mode sombre. */
+  background: rgba(255, 255, 255, 0.14);
+  color: #e6e6e6;
+}
+body.dark-mode .menu-quote {
+  color: #ccc;
+}
+body.dark-mode .btn {
+  /* Palette bleu-gris plus claire pour les boutons en mode sombre afin de
+     distinguer clairement les éléments cliquables sur les fonds foncés. */
+  background: #78909c;
+  color: #fff;
+}
+body.dark-mode .btn:hover {
+  background: #607d8b;
+}
+body.dark-mode .audio-toggle {
+  background: rgba(255, 255, 255, 0.3);
+  color: #fff;
+}
+body.dark-mode .overlay {
+  /* Opacité renforcée pour obscurcir davantage l'arrière‑plan et faire ressortir le contenu. */
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* Améliorer la lisibilité des textes dans les overlays en mode sombre. */
+body.dark-mode .overlay .menu-card {
+  color: #eee;
+}
+body.dark-mode .overlay .menu-card a {
+  color: #90caf9;
+}
+
+/* Bandeau diagonal "NEW !" pour la page d'accueil */
+.menu-card .new-ribbon {
+  position: absolute;
+  /* Descendre légèrement le bandeau et le décaler vers la gauche afin
+     qu’il s’aligne mieux avec le coin supérieur gauche de la page.  Le
+     bandeau n’empiète plus sur le titre et reste bien visible. */
+  top: 8px;
+  left: -60px;
+  background: #c62828;
+  color: #fff;
+  padding: 4px 40px;
+  /* Agrandir la taille de police pour rendre le texte NEW ! plus lisible */
+  font-size: 1rem;
+  font-weight: bold;
+  /* L’animation est gérée via @keyframes afin de conserver la rotation
+     tout en créant un mouvement subtil. */
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  pointer-events: none;
+  text-transform: uppercase;
+  animation: newRibbonMove 3s ease-in-out infinite;
+}
+
+/*
+ * Animations pour les combats de Capy Mon.  Chaque classe peut être
+ * appliquée à l’image d’un combattant afin d’illustrer l’action
+ * sélectionnée.  Ces effets sont sobres et cohérents avec le style
+ * vectoriel : petites secousses, pulsations, rotations, flashes ou
+ * rebonds.  Les durées sont courtes afin de ne pas perturber le rythme du
+ * combat.  Le paramètre animationsOn dans les réglages permet de
+ * désactiver ces effets.
+ */
+.anim-shake {
+  animation: shake 0.4s ease-in-out;
+}
+.anim-pulse {
+  animation: pulse 0.5s ease-in-out;
+}
+.anim-spin {
+  animation: spin 0.6s linear;
+}
+.anim-flash {
+  animation: flash 0.4s ease-in-out;
+}
+.anim-bounce {
+  animation: bounce 0.6s ease-in-out;
+}
+
+@keyframes shake {
+  0% { transform: translateX(0); }
+  20% { transform: translateX(-4px); }
+  40% { transform: translateX(4px); }
+  60% { transform: translateX(-4px); }
+  80% { transform: translateX(4px); }
+  100% { transform: translateX(0); }
+}
+@keyframes pulse {
+  0%, 100% { transform: scale(1); }
+  50% { transform: scale(1.2); }
+}
+@keyframes spin {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+@keyframes flash {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+@keyframes bounce {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-12px); }
+}
+
+/*
+ * Styles pour le sous-menu des attaques dans Capy Mon.  Les attaques de
+ * soin (heal) utilisent un fond vert doux pour évoquer la guérison
+ * tandis que les attaques offensives utilisent un fond rouge clair.
+ */
+.move-btn-heal {
+  background: #a5d6a7 !important;
+  color: #093009 !important;
+}
+.move-btn-attack {
+  background: #ef9a9a !important;
+  color: #420000 !important;
+}
+
+/* Variantes pour le mode sombre : teintes légèrement plus saturées et
+ * texte clair pour conserver le contraste sur fonds foncés. */
+body.dark-mode .move-btn-heal {
+  background: #81c784 !important;
+  color: #012b01 !important;
+}
+body.dark-mode .move-btn-attack {
+  background: #e57373 !important;
+  color: #2c0000 !important;
+}
+
+/* Animation du bandeau NEW ! : conserve l’angle de rotation tout en
+   appliquant une légère oscillation verticale pour attirer l’œil. */
+@keyframes newRibbonMove {
+  0%, 100% {
+    transform: rotate(-45deg) translateY(0);
+  }
+  50% {
+    transform: rotate(-45deg) translateY(8px);
+  }
+}
+
+/* Bamboo background for Capy Ninja.  L’image est générée et
+ * appliquée directement sur le canevas pour se démarquer visuellement.
+ */
+#tapCanvas {
+  background-image: url('assets/bamboo_bg.png');
+  background-size: cover;
+}
+
+/* Style de l’icône dans le bouton de mode sombre pour éviter qu’il
+ * soit déformé.  Les dimensions sont fixées dans l’HTML mais
+ * peuvent être ajustées ici si nécessaire.
+ */
+#dark-mode-toggle img {
+  pointer-events: none;
+}
+
+/* Mise en page responsive pour la liste des jeux.  Sur les écrans
+   larges, les cartes se disposent en plusieurs colonnes. */
+@media (min-width: 600px) {
+  /*
+   * Les cartes de jeu s'organisent désormais automatiquement via la grille
+   * définie dans .game-list.  Il n'est plus nécessaire d'imposer une
+   * largeur fixe en fonction du media query.
+   */
+  .game-card {
+    /* la largeur est gérée par .game-list */
+  }
+}
+@media (min-width: 900px) {
+  /* voir commentaire ci‑dessus : la largeur est désormais gérée par la grille */
+  .game-card {
+    /* pas de largeur fixe */
+  }
+}
+
+/* Contrôles mobiles pour Jumping Capy */
+.mobile-controls {
+  position: fixed;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  gap: 16px;
+  z-index: 15;
+}
+.mobile-controls .mobile-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  font-size: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.4);
+  user-select: none;
+}
+.mobile-controls .mobile-btn:active {
+  background: rgba(0,0,0,0.7);
+}
+
+p {
+  margin: 5px;
+}
+
+/* Styles pour l'affichage du score et du record dans les écrans de Game Over.
+   On centre le texte, on l'affiche en gras et en doré afin de distinguer
+   clairement la valeur numérale.  Ces règles s'appliquent aux différents
+   identifiants de score des modes de jeu. */
+#current-score,
+#high-score,
+#runner-current-score,
+#runner-high-score,
+#energy-current-score,
+#energy-high-score,
+#platform-current-score,
+#platform-high-score {
+  text-align: center;
+  font-weight: bold;
+  color: #FFD700;
+  margin-top: 6px;
+  margin-bottom: 6px;
+}
+
+/* Flèche directionnelle pour Super Capy.  Elle clignote doucement pour
+   attirer l'œil et s'affiche près du haut du canvas.  La flèche est
+   centrée horizontalement et son orientation est définie dynamiquement via
+   le contenu (→ ou ←). */
+/* Flèche directionnelle indiquant la marche à suivre au début d'un niveau.  
+   La taille et la couleur ont été augmentées pour assurer une meilleure
+   lisibilité sur fond clair.  On positionne la flèche sous le score et
+   on désactive les interactions pour éviter les clics accidentels. */
+.direction-arrow {
+  position: absolute;
+  /* Positionner la flèche juste sous l'indicateur de score afin que
+     les joueurs la remarquent immédiatement lorsqu'un niveau débute. */
+  top: 60px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 64px;
+  color: #ff9200;
+  text-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  animation: blinkArrow 0.6s linear infinite;
+  z-index: 12;
+  pointer-events: none;
+}
+
+@keyframes blinkArrow {
+  0%, 50% { opacity: 1; }
+  50%, 100% { opacity: 0; }
+}
+
+/* Animation de confettis pour Courgette Crush.
+   Des petites pastilles colorées tombent du haut de l'écran lorsque
+   plusieurs fruits disparaissent en même temps.  Chaque élément utilise
+   l'animation confetti-fall pour descendre et tourner avant de disparaître. */
+@keyframes confetti-fall {
+  0% {
+    transform: translateY(0) rotate(0deg);
+    opacity: 1;
+  }
+  100% {
+    transform: translateY(600px) rotate(720deg);
+    opacity: 0;
+  }
+}
+
+.confetti-piece {
+  position: fixed;
+  top: -10px;
+  /* La largeur et la hauteur sont définies dynamiquement en JavaScript */
+  border-radius: 50%;
+  pointer-events: none;
+  z-index: 100;
+  animation-name: confetti-fall;
+  animation-timing-function: linear;
+  animation-fill-mode: forwards;
+}
+
+/*
+ * Interface Roulette/Blackjack : Bouton d'aide et zone de mise
+ *
+ * Pour harmoniser les jeux de table, on ajoute des styles
+ * dédiés aux boutons d'aide (help-btn) et aux conteneurs de
+ * mise (bet-area).  Le bouton est circulaire avec une légère
+ * ombre et change de teinte au survol.  La zone de mise
+ * dispose ses enfants de façon compacte et centrée, et l'entrée
+ * texte bénéficie d'une bordure douce et d'un focus subtil.
+ */
+.help-btn {
+  background: #eceff1;
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  font-size: 1.2em;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  color: #455a64;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+  transition: background 0.2s;
+}
+.help-btn:hover {
+  background: #cfd8dc;
+}
+
+.bet-area {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.bet-area input[type="text"] {
+  padding: 6px 8px;
+  border: 1px solid #b0bec5;
+  border-radius: 4px;
+  font-size: 1em;
+  min-width: 180px;
+  box-shadow: inset 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+.bet-area input[type="text"]:focus {
+  outline: none;
+  border-color: #90a4ae;
+}
+
+/*
+ * Bouton de bascule du thème sombre/clair.  Ce composant fixe est
+ * généré dynamiquement sur les pages de jeu via config.js lorsqu'il
+ * n'est pas déjà présent dans le HTML.  Inspiré des interrupteurs
+ * mobiles, il adopte une forme ovale et une couleur semi-transparente
+ * qui change légèrement au survol.  Sa position en haut à droite
+ * assure une accessibilité constante.
+ */
+.dark-mode-toggle {
+  position: fixed;
+  top: 12px;
+  right: 12px;
+  width: 42px;
+  height: 24px;
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.6);
+  border: none;
+  box-shadow: 0 0 4px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  z-index: 100;
+}
+.dark-mode-toggle:hover {
+  background: rgba(255, 255, 255, 0.8);
+}
+body.dark-mode .dark-mode-toggle {
+  background: rgba(0, 0, 0, 0.6);
+}
+body.dark-mode .dark-mode-toggle:hover {
+  background: rgba(0, 0, 0, 0.8);
+}
+
+/* ------------------------------------------------------------------------
+   Personnalisation de la sélection de niveaux pour Bomber Capy
+   Agrandit la grille et ajoute un bouton Jouer avec icône triangle.  Les
+   autres jeux ne sont pas affectés car la règle est ciblée sur
+   #bomber-level-grid et #bomber-level-play. */
+#bomber-level-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(80px, 1fr));
+  gap: 16px;
+  justify-items: center;
+  margin-top: 12px;
+}
+#bomber-level-grid .level-button {
+  width: 80px;
+  height: 80px;
+  font-size: 1.6em;
+  border-radius: 8px;
+  background-color: #ffca28;
+  border: none;
+  color: #263238;
+  cursor: pointer;
+  transition: transform 0.1s ease;
+}
+#bomber-level-grid .level-button:disabled {
+  background-color: #cfd8dc;
+  color: #90a4ae;
+  cursor: default;
+}
+#bomber-level-grid .level-button:not(:disabled):hover {
+  transform: translateY(-2px);
+}
+#bomber-level-play.play-btn {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+#bomber-level-play.play-btn::before {
+  content: '';
+  display: inline-block;
+  width: 0;
+  height: 0;
+  border-top: 10px solid transparent;
+  border-bottom: 10px solid transparent;
+  border-left: 14px solid currentColor;
+}

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <!-- Empêcher l'indexation automatique de cette page de jeu.  Les robots
+         des moteurs de recherche n'exploreront ni ne suivront les liens de cette page. -->
+    <meta name="robots" content="noindex,nofollow" />
+    <title>Capy Mémoire</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <!-- Capy Mémoire : jeu de mémoire sur l'étang.  Des nénuphars
+       s'illuminent dans une séquence aléatoire.  Votre objectif est
+       de reproduire cette séquence en cliquant les nénuphars dans le
+       même ordre.  À chaque réussite, la séquence s'allonge ! -->
+  <body data-force-landscape="false">
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <div id="action-container" class="courgette-container">
+      <!-- Zone de jeu : grille d'étang avec des nénuphars.  Le canevas
+           s'adapte à la taille de la fenêtre et affiche le décor du
+           marais en arrière‑plan. -->
+      <canvas id="actionCanvas" width="480" height="640"></canvas>
+      <!-- Barre latérale affichant le score et le niveau actuel de la séquence -->
+      <div class="courgette-sidebar">
+        <p>Score : <span id="action-score">0</span></p>
+        <p>Niveau : <span id="action-level">1</span></p>
+        <!-- Affichage des vies restantes. Chaque cœur représente une vie. -->
+        <p>Vies : <span id="action-lives">❤️❤️</span></p>
+        <button id="action-restart" class="btn">Rejouer</button>
+        <button id="action-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <div id="action-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1 id="action-gameover-title">Oups !</h1>
+        <p><strong>Score :</strong> <span id="action-current-score">0</span></p>
+        <p><strong>Record :</strong> <span id="action-high-score">0</span></p>
+        <p id="action-fun-message" class="fun-message"></p>
+        <div class="button-group">
+          <button id="action-over-replay" class="btn">Rejouer</button>
+          <button id="action-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <div id="action-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Mémoire – Règles</h2>
+        <p>Bienvenue dans le marais ! Les nénuphars s'illuminent
+          successivement. Observe bien la séquence puis clique sur
+          chaque nénuphar dans le même ordre pour la reproduire. À
+          chaque tour, la séquence s'allonge. Jusqu'où iras‑tu ?</p>
+        <button id="action-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="action.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>
