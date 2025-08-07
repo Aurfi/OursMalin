@@ -1203,6 +1203,7 @@ const fallbackDict = {
   optLang: 'Langue',
   // Libellé pour l'option de mode sombre (anciennement "contraste élevé")
   optContrast: 'Mode sombre',
+  capybaraAlt: 'Capybara journaliste',
   helpTitle: 'Comment jouer ?',
   helpText1: 'Clique sur la courgette pour récolter des courgettes.',
   helpText2: 'Achète des bâtiments pour produire automatiquement.',
@@ -1344,6 +1345,14 @@ const fallbackDict = {
       }
     } catch (err) {
       console.warn('Impossible de charger les nouvelles du capybara à partir de news.json', err);
+      // On échec, utiliser les messages intégrés si disponibles pour la langue
+      // courante ; sinon retomber sur le dictionnaire de secours français afin
+      // d'éviter que le bandeau d'actualité reste dans l'ancienne langue.
+      const fallbackMessages =
+        (embeddedLocales[locale] && embeddedLocales[locale].newsMessages) ||
+        fallbackDict.newsMessages || [];
+      if (!dict) dict = {};
+      dict.newsMessages = fallbackMessages.slice();
     }
   }
 
@@ -1476,9 +1485,9 @@ const embeddedLocales = {
     easter2025: '🎉 2025 zucchinis! The year of the zucchini queen is just the beginning.',
     optSound: 'Sound',
     optAnim: 'Animations',
-    optLang: 'Language'
-    ,
+    optLang: 'Language',
     optContrast: 'High contrast',
+    capybaraAlt: 'Capybara journalist',
     helpTitle: 'How to play?',
     helpText1: 'Click on the zucchini to harvest zucchinis.',
     helpText2: 'Buy buildings to produce automatically.',
@@ -1702,11 +1711,24 @@ function applyTranslations() {
     const key = el.getAttribute('data-i18n');
     el.textContent = t(key);
   });
+  // Update elements that store their translation key in data-i18n-alt by
+  // refreshing the alt attribute. This is used by images whose descriptive
+  // text should change when the locale switches (e.g. option icons).
+  document.querySelectorAll('[data-i18n-alt]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-alt');
+    el.setAttribute('alt', t(key));
+  });
+
   // Update options select language label and current value
-  const langSelect = document.getElementById('opt-language');
+  const langSelect = document.getElementById('settings-language');
   if (langSelect) {
     langSelect.value = state.settings.language;
   }
+
+  // Reflect the current language in the root <html> element so that assistive
+  // technologies and the browser know which locale is active.
+  document.documentElement.setAttribute('lang', state.settings.language);
+
   // Re-render upgrades and global upgrades to update labels and descriptions
   renderUpgrades();
   renderGlobalUpgrades();
