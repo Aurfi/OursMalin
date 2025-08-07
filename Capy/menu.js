@@ -32,7 +32,7 @@
       id: 'flappy',
       title: 'Flying Capy',
       scoreKey: 'flappyCapybaraHighScore',
-      page: 'flappy.html',
+      page: 'flappy_phaser.html',
       // La catégorie « action » est renommée « arcade » pour une
       // classification plus évocatrice des jeux d’adresse.
       category: 'arcade',
