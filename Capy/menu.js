@@ -190,6 +190,16 @@
       category: 'casino',
       image: 'assets/roulette_icon.png'
     }
+    ,
+    // Mini-jeu de bataille simple avec animations et retour positif.
+    {
+      id: 'battle',
+      title: 'Capy Battle',
+      scoreKey: 'capyBattleHighScore',
+      page: 'battle.html',
+      category: 'arcade',
+      image: 'assets/capybara_super.png'
+    }
     // (Entrée de jeu Courgette Clicker retirée.  Ce jeu externe est désormais
     // accessible via un bouton dédié dans l’en‑tête de la page d’accueil.)
   ];

@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Battle</title>
+    <link rel="stylesheet" href="style.css" />
+    <style>
+      .battle-container {
+        max-width: 480px;
+        margin: 0 auto;
+        text-align: center;
+        padding: 8px;
+      }
+      .battle-arena {
+        position: relative;
+        width: 100%;
+        height: 240px;
+        background: url('assets/swamp_background.png') center/cover no-repeat;
+        border-radius: 12px;
+        overflow: hidden;
+        margin-bottom: 12px;
+      }
+      .fighter {
+        position: absolute;
+        bottom: 0;
+        width: 120px;
+        transition: transform 0.3s;
+      }
+      #player { left: 20px; }
+      #enemy { right: 20px; transform: scaleX(-1); }
+      .hp-label { font-weight: bold; margin-top: 4px; }
+      .hp-bar {
+        height: 16px;
+        background: #f44336;
+        border-radius: 8px;
+        overflow: hidden;
+        margin-bottom: 8px;
+      }
+      .hp-fill {
+        height: 100%;
+        width: 100%;
+        background: #4caf50;
+        transition: width 0.3s;
+      }
+      #message { min-height: 40px; }
+      .attack-anim { transform: translateX(40px); }
+      .enemy-attack-anim { transform: translateX(-40px) scaleX(-1); }
+      .hit-anim { animation: hit 0.3s; }
+      @keyframes hit {
+        0% { transform: translateX(0); }
+        50% { transform: translateX(-10px); }
+        100% { transform: translateX(0); }
+      }
+      .victory-overlay {
+        position: absolute;
+        top: 0;
+        left: 0;
+        right: 0;
+        bottom: 0;
+        display: none;
+        flex-direction: column;
+        align-items: center;
+        justify-content: center;
+        background: rgba(0,0,0,0.6);
+        color: #fff;
+        font-size: 2em;
+        gap: 16px;
+      }
+      .victory-overlay.visible { display: flex; }
+      .star {
+        width: 80px;
+        animation: spin 2s linear infinite;
+      }
+      @keyframes spin {
+        from { transform: rotate(0deg); }
+        to { transform: rotate(360deg); }
+      }
+    </style>
+  </head>
+  <body data-force-landscape="false">
+    <div class="battle-container">
+      <div class="battle-arena">
+        <img id="player" class="fighter" src="assets/capybara_super.png" alt="capy joueur" />
+        <img id="enemy" class="fighter" src="assets/capybara_turtle.png" alt="capy ennemi" />
+        <div id="result-overlay" class="victory-overlay">
+          <img src="assets/celebration_star.png" alt="étoile" class="star" />
+          <div id="result-text">Victoire !</div>
+          <button id="restart-btn" class="btn">Rejouer</button>
+        </div>
+      </div>
+      <div class="hp-label">Capy HP</div>
+      <div class="hp-bar"><div id="player-hp" class="hp-fill"></div></div>
+      <div class="hp-label">Ennemi HP</div>
+      <div class="hp-bar"><div id="enemy-hp" class="hp-fill"></div></div>
+      <p id="message">La bataille commence !</p>
+      <div>
+        <button id="attack-btn" class="btn">Attaquer</button>
+        <button id="menu-btn" class="btn">Menu</button>
+      </div>
+    </div>
+    <script src="config.js"></script>
+    <script src="battle.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>
