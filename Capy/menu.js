@@ -207,7 +207,31 @@
       page: 'battle.html',
       category: 'arcade',
       image: 'assets/capybara_super.png'
-    }
+    },
+    {
+      id: 'lights',
+      title: 'Capy Lights',
+      scoreKey: 'capyLightsHighScore',
+      page: 'lights.html',
+      category: 'logique',
+      image: 'assets/icon_sun.png'
+    },
+    {
+      id: 'match',
+      title: 'Capy Match',
+      scoreKey: 'capyMatchHighScore',
+      page: 'match.html',
+      category: 'logique',
+      image: 'assets/capy_memory_icon.png'
+    },
+    {
+      id: 'scramble',
+      title: 'Capy Scramble',
+      scoreKey: 'capyScrambleHighScore',
+      page: 'scramble.html',
+      category: 'logique',
+      image: 'assets/capybara_penguin.png'
+    },
     // (Entrée de jeu Courgette Clicker retirée.  Ce jeu externe est désormais
     // accessible via un bouton dédié dans l’en‑tête de la page d’accueil.)
   ];
