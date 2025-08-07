@@ -197,16 +197,6 @@
       page: 'roulette.html',
       category: 'casino',
       image: 'assets/roulette_icon.png'
-    }
-    ,
-    // Mini-jeu de bataille simple avec animations et retour positif.
-    {
-      id: 'battle',
-      title: 'Capy Battle',
-      scoreKey: 'capyBattleHighScore',
-      page: 'battle.html',
-      category: 'arcade',
-      image: 'assets/capybara_super.png'
     },
     {
       id: 'lights',
