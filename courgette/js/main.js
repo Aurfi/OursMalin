@@ -3117,7 +3117,13 @@ function updateSkinSettingVisibility() {
 
 // Ouvrir la pop-up de paiement pour le skin Aubergine.  Cette fonction
 // affiche un overlay sombre et propose deux boutons : PayPal et Retour.
-function openSkinPopup() {
+function openSkinPopup(ev) {
+  // Éviter d'ouvrir automatiquement la pop‑up si la fonction est appelée sans
+  // interaction utilisateur. Certains navigateurs peuvent déclencher des
+  // appels programmatiques lors du chargement ; dans ce cas on quitte
+  // immédiatement pour que l'offre ne s'affiche pas à l'ouverture de la page.
+  if (!ev || !ev.isTrusted) return;
+
   // Certaines pages (comme clicker.html) ne contiennent pas la pop‑up de skin
   // dans leur HTML statique. Si elle est absente, on la génère dynamiquement
   // ici afin d'ouvrir un overlay cohérent pour l'achat du skin Aubergine.

@@ -1503,6 +1503,9 @@ body.high-contrast .capygames-link a {
   align-items: center;
   z-index: 3000;
 }
+.popup-overlay[hidden] {
+  display: none;
+}
 .popup-content {
   background-color: #fff;
   border-radius: 12px;
