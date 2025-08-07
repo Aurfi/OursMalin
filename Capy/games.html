@@ -3,6 +3,8 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Capy Games : collection de mini-jeux gratuits mettant à l'honneur les capybaras." />
+    <meta name="keywords" content="capybara, jeux, arcade, logique, casino, capy games" />
     <title>Capy Games</title>
     <!-- La feuille de style principale se trouve un niveau au‑dessus du dossier Capy -->
     <!-- Mettre à jour les chemins des ressources : le reste du site a été déplacé dans le dossier Capy. -->
@@ -24,10 +26,10 @@
              automatiquement en fonction du thème courant. -->
         <button id="dark-mode-toggle" class="audio-toggle" title="Mode sombre / clair">
           <!-- L’icône sera mise à jour dynamiquement par config.js -->
-          <img id="dark-mode-icon" src="../Capy/assets/icon_moon.png" alt="mode" style="width:20px; height:20px;" />
+          <img id="dark-mode-icon" src="../Capy/assets/icon_moon.png" alt="icône mode sombre" style="width:20px; height:20px;" />
         </button>
       </div>
-      <div class="menu-card menu-flex">
+        <main class="menu-card menu-flex" role="main">
         <!-- Ruban promotionnel "NEW !" -->
         <div class="new-ribbon">NEW !</div>
         <!-- Mascotte d'accueil : image de capybara.  Le chemin doit remonter
@@ -37,7 +39,7 @@
         <div id="splash-text" class="splash-text"></div>
         <h1>Capy Games</h1>
         <!-- Catégories de jeux -->
-        <div id="menu-categories" class="menu-categories">
+        <div id="menu-categories" class="menu-categories" role="navigation" aria-label="Catégories des jeux">
           <button class="category-btn" data-category="featured">⭐ En vedette ⭐</button>
           <button class="category-btn" data-category="arcade">Arcade</button>
           <button class="category-btn" data-category="logique">Logique</button>
@@ -56,9 +58,9 @@
         <div id="courgette-button-container" style="text-align:center; margin-top:12px;">
           <!-- Le lien s'ouvre dans un nouvel onglet et pointe vers le dossier
                courgette/clicker qui contient un index.html -->
-          <a id="courgette-clicker-btn" href="../courgette/clicker" target="_blank" class="btn" style="text-decoration:none;">Courgette Clicker</a>
+          <a id="courgette-clicker-btn" href="../courgette/clicker/" target="_blank" class="btn" style="text-decoration:none;">Courgette Clicker</a>
         </div>
-      </div>
+      </main>
     </div>
     <!-- Message d'orientation pour les appareils mobiles -->
     <div id="orientation-warning" class="orientation-warning hidden">

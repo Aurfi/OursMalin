@@ -1741,7 +1741,7 @@
     document.body.appendChild(overlay);
   }
 
-  // Lier le bouton des réglages et la touche O au menu d'options
+  // Lier uniquement le bouton des réglages au menu d'options
   document.addEventListener('DOMContentLoaded', () => {
     const settingsBtn = document.getElementById('capymon-settings-btn');
     if (settingsBtn) {
@@ -1749,11 +1749,6 @@
         e.preventDefault();
         openSettingsMenu();
       });
-    }
-  });
-  document.addEventListener('keydown', (e) => {
-    if ((e.key === 'o' || e.key === 'O') && !inBattle) {
-      openSettingsMenu();
     }
   });
 
@@ -3829,22 +3824,18 @@
   }
 
   // Contrôles clavier pour les boutons O et K (anciennement A et B).
-  // En dehors des combats, la touche O continue d’ouvrir les réglages via
-  // l’écouteur défini plus haut.  En combat, O simule un appui sur le
-  // premier bouton d’action (Attaques) et K simule le deuxième (Sac ou
-  // Retour/Fuir).  Les touches sont insensibles à la casse.
+  // La touche O simule en permanence l’appui sur le bouton O. En combat,
+  // la touche K simule l’appui sur le bouton K (Sac ou Retour/Fuir). Les
+  // touches sont insensibles à la casse.
   document.addEventListener('keydown', (e) => {
     if (!gameStarted) return;
-    // Ne traiter O/K que lorsqu’un combat est en cours et qu’un overlay existe
-    if (inBattle) {
-      // Empêcher d’interférer avec d’autres raccourcis (ex : modificateurs)
-      if (e.key === 'o' || e.key === 'O') {
-        const overlay = document.getElementById('capymon-battle');
-        if (overlay && btnA) {
-          e.preventDefault();
-          btnA.click();
-        }
-      } else if (e.key === 'k' || e.key === 'K') {
+    if (e.key === 'o' || e.key === 'O') {
+      if (btnA) {
+        e.preventDefault();
+        btnA.click();
+      }
+    } else if (e.key === 'k' || e.key === 'K') {
+      if (inBattle) {
         const overlay = document.getElementById('capymon-battle');
         if (overlay && btnB) {
           e.preventDefault();

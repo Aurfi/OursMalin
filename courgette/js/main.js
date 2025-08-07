@@ -15,6 +15,12 @@ let dict = {};
 // Slightly lower cost multiplier to make early progression more addictive
 const costMultiplier = 1.13;
 
+// Absolute URL for the external news feed so it can be fetched
+// regardless of the current page's directory.
+const NEWS_JSON_URL = document.currentScript
+  ? new URL('../news.json', document.currentScript.src).href
+  : 'news.json';
+
 // LocalStorage key for saving
 // Bump the save key to force a complete reset on the next load.  By changing
 // this key and incrementing the version below we ensure that any previous
@@ -113,7 +119,21 @@ let faceLock = false;
   // haut, dans « ../assets/ ». Pour éviter des liens brisés, on calcule un
   // préfixe en fonction du chemin courant puis on l’utilise via une fonction
   // helper pour composer les chemins vers les fichiers.
-  const ASSET_PREFIX = window.location.pathname.includes('/clicker/') ? '../assets/' : 'assets/';
+  const currentPath = window.location.pathname;
+  const ASSET_PREFIX =
+    currentPath.includes('/clicker/') || currentPath.endsWith('/clicker')
+      ? '../assets/'
+      : 'assets/';
+
+  // Comme pour les assets, les fichiers de traduction se trouvent à un
+  // emplacement différent selon que le jeu est chargé depuis la page
+  // clicker.html à la racine ou depuis clicker/index.html dans un
+  // sous-dossier.  On calcule donc un préfixe équivalent pour les locales
+  // afin d'éviter des requêtes vers un dossier inexistant (ex. clicker/locales).
+  const LOCALE_PREFIX =
+    currentPath.includes('/clicker/') || currentPath.endsWith('/clicker')
+      ? '../locales/'
+      : 'locales/';
 
   /**
    * Construit le chemin complet vers une ressource en préfixant son nom par
@@ -1193,6 +1213,7 @@ const fallbackDict = {
   optLang: 'Langue',
   // Libellé pour l'option de mode sombre (anciennement "contraste élevé")
   optContrast: 'Mode sombre',
+  capybaraAlt: 'Capybara journaliste',
   helpTitle: 'Comment jouer ?',
   helpText1: 'Clique sur la courgette pour récolter des courgettes.',
   helpText2: 'Achète des bâtiments pour produire automatiquement.',
@@ -1309,7 +1330,7 @@ const fallbackDict = {
    */
   async function loadNewsJSON(locale) {
     try {
-      const res = await fetch('news.json');
+      const res = await fetch(NEWS_JSON_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const newsData = await res.json();
       // Build the list of messages for the given locale. Fallback to FR, then EN.
@@ -1334,6 +1355,14 @@ const fallbackDict = {
       }
     } catch (err) {
       console.warn('Impossible de charger les nouvelles du capybara à partir de news.json', err);
+      // On échec, utiliser les messages intégrés si disponibles pour la langue
+      // courante ; sinon retomber sur le dictionnaire de secours français afin
+      // d'éviter que le bandeau d'actualité reste dans l'ancienne langue.
+      const fallbackMessages =
+        (embeddedLocales[locale] && embeddedLocales[locale].newsMessages) ||
+        fallbackDict.newsMessages || [];
+      if (!dict) dict = {};
+      dict.newsMessages = fallbackMessages.slice();
     }
   }
 
@@ -1466,9 +1495,9 @@ const embeddedLocales = {
     easter2025: '🎉 2025 zucchinis! The year of the zucchini queen is just the beginning.',
     optSound: 'Sound',
     optAnim: 'Animations',
-    optLang: 'Language'
-    ,
+    optLang: 'Language',
     optContrast: 'High contrast',
+    capybaraAlt: 'Capybara journalist',
     helpTitle: 'How to play?',
     helpText1: 'Click on the zucchini to harvest zucchinis.',
     helpText2: 'Buy buildings to produce automatically.',
@@ -1590,7 +1619,9 @@ async function loadLocale(locale) {
   const targetLocale = locale || state.settings.language || DEFAULT_LOCALE;
   currentLocale = targetLocale;
   try {
-    const res = await fetch(`locales/${targetLocale}.json`);
+    // Utiliser le préfixe calculé pour accéder au dossier de traductions
+    // correct, que l'on soit sur clicker.html ou sur clicker/index.html.
+    const res = await fetch(`${LOCALE_PREFIX}${targetLocale}.json`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     dict = await res.json();
   } catch (err) {
@@ -1692,11 +1723,24 @@ function applyTranslations() {
     const key = el.getAttribute('data-i18n');
     el.textContent = t(key);
   });
+  // Update elements that store their translation key in data-i18n-alt by
+  // refreshing the alt attribute. This is used by images whose descriptive
+  // text should change when the locale switches (e.g. option icons).
+  document.querySelectorAll('[data-i18n-alt]').forEach((el) => {
+    const key = el.getAttribute('data-i18n-alt');
+    el.setAttribute('alt', t(key));
+  });
+
   // Update options select language label and current value
-  const langSelect = document.getElementById('opt-language');
+  const langSelect = document.getElementById('settings-language');
   if (langSelect) {
     langSelect.value = state.settings.language;
   }
+
+  // Reflect the current language in the root <html> element so that assistive
+  // technologies and the browser know which locale is active.
+  document.documentElement.setAttribute('lang', state.settings.language);
+
   // Re-render upgrades and global upgrades to update labels and descriptions
   renderUpgrades();
   renderGlobalUpgrades();
@@ -2903,7 +2947,9 @@ function renderUpgrades() {
     // Icon
     const iconImg = document.createElement('img');
     iconImg.className = 'icon';
-    iconImg.src = `assets/icon_${b.key}.png`;
+    // Utiliser getAssetPath afin de résoudre correctement le chemin quelle que
+    // soit la page (ex : clicker/index.html ajoute automatiquement « ../assets/ »)
+    iconImg.src = getAssetPath(`icon_${b.key}.png`);
     // Définir un texte alternatif pour l'accessibilité
     iconImg.alt = t(b.key);
     // Info
@@ -3107,7 +3153,13 @@ function updateSkinSettingVisibility() {
 
 // Ouvrir la pop-up de paiement pour le skin Aubergine.  Cette fonction
 // affiche un overlay sombre et propose deux boutons : PayPal et Retour.
-function openSkinPopup() {
+function openSkinPopup(ev) {
+  // Éviter d'ouvrir automatiquement la pop‑up si la fonction est appelée sans
+  // interaction utilisateur. Certains navigateurs peuvent déclencher des
+  // appels programmatiques lors du chargement ; dans ce cas on quitte
+  // immédiatement pour que l'offre ne s'affiche pas à l'ouverture de la page.
+  if (!ev || !ev.isTrusted) return;
+
   // Certaines pages (comme clicker.html) ne contiennent pas la pop‑up de skin
   // dans leur HTML statique. Si elle est absente, on la génère dynamiquement
   // ici afin d'ouvrir un overlay cohérent pour l'achat du skin Aubergine.
