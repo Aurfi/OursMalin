@@ -229,7 +229,10 @@
     </div>
     <!-- Augmentez ce numéro à chaque fois que le fichier js/main.js est modifié afin d'invalider le cache du service worker. -->
     <!-- main.js récupère désormais les news dynamiques depuis news.json -->
-    <script src="js/main.js?v=33"></script>
+    <!-- Version bump: increment the v= parameter whenever main.js changes to
+         force the service worker to fetch the latest script. Align with
+         clicker/index.html version. -->
+    <script src="js/main.js?v=35"></script>
 
   <!-- Honeypot : lien invisible destiné à piéger les scrapers et robots. Aucun
        fichier ne correspond à cette URL ; les humains ne verront pas cet élément. -->
