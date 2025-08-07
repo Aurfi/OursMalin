@@ -1,0 +1,1593 @@
+/* Base styles for Courgette Clicker */
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  /* Apply a pixel‑art farmland background to immerse the player in the courgette universe.
+     A CSS custom property is used for the image so that JavaScript can switch
+     backgrounds dynamically according to the season (spring, summer, autumn, winter).
+     The fallback value points to the summer variant. */
+  background-color: #f5f5f5;
+  /* Superpose a semi‑transparent white gradient over the farmland image to improve contrast */
+  background-image: linear-gradient(rgba(255, 255, 255, 0.65), rgba(255, 255, 255, 0.65)), var(--bg-image, url('../assets/background_field_summer.png'));
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: center;
+  color: #333;
+
+  /* Utiliser le curseur par défaut pour un rendu propre. Le curseur personnalisé a été retiré car il gênait l'esthétique. */
+  cursor: default;
+}
+
+/* Définition des variables CSS globales */
+:root {
+  /* Couleur pour la bulle du capybara en mode clair */
+  --capy-bg-color: rgba(255, 255, 255, 0.8);
+  /* Couleur de bulle en mode sombre / contraste élevé */
+  --capy-bg-color-dark: rgba(70, 70, 70, 0.8);
+}
+  /* Couleurs de fond pour la bulle du capybara en mode clair et sombre. */
+  --capy-bg-color: rgba(255, 255, 255, 0.8);
+  --capy-bg-color-dark: rgba(70, 70, 70, 0.8);
+
+.container {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  text-align: center;
+}
+
+h1 {
+  margin-top: 0;
+  margin-bottom: 0;
+  /* Large playful font for the title and center alignment */
+  /* Use a cleaner, modern font for the title and reduce its size slightly. The title
+     remains centered at the top of the page. */
+  font-size: 3.5rem;
+  font-family: 'Trebuchet MS', 'Verdana', sans-serif;
+  color: #245a37;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.15);
+  position: relative;
+  z-index: 2;
+  margin-top: 0;
+  margin-bottom: 0;
+  text-align: center;
+  width: 100%;
+}
+
+/*
+ * Stats container
+ * The score area now stacks vertically: the current stock of courgettes is
+ * emphasised at the top with a large font. Supporting metrics – courgettes
+ * per minute and per click – are displayed beneath in a smaller, muted font.
+ */
+.stats {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 4px;
+  margin-bottom: 20px;
+}
+
+/* Main score: larger and bold to highlight current stock */
+.main-score {
+  /* Increase the size of the main score to make the player's progress more prominent */
+  font-size: 3rem;
+  font-weight: 700;
+  /* A vibrant green to draw the player's eye to their current stock */
+  color: #2ecc71;
+}
+
+/* Sub stats: per minute and per click values below the main score */
+.sub-stats {
+  display: flex;
+  gap: 28px;
+  font-size: 0.9rem;
+  color: #666;
+}
+.sub-stats .value {
+  font-weight: 600;
+  color: #245a37;
+}
+
+.clicker-area {
+  margin-bottom: 30px;
+  /* Organise le titre et la courgette en colonne et centre le tout */
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 10px;
+}
+
+.clicker {
+  /* Supprimer l’influence de la taille de police et le padding sur le bouton
+     pour que la taille de l’icône dépende uniquement du conteneur interne. */
+  font-size: 0;
+  padding: 0;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  transition: transform 0.05s ease;
+}
+
+.clicker:active {
+  transform: scale(0.9);
+}
+
+.upgrades {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+.upgrade {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 12px 18px;
+  border-radius: 14px;
+  /* Light off‑white background for upgrade cards to contrast softly with the page. */
+  background-color: #fbfbfb;
+  /* Add a subtle border to delineate cards and improve gamification visuals */
+  border: 1px solid #e0e0e0;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+}
+
+.upgrade-info {
+  flex: 1;
+  text-align: left;
+}
+
+.upgrade-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.upgrade-desc {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+.upgrade-stats {
+  text-align: right;
+  font-size: 0.9rem;
+}
+
+.upgrade button {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  /* Fresher green for purchase buttons */
+  background-color: #4caf50;
+  color: #fff;
+  /* Smooth transitions for colour and scale */
+  transition: background-color 0.2s, transform 0.1s;
+}
+
+.upgrade button:disabled,
+.upgrade button.unaffordable {
+  background-color: #bdc3c7;
+  cursor: default;
+}
+
+/* Encourage interaction by slightly scaling enabled buttons and darkening them on hover */
+.upgrade button:not(:disabled):hover {
+  background-color: #43a047;
+  transform: scale(1.05);
+}
+.upgrade button:not(:disabled):active {
+  transform: scale(0.97);
+}
+
+/* News ticker */
+/* News ticker containing the capybara and speech bubble */
+.news {
+  margin-top: 30px;
+  font-size: 0.9rem;
+  min-height: 1.6em;
+  display: flex;
+  justify-content: center;
+  align-items: flex-start;
+  /* Position the news bubble relative to its container. We deliberately
+     remove the high z-index so that the capybara body can sit behind
+     other UI elements such as the upgrade list and flower pot. Leaving
+     the z-index unset prevents this element from creating a new stacking
+     context, allowing its children to control their own layering. */
+  position: relative;
+  /* no explicit z-index here */
+}
+
+/* Language selection flags */
+.language-flags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 4px;
+}
+
+.language-flags .lang-flag {
+  background: transparent;
+  border: none;
+  font-size: 1.4rem;
+  cursor: pointer;
+  line-height: 1;
+  padding: 4px;
+  border-radius: 4px;
+  transition: transform 0.1s ease, box-shadow 0.2s ease;
+}
+
+.language-flags .lang-flag:hover {
+  transform: scale(1.2);
+}
+
+/* Highlight the currently selected language */
+.language-flags .lang-flag.selected {
+  box-shadow: 0 0 0 2px #4caf50 inset;
+  border-radius: 4px;
+}
+
+/* Container for the capybara journalist and the speech bubble */
+/*
+ * Container for the capybara and speech bubble. Items are aligned
+ * vertically at the centre so that the capybara’s mouth lines up with the
+ * centre of the bubble. Gap separates the bubble from the capybara.
+ */
+.capybara-news {
+  display: flex;
+  align-items: center;
+  /* Réduire l'espace entre la bulle de texte et le capybara afin qu'elles
+     se touchent presque, comme dans une bande dessinée. L'écart est passé
+     de 8px à 4px pour supprimer le trou qui apparaissait auparavant. */
+  gap: 4px;
+  max-width: 600px;
+  width: 100%;
+}
+
+/* Encapsule la tête du capybara et ajoute un fond circulaire derrière elle. */
+/*
+ * Capybara journalist container
+ * Agrandi légèrement la bulle derrière la tête du capybara pour qu’elle englobe mieux le chapeau
+ * et reste visible en mode clair comme en mode sombre. La couleur de la bulle utilise des
+ * variables CSS définies dans :root afin de s’adapter au thème. La taille est augmentée
+ * à 80 px pour un rendu plus harmonieux.
+ */
+/*
+ * Agrandir le journaliste capybara.
+ *
+ * Le conteneur du capybara et de sa bulle avait une taille de 90×90 px, ce qui
+ * laissait apparaître une coupure au niveau du cou. Pour cacher cette
+ * transition et faire passer le bord inférieur du capybara sous la ligne du
+ * premier objet, on augmente ici la largeur et la hauteur à 120 px. La bulle
+ * (élément .capybara‑bg) reste à 100 % de ces dimensions, donc elle s’agrandit
+ * également. Le flex‑shrink est conservé afin que l’élément ne se contracte
+ * pas lorsque l’espace est restreint.
+ */
+.capybara-holder {
+  position: relative;
+  width: 120px;
+  height: 120px;
+  flex-shrink: 0;
+  /* Draw the capybara itself behind non‑positioned siblings (e.g. upgrade list).
+     A negative z-index places this element below the default stacking order,
+     ensuring that only the speech bubble appears above other UI while the
+     reporter’s body slides underneath objects like the flower pot. */
+  z-index: -1;
+}
+.capybara-holder .capybara-bg {
+  position: absolute;
+  /* Centrer la bulle derrière la tête du capybara.  En utilisant un
+     positionnement absolu et une translation, la bulle reste au centre
+     même lorsque la taille du conteneur change. */
+  top: 50%;
+  left: 50%;
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  background-color: var(--capy-bg-color);
+  transform: translate(-50%, -50%);
+  z-index: 0;
+}
+.capybara-holder img.capybara-img {
+  position: absolute;
+  top: 0;
+  left: 0;
+  /* L’image s’adapte à la nouvelle taille du conteneur. On conserve la
+     largeur/hauteur en pourcentage pour ne pas déformer l’image lorsque le
+     conteneur change de taille. */
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  /* Ajuster le recadrage pour centrer davantage le visage et masquer le cou.
+     On remonte légèrement l'image et on modifie la position verticale. */
+  /* Recadrage ajusté : centre la tête et le chapeau afin que la bouche
+     s'aligne avec la zone de texte des news.  En remontant légèrement
+     l'image et en centrant la zone visible à 45 % de la hauteur, le
+     visage est mieux placé dans la bulle. */
+  /* Repositionner la tête du capybara vers la gauche et légèrement vers le bas
+     afin qu’elle reste centrée dans sa bulle et ne gêne pas la zone de texte.
+     La valeur horizontale inférieure à 50 % décale l’image vers la gauche,
+     tandis que la valeur verticale supérieure à 50 % l’abaisse. */
+  object-position: 40% 60%;
+  /* Déplacer l’image un peu vers la gauche et vers le bas pour affiner le
+     cadrage.  Les pourcentages négatifs sur X la font glisser vers la gauche
+     et la valeur positive sur Y l’abaisse. */
+  transform: translate(-12%, 5%);
+  z-index: 1;
+}
+
+/*
+ * Dimension par défaut de l’image du capybara lorsque celle‑ci n’est pas dans un
+ * conteneur spécifique. On augmente ces valeurs pour qu’elles correspondent
+ * mieux au conteneur agrandi (120 px) tout en conservant un léger retrait afin
+ * que l’image ne déborde pas en dehors de la bulle. L’objet est centré en
+ * hauteur pour mettre l’accent sur le visage et le chapeau.
+ */
+.capybara-img {
+  width: 110px;
+  height: 110px;
+  flex-shrink: 0;
+  object-fit: cover;
+  object-position: center 40%;
+}
+
+.news-text {
+  position: relative;
+  background-color: #ffffff;
+  color: #333;
+  padding: 10px 16px;
+  border-radius: 16px;
+  font-style: normal;
+  font-size: 0.9rem;
+  line-height: 1.3rem;
+  box-shadow: 0 3px 6px rgba(0, 0, 0, 0.08);
+  flex: 1;
+  /* Keep the speech bubble above surrounding content and the capybara body.  A
+     positive z-index elevates the bubble within the stacking context without
+     interfering with high-priority overlays (which use much larger z-indexes). */
+  z-index: 1;
+}
+
+/* Little speech bubble arrow pointing toward the capybara */
+.news-text::before {
+  content: "";
+  position: absolute;
+  /* Place the arrow on the right side when the bubble appears to the left of the capybara.
+     The arrow points leftwards towards the capybara’s mouth. */
+  right: -10px;
+  top: 14px;
+  border-width: 10px;
+  border-style: solid;
+  /* Arrow pointing right: the coloured side is on the right-hand border */
+  border-color: transparent transparent transparent #ffffff;
+}
+
+/* Responsive layout for small screens */
+@media (max-width: 640px) {
+  .stats {
+    flex-direction: column;
+    gap: 8px;
+  }
+  .upgrades {
+    gap: 10px;
+  }
+  .upgrade {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  .upgrade-stats {
+    margin-top: 6px;
+  }
+  .capybara-img {
+    /* Sur mobiles, conserver une tête visible tout en économisant de l’espace.
+       On augmente légèrement la taille d’origine (70 px) pour rester
+       proportionnel avec la nouvelle taille du conteneur (100 px). */
+    width: 90px;
+    height: 90px;
+  }
+  .news-text {
+    font-size: 0.8rem;
+    padding: 6px 10px;
+  }
+  h1 {
+    /* Reduce the title size on small screens but keep the playful font */
+    font-size: 2.5rem;
+    font-family: 'Comic Sans MS', 'Comic Sans', cursive;
+  }
+  .prestige-btn {
+    font-size: 1rem;
+    padding: 8px 16px;
+  }
+
+  /* Ajuster la taille de la tête de capybara et de sa bulle sur petits écrans */
+  .capybara-holder {
+    width: 100px;
+    height: 100px;
+  }
+}
+
+/* -------------------------------------------------------------------------
+ * Progress bar styles
+ * A horizontal progress bar shows the player's advancement towards the next
+ * unlock.  It is composed of a container with a grey background and a
+ * coloured bar inside that grows from 0 % to 100 % as the player gains
+ * courgettes.  The bar colour matches the green used for the score to
+ * maintain thematic consistency. */
+.progress-container {
+  width: 100%;
+  /* Augmenter la hauteur de la barre de progression pour qu'elle soit plus
+     visible. L'ancien design utilisait 12px ; on passe à 20px avec un
+     rayon arrondi ajusté pour conserver des bords doux. */
+  height: 20px;
+  background-color: rgba(0, 0, 0, 0.1);
+  border-radius: 10px;
+  margin-top: 10px;
+  overflow: hidden;
+  position: relative;
+}
+.progress-bar {
+  height: 100%;
+  width: 0%;
+  /* Dégradé orange→vert pour symboliser la progression */
+  background-image: linear-gradient(to right, #f39c12, #2ecc71);
+  /* Adapter le rayon pour qu'il corresponde à la nouvelle hauteur de la barre. */
+  border-radius: 10px;
+  transition: width 0.3s ease-out;
+}
+
+/* Étiquette de progression : texte centré sur la barre indiquant le nom
+ * du prochain bâtiment et la fraction de progression (courgettes reçues
+ * / objectif). Elle est positionnée au centre de la barre pour rester
+ * lisible quelle que soit la longueur de la barre. */
+.progress-label {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  font-size: 0.7rem;
+  font-weight: bold;
+  color: #333;
+  pointer-events: none;
+  white-space: nowrap;
+}
+
+/* -------------------------------------------------------------------------
+ * Daily and weekly challenges styles
+ * Challenges appear in a dedicated panel underneath the upgrades.  Each
+ * challenge item displays its description, a progress indicator and an
+ * optional reward.  Completed challenges are grayed out and crossed to
+ * indicate their status. */
+.challenges {
+  margin-top: 20px;
+  padding: 12px;
+  background-color: rgba(255, 255, 255, 0.8);
+  border-radius: 12px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  text-align: left;
+}
+.challenge-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+.challenge-desc {
+  flex: 1;
+  font-size: 0.9rem;
+  color: #333;
+}
+.challenge-progress {
+  margin-left: 12px;
+  font-weight: bold;
+  color: #245a37;
+}
+.challenge-completed .challenge-desc {
+  text-decoration: line-through;
+  color: #999;
+}
+.challenge-completed .challenge-progress {
+  color: #999;
+}
+
+/*
+ * In high contrast (dark) mode, adjust the challenges panel to be
+ * easier on the eyes.  Use a darker translucent background and softer text
+ * colours, and delineate each item with subtle separators.
+ */
+body.high-contrast .challenges {
+  background-color: rgba(40, 40, 40, 0.95);
+  color: #ddd;
+}
+body.high-contrast .challenge-desc {
+  color: #ccc;
+}
+body.high-contrast .challenge-progress {
+  color: #7cb342;
+}
+body.high-contrast .challenge-item {
+  border-bottom: 1px solid #444;
+  padding-bottom: 6px;
+  margin-bottom: 6px;
+}
+body.high-contrast .challenge-item:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+  padding-bottom: 0;
+}
+
+/* Prestige section */
+.prestige {
+  margin-top: 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+/* Regroupe les actions de prestige et la boutique des graines. */
+.prestige-actions {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.prestige-btn {
+  padding: 10px 20px;
+  font-size: 1rem;
+  border: none;
+  border-radius: 9999px;
+  /* Warmer orange hue for the prestige button */
+  background-color: #e67e22;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.prestige-btn:disabled {
+  background-color: #bdc3c7;
+  cursor: default;
+}
+
+.prestige-info {
+  font-size: 0.9rem;
+  color: #666;
+}
+
+/* Options section styles */
+.options {
+  display: flex;
+  justify-content: center;
+  gap: 15px;
+  margin-bottom: 20px;
+  font-size: 0.9rem;
+  flex-wrap: wrap;
+}
+.option-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.language-item select {
+  margin-left: 4px;
+}
+
+/* Help button */
+.help-btn {
+  /* The help button is hidden in the revamped UI. */
+  display: none;
+}
+.help-btn:hover {
+  background: #d5d5d5;
+}
+
+/* Help overlay */
+.help-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+/* Hide overlays when the hidden attribute is present */
+.help-overlay[hidden],
+.achievements-overlay[hidden] {
+  display: none !important;
+}
+
+/* Hide help overlay when hidden attribute is present */
+.help-overlay[hidden] {
+  display: none;
+}
+.help-content {
+  background: #fff;
+  color: #333;
+  padding: 20px;
+  border-radius: 8px;
+  max-width: 500px;
+  text-align: left;
+}
+.help-content h2 {
+  margin-top: 0;
+}
+.help-close {
+  margin-top: 15px;
+  padding: 6px 12px;
+  border: none;
+  border-radius: 4px;
+  background-color: #4caf50;
+  color: #fff;
+  cursor: pointer;
+}
+.help-close:hover {
+  background-color: #43a047;
+}
+
+/* High contrast mode */
+body.high-contrast {
+  background-color: #111;
+  color: #eee;
+  /* Remove the background image in high contrast mode for better legibility */
+  background-image: none;
+}
+/* En mode contraste élevé, ajuster la couleur de fond de la bulle du capybara */
+body.high-contrast {
+  --capy-bg-color: var(--capy-bg-color-dark);
+}
+body.high-contrast .upgrade {
+  /* Use a very dark grey for upgrade cards in high‑contrast mode and light
+     text to maintain readability without extreme contrast. */
+  background-color: #2b2b2b;
+  color: #ddd;
+  border: 1px solid #3c3c3c;
+}
+body.high-contrast .clicker {
+  filter: brightness(1.1);
+}
+body.high-contrast .help-content {
+  background: #333;
+  color: #eee;
+}
+
+/* Customise the game in high‑contrast (dark) mode for better readability
+   without creating too harsh a contrast. Use softer greens and greys
+   throughout the interface. */
+body.high-contrast .main-score {
+  color: #8bc34a;
+}
+body.high-contrast h1 {
+  color: #a5d6a7;
+}
+body.high-contrast .sub-stats .value {
+  color: #9ccc65;
+}
+body.high-contrast .upgrade button {
+  background-color: #357a38;
+  color: #fff;
+}
+body.high-contrast .upgrade button:not(:disabled):hover {
+  background-color: #2e7d32;
+}
+body.high-contrast .upgrade button:disabled,
+body.high-contrast .upgrade button.unaffordable {
+  background-color: #555;
+  cursor: default;
+}
+body.high-contrast .seeds-item button {
+  background-color: #357a38;
+  color: #fff;
+}
+body.high-contrast .seeds-item button:not(:disabled):hover {
+  background-color: #2e7d32;
+}
+body.high-contrast .seeds-item button:disabled,
+body.high-contrast .seeds-item button.unaffordable {
+  background-color: #555;
+  cursor: default;
+}
+
+/* Icon inside upgrade cards */
+.upgrade .icon {
+  width: 40px;
+  height: 40px;
+  margin-right: 10px;
+  flex-shrink: 0;
+}
+
+/* Click animation for the courgette */
+.clicker.clicked {
+  transform: scale(1.1);
+  filter: brightness(1.2);
+}
+
+/* Particle effect for clicks */
+#clicker-area {
+  position: relative;
+}
+.particle {
+  position: absolute;
+  font-size: 1rem;
+  font-weight: bold;
+  color: #4caf50;
+  pointer-events: none;
+  animation: floatUp 1s ease-out forwards;
+}
+
+/* Courgette‑chan image inside the clicker button.  Ensures consistent sizing and prevents
+   the image from intercepting click events. */
+/* Nouveau système de superposition pour Courgette‑chan */
+.courgette-wrapper {
+  position: relative;
+  /* Taille responsive : une fraction de la hauteur de la fenêtre, avec une limite maximale.
+     La hauteur est identique à la largeur pour conserver le ratio carré de la zone de superposition. */
+  /* Agrandit la zone de la courgette : plus haute et plus large pour une meilleure visibilité et pour occuper une position centrale de choix */
+  width: 30vh;
+  height: 30vh;
+  max-width: 220px;
+  max-height: 220px;
+  margin: 0 auto;
+}
+
+/* Base configuration for all courgette layers: absolute positioning within the wrapper. */
+.courgette-layer {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+  pointer-events: none;
+}
+
+/* Limb definitions for the stick‑figure arms and legs. Each limb is absolutely positioned
+   and uses a custom property --angle to define its resting rotation. The transform-origin
+   is set to the top center to ensure that rotations pivot at the “shoulder” or “hip” and
+   produce natural movement. */
+.limb {
+  position: absolute;
+  width: 5%;
+  background-color: #457b63;
+  border-radius: 999px;
+  /* Pivot the limb around its top by default. Individual limbs override
+     transform-origin to ensure the rotation appears to originate from the body.
+     The limbs are non-interactive and layered above the body and overlay. */
+  transform-origin: top center;
+  /* Lower the limbs behind the body and overlay.  A lower z-index means arms
+     and legs never overlap Courgette‑Chan, keeping them tucked neatly
+     underneath the body during animations. */
+  z-index: 0;
+  pointer-events: none;
+}
+
+/* Arms: attach firmly to the body at the shoulders.  To ensure the inner edge of each
+   arm remains anchored, the transform-origin is set to the edge closest to the
+   courgette (top right for the left arm and top left for the right arm).  The
+   arms are slightly higher and tuck closer to the body so the base is well
+   aligned. Only the free portion of each arm rotates when animating. */
+/*
+ * Arms: swap the physical placement of the left and right limbs while preserving
+ * their original resting angle and bounce animation.  The left arm's
+ * characteristic negative angle should now sit on the right side of the
+ * courgette, and the right arm's positive angle should sit on the left.  To
+ * ensure the arms remain firmly attached to the body, the same small
+ * negative offset is applied on the inner edge (–3%) regardless of side.
+ */
+/*
+ * Arms: swap the physical placement of the left and right limbs while preserving
+ * their original resting angle and bounce animation.  The left arm’s
+ * characteristic negative angle should now sit on the right side of the
+ * courgette, and the right arm’s positive angle should sit on the left.  To
+ * ensure the arms remain firmly attached to the body, the same small
+ * negative offset is applied on the inner edge (–3%) regardless of side.
+ */
+.left-arm {
+  /* Keep the size and vertical alignment unchanged. */
+  width: 5%;
+  height: 40%;
+  /* Lower the arms slightly so that the shoulders align just below the eyes */
+  top: 34%;
+  /* Align the arm horizontally with the point where the right leg is attached
+     to give Courgette‑chan an “X” posture.  We match the leg’s horizontal
+     offset (32%) instead of anchoring it to the very edge.  No negative
+     offset is needed here because the arm sits comfortably inside the body. */
+  right: 32%;
+  /* Preserve the original left arm’s orientation: a strong counter‑clockwise
+     tilt (around −150 deg) so the limb points up and slightly left. */
+  --angle: -150deg;
+  /* Pivot around the inner edge – now the top right corner – to ensure
+     rotations emanate from the shoulder. */
+  transform-origin: top right;
+  transform: rotate(var(--angle));
+}
+
+.right-arm {
+  width: 5%;
+  height: 40%;
+  /* Lower the arms slightly so that the shoulders align just below the eyes */
+  top: 34%;
+  /* Align the arm horizontally with the point where the left leg is attached.
+     We use the same horizontal offset as the leg (32%) to create a symmetric
+     “X” shape.  The arm sits inside the body without a negative offset. */
+  left: 32%;
+  /* Preserve the original right arm’s orientation: a strong clockwise tilt
+     (around +150 deg) so the limb points up and slightly right. */
+  --angle: 150deg;
+  /* Pivot around the inner edge – now the top left corner – to ensure
+     rotations emanate from the shoulder. */
+  transform-origin: top left;
+  transform: rotate(var(--angle));
+}
+
+/* Legs: positioned so their upper ends sit within the bottom of the courgette and
+   extend downwards. They start slightly below the body to integrate smoothly.
+   Legs remain beneath the speech bubble thanks to a low z‑index. */
+.left-leg {
+  height: 40%;
+  /* Place the top of the legs just inside the lower body; extend further downward */
+  /* Move the legs a bit further down relative to the body.  Increasing the
+     negative bottom offset lowers the attachment point without altering
+     the leg length or their bounce animation. */
+  bottom: -15%;
+  left: 32%;
+  --angle: 12deg;
+  transform: rotate(var(--angle));
+  /* Match the legs’ z-index with the other limbs so they remain behind the body */
+  z-index: 0;
+}
+.right-leg {
+  height: 40%;
+  /* Move the legs a bit further down relative to the body.  Increasing the
+     negative bottom offset lowers the attachment point without altering
+     the leg length or their bounce animation. */
+  bottom: -15%;
+  right: 32%;
+  --angle: -12deg;
+  transform: rotate(var(--angle));
+  /* Match the legs’ z-index with the other limbs so they remain behind the body */
+  z-index: 0;
+}
+
+/* Animation for leg bounce. Legs bounce subtly up and down to convey a light hop and
+   ragdoll effect when clicking the courgette. Arms have their own animation defined below. */
+@keyframes limb-bounce {
+  /*
+   * Amplifiée pour un effet "ragdoll" plus prononcé lorsque la courgette est
+   * cliquée. Les jambes s’envolent davantage vers le haut et retombent
+   * plus bas, ce qui accentue la sensation de tréssautement. Les
+   * multiplicateurs de rotation sont conservés pour conserver l’orientation
+   * générale des membres.
+   */
+  0% {
+    transform: rotate(var(--angle)) translateY(0);
+  }
+  20% {
+    transform: rotate(calc(var(--angle) * 0.5)) translateY(-25%);
+  }
+  40% {
+    transform: rotate(calc(var(--angle) * 1.2)) translateY(10%);
+  }
+  60% {
+    transform: rotate(calc(var(--angle) * 0.8)) translateY(-10%);
+  }
+  100% {
+    transform: rotate(var(--angle)) translateY(0);
+  }
+}
+
+/* Animation for arms. Arms lift upwards past vertical, then fall back with a bit of bounce.
+   The rotation multiplies the base angle to reach near‑vertical positions for both sides. */
+@keyframes arm-bounce {
+  /*
+   * Animation fortement accentuée pour les bras afin de donner l’impression
+   * que Courgette‑Chan est secouée comme une poupée de chiffon. Les bras
+   * montent et descendent avec de grandes amplitudes verticales et des
+   * rotations exagérées, créant un mouvement comique lors du clic.
+   */
+  0% {
+    transform: rotate(var(--angle)) translateY(0);
+  }
+  20% {
+    transform: rotate(calc(var(--angle) * 0.3)) translateY(-30%);
+  }
+  40% {
+    transform: rotate(calc(var(--angle) * 1.5)) translateY(15%);
+  }
+  60% {
+    transform: rotate(calc(var(--angle) * 0.7)) translateY(-15%);
+  }
+  100% {
+    transform: rotate(var(--angle)) translateY(0);
+  }
+}
+
+/* When the wrapper has the class animate-limbs, apply the appropriate animations.
+   Arms use the arm‑bounce animation, while legs continue to use limb‑bounce. */
+/* When animations are triggered, apply a quicker bounce to the arms and
+ * maintain the subtle bounce for the legs. */
+.animate-limbs .left-arm,
+.animate-limbs .right-arm {
+  animation: arm-bounce 0.6s ease-out;
+}
+.animate-limbs .left-leg,
+.animate-limbs .right-leg {
+  animation: limb-bounce 0.6s ease-out;
+}
+
+.courgette-layer.expression {
+  z-index: 3;
+}
+
+.courgette-layer.overlay {
+  z-index: 2; /* placer l’overlay derrière les membres mais devant le corps */
+  /* Abaisser l'opacité de l'overlay pour laisser apparaître clairement le visage. */
+  /* Réduire légèrement l'opacité pour laisser le visage transparaître tout en conservant un relief. */
+  opacity: 0.5;
+  transition: opacity 0.2s;
+}
+
+/* Calque du visage : position absolue au dessus du corps. Sa taille relative couvre la zone des traits du visage sans déborder.
+   La propriété pointer-events est désactivée pour ne pas interférer avec les clics sur la courgette. */
+.face-img {
+  position: absolute;
+  /* Taille réduite du visage : le visage occupe moins de place sur le corps. */
+  /* Visage légèrement plus petit pour mieux s’intégrer à la courgette agrandie */
+  width: 50%;
+  height: auto;
+  /* Positionné un peu plus haut pour centrer les traits tout en couvrant les bosses */
+  top: 22%;
+  left: 25%;
+  /* Le visage doit se trouver tout en haut de la pile pour rester visible au-dessus des bras et de l’overlay */
+  z-index: 4;
+  pointer-events: none;
+}
+
+/* Le corps de Courgette‑chan se situe sous l’overlay mais au-dessus des confettis. */
+.courgette-layer.body {
+  z-index: 1;
+}
+
+/* Face layer sits above arms but below temporary expression */
+/* Visage : le calque <div id="courgette-face"> superpose le visage sur le corps de Courgette‑chan.
+   Les classes face-neutral, face-open, face-half et face-click définissent l’image de fond correspondante.
+   La taille et la position sont relatives au conteneur pour un rendu responsive. */
+
+@keyframes floatUp {
+  from {
+    opacity: 1;
+    transform: translateY(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateY(-50px);
+  }
+}
+
+/*
+ * Floating number displayed when clicking the courgette. It appears at the
+ * click position, rises gently and fades out, providing satisfying feedback
+ * to the player. Text shadow gives a subtle 3D effect.
+ */
+/* Floating numbers appear where the player clicks and drift upward while fading.
+   They use a warm yellow colour with a subtle shadow for a 3D effect. The
+   animation lasts a half‑second to provide immediate feedback without being
+   distracting. */
+.floating-number {
+  position: absolute;
+  font-size: 1.3rem;
+  font-weight: 700;
+  /* Les nombres flottants doivent être lisibles quel que soit le skin.  On
+     choisit donc un texte clair sur un fond sombre semi‑transparent, avec
+     une légère bordure claire pour se détacher sur les couleurs vertes
+     (courgette) comme violettes (aubergine). */
+  color: #ffffff;
+  background: rgba(0, 0, 0, 0.6);
+  padding: 2px 6px;
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+  pointer-events: none;
+  animation: floatUp 0.5s ease-out forwards;
+  transform: translate(-50%, -50%);
+}
+
+/* -------------------------------------------------------------------------- */
+/* Achievements overlay and button styles */
+
+/* Overlay backdrop similar to help overlay */
+.achievements-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+
+.achievements-content {
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 520px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+
+.achievements-content h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+
+.achievements-progress {
+  font-size: 0.9rem;
+  margin-bottom: 12px;
+}
+
+/* Statistics section inside the achievements overlay */
+.achievements-stats {
+  font-size: 0.85rem;
+  margin-bottom: 12px;
+  color: #555;
+}
+
+.achievements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.achievement-item {
+  padding: 8px 12px;
+  border-radius: 8px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.achievement-item.locked {
+  opacity: 0.4;
+}
+
+.achievement-item .ach-title {
+  font-weight: bold;
+  margin-bottom: 4px;
+}
+
+.achievement-item .ach-desc {
+  font-size: 0.85rem;
+  color: #555;
+}
+
+.achievements-close {
+  margin-top: 15px;
+  align-self: flex-end;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.achievements-close:hover {
+  background-color: #2d83c5;
+}
+
+/* Achievements button near the settings: rendered as a circular icon with a trophy image inside. */
+.achievements-btn {
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.achievements-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.achievements-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+/* Paramètres (settings) button */
+.settings-btn {
+  background: none;
+  border: none;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.settings-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.settings-btn img {
+  width: 28px;
+  height: 28px;
+}
+
+/* Settings overlay */
+.settings-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.settings-overlay[hidden] {
+  display: none !important;
+}
+.settings-content {
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+.settings-content h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.settings-item {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  /* Ajoute un petit espacement entre le libellé et le contrôle pour éviter que les interrupteurs ne s'étirent */
+  gap: 10px;
+}
+.settings-item label {
+  /* Ne pas étirer le label, sa largeur sera déterminée par son contenu */
+  flex: 0 0 auto;
+}
+.settings-close {
+  align-self: flex-end;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #3498db;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.settings-close:hover {
+  background-color: #2d83c5;
+}
+
+/* Style the language selector within the settings overlay.  Instead of a row of flag
+   buttons, the game now uses a single <select> element containing emoji flags.  We
+   explicitly set flex and padding so it fills the available space alongside the
+   label and matches the look of other controls. */
+#settings-language {
+  flex: 1;
+  padding: 6px;
+  font-size: 1rem;
+  border: 1px solid #ccc;
+  border-radius: 6px;
+  background-color: #f4f4f4;
+  color: #333;
+  /* Ensure emojis render on Mac/Windows with appropriate fallback font */
+  font-family: 'Segoe UI Emoji', 'Noto Color Emoji', sans-serif;
+}
+
+/* Seeds (Graines) button and overlay */
+.seeds-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+.seeds-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.seeds-btn img {
+  width: 24px;
+  height: 24px;
+}
+.seeds-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.seeds-overlay[hidden] {
+  display: none !important;
+}
+.seeds-content {
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 500px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+.seeds-content h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.seeds-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 14px;
+  border-radius: 10px;
+  background-color: #f9f9f9;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+.seeds-item.locked {
+  opacity: 0.5;
+}
+.seeds-item button {
+  margin-left: 10px;
+  padding: 6px 10px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.seeds-item button:disabled,
+.seeds-item button.unaffordable {
+  background-color: #bdc3c7;
+  cursor: default;
+}
+.seeds-item button:not(:disabled):hover {
+  background-color: #43a047;
+  transform: scale(1.05);
+}
+.seeds-item button:not(:disabled):active {
+  transform: scale(0.97);
+}
+.seeds-close {
+  align-self: flex-end;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e67e22;
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.seeds-close:hover {
+  background-color: #d35400;
+}
+
+/* Nouvelle présentation du bouton des boosts globaux : inclut une étiquette pour clarifier qu'il s'agit d'une boutique */
+.global-btn {
+  background: none;
+  border: none;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  color: inherit;
+  font-size: 1rem;
+  padding: 4px 8px;
+  border-radius: 12px;
+  transition: background-color 0.2s;
+}
+.global-btn:hover {
+  background-color: rgba(0, 0, 0, 0.08);
+}
+.global-btn img {
+  width: 24px;
+  height: 24px;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Global upgrades overlay styles. Similar to the achievements overlay but with
+   its own class names to avoid conflicts. The overlay darkens the page and
+   centers the content. */
+.global-upgrades-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+}
+.global-upgrades-content {
+  background-color: #ffffff;
+  color: #333;
+  padding: 20px;
+  border-radius: 12px;
+  max-width: 520px;
+  width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  text-align: left;
+  display: flex;
+  flex-direction: column;
+}
+.global-upgrades-content h2 {
+  margin-top: 0;
+  margin-bottom: 10px;
+}
+.global-upgrades-close {
+  margin-top: 15px;
+  align-self: flex-end;
+  padding: 6px 14px;
+  border: none;
+  border-radius: 6px;
+  background-color: #e67e22; /* orange tone to match prestige button */
+  color: #fff;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+.global-upgrades-close:hover {
+  background-color: #d35400;
+}
+
+/* -------------------------------------------------------------------------- */
+/* Custom toggle switch styles. These switches replace the default checkboxes
+   for the sound, animations and high contrast options. The hidden input
+   controls the state, and the slider provides a modern rounded appearance. */
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 42px;
+  height: 24px;
+}
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #ccc;
+  transition: 0.2s;
+  border-radius: 24px;
+}
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 18px;
+  width: 18px;
+  left: 3px;
+  bottom: 3px;
+  background-color: white;
+  transition: 0.2s;
+  border-radius: 50%;
+}
+.switch input:checked + .slider {
+  background-color: #4caf50;
+}
+.switch input:checked + .slider:before {
+  transform: translateX(18px);
+}
+
+/* Ne pas laisser les interrupteurs s'étirer dans la boîte des options. Ils occupent toujours la largeur définie (42 px). */
+.settings-item .switch {
+  flex: 0 0 auto;
+}
+
+/* Lien en bas de page vers la page CapyGames. Ce composant est centré et
+   utilise une taille de police réduite pour ne pas distraire le joueur.
+   La couleur s'adapte au mode clair et au mode sombre pour conserver un
+   contraste suffisant sans agresser l'œil. */
+.capygames-link {
+  margin-top: 16px;
+  margin-bottom: 8px;
+  text-align: center;
+  font-size: 0.85rem;
+}
+.capygames-link a {
+  color: #4caf50;
+  text-decoration: none;
+  font-weight: 600;
+}
+.capygames-link a:hover {
+  text-decoration: underline;
+}
+/* Adaptation au mode sombre (contraste élevé) : éclaircir légèrement la couleur du lien. */
+body.high-contrast .capygames-link a {
+  color: #a5d6a7;
+}
+
+/*
+ * Voile d’animation affiché lors du prestige.  Ce calque recouvre tout
+ * l’écran pour quelques instants et disparaît en fondu. Il est non
+ * interactif pour ne pas bloquer les clics. Le dégradé radial et la
+ * couleur semi-transparente apportent un effet mystique de reset.
+ */
+.prestige-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: radial-gradient(circle at center, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 70%), rgba(255, 255, 255, 0.6);
+  animation: prestigeFade 2s forwards;
+  pointer-events: none;
+  z-index: 2000;
+}
+
+@keyframes prestigeFade {
+  from {
+    opacity: 1;
+  }
+  to {
+    opacity: 0;
+  }
+}
+
+/*
+ * Carte spéciale pour l’offre de skin Aubergine dans la boutique des graines.
+ * Elle est décorative et ne déclenche aucun achat réel. Le design rappelle
+ * une carte de boutique standard mais se distingue par sa couleur et
+ * l’illustration de la courgette aubergine. Les textes utilisent les
+ * clés de traduction « specialOfferTitle », « specialOfferAubergine » et
+ * « specialOfferPrice ».
+ */
+.special-offer-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 6px;
+  padding: 12px;
+  margin-top: 12px;
+  border-radius: 12px;
+  background-color: #f9f5ff;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  text-align: center;
+}
+.special-offer-card h3 {
+  margin: 0;
+  font-size: 1.1rem;
+  color: #8e44ad;
+}
+.special-offer-card img {
+  width: 100px;
+  height: auto;
+}
+.special-offer-card p {
+  margin: 0;
+  font-size: 0.9rem;
+  color: #333;
+}
+
+/* Bouton d'achat dans la carte de l'offre spéciale. Couleur violette pour rappeler le thème aubergine. */
+.special-offer-card .special-buy-btn {
+  margin-top: 8px;
+  padding: 6px 12px;
+  background-color: #8e44ad;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.special-offer-card .special-buy-btn:hover {
+  background-color: #732d91;
+}
+
+/* Styles pour la pop-up d'achat du skin Aubergine */
+.popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background-color: rgba(0, 0, 0, 0.6);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 3000;
+}
+.popup-content {
+  background-color: #fff;
+  border-radius: 12px;
+  padding: 20px;
+  text-align: center;
+  width: 90%;
+  max-width: 320px;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+}
+.popup-content h3 {
+  margin: 0 0 12px 0;
+  font-size: 1.2rem;
+  color: #333;
+}
+.popup-buttons {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+}
+.paypal-btn {
+  flex: 1;
+  background-color: #f1c40f;
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.paypal-btn:hover {
+  background-color: #d4ac0d;
+}
+.cancel-btn {
+  flex: 1;
+  background-color: #e74c3c;
+  color: #fff;
+  border: none;
+  border-radius: 8px;
+  padding: 10px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+.cancel-btn:hover {
+  background-color: #c0392b;
+}
