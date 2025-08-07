@@ -113,117 +113,108 @@
         <div id="prestige-info" class="prestige-info"></div>
       </div>
 
-    <!-- Achievements overlay template: instantiated on demand -->
-    <template id="achievements-overlay-template">
-      <div id="achievements-overlay" class="achievements-overlay" hidden>
-        <div class="achievements-content">
-          <h2 data-i18n="achievementsTitle">Succès</h2>
-          <p id="achievements-progress" class="achievements-progress"></p>
-          <!-- Additional statistics about the current run (clicks, time spent, etc.) -->
-          <div id="achievements-stats" class="achievements-stats"></div>
-          <div id="achievements-list" class="achievements-list"></div>
-          <button id="achievements-close" class="achievements-close" data-i18n="close">Fermer</button>
-        </div>
+    <!-- Achievements overlay: shows all unlocked and locked achievements along with progress. Initially hidden. -->
+    <div id="achievements-overlay" class="achievements-overlay" hidden>
+      <div class="achievements-content">
+        <h2 data-i18n="achievementsTitle">Succès</h2>
+        <p id="achievements-progress" class="achievements-progress"></p>
+        <!-- Additional statistics about the current run (clicks, time spent, etc.) -->
+        <div id="achievements-stats" class="achievements-stats"></div>
+        <div id="achievements-list" class="achievements-list"></div>
+        <button id="achievements-close" class="achievements-close" data-i18n="close">Fermer</button>
       </div>
-    </template>
+    </div>
 
-    <!-- Global upgrades overlay template -->
-    <template id="global-upgrades-overlay-template">
-      <div id="global-upgrades-overlay" class="global-upgrades-overlay" hidden>
-        <div class="global-upgrades-content">
-          <h2 id="global-upgrades-title" data-i18n="globalUpgradesTitle">Boosts globaux</h2>
-          <div id="global-upgrades-list" class="upgrades"></div>
-          <button id="global-upgrades-close" class="global-upgrades-close" data-i18n="close">Fermer</button>
-        </div>
+    <!-- Global upgrades overlay: displays available and purchased boosts. Hidden by default -->
+    <div id="global-upgrades-overlay" class="global-upgrades-overlay" hidden>
+      <div class="global-upgrades-content">
+        <h2 id="global-upgrades-title" data-i18n="globalUpgradesTitle">Boosts globaux</h2>
+        <div id="global-upgrades-list" class="upgrades"></div>
+        <button id="global-upgrades-close" class="global-upgrades-close" data-i18n="close">Fermer</button>
       </div>
-    </template>
+    </div>
 
-    <!-- Seeds overlay template -->
-    <template id="seeds-overlay-template">
-      <div id="seeds-overlay" class="seeds-overlay" hidden>
-        <div class="seeds-content">
-          <h2 data-i18n="seedsTitle">Boutique des graines</h2>
-          <p id="seeds-count" class="seeds-count"></p>
-          <div id="seeds-list" class="seeds-list"></div>
-          <!-- Message displayed when no seed upgrades are available -->
-          <div id="seeds-empty-msg" class="seeds-empty" hidden></div>
+    <!-- Seeds overlay: dedicated shop for cosmic seeds. Hidden by default -->
+    <div id="seeds-overlay" class="seeds-overlay" hidden>
+      <div class="seeds-content">
+        <h2 data-i18n="seedsTitle">Boutique des graines</h2>
+        <p id="seeds-count" class="seeds-count"></p>
+        <div id="seeds-list" class="seeds-list"></div>
+        <!-- Message displayed when no seed upgrades are available -->
+        <div id="seeds-empty-msg" class="seeds-empty" hidden></div>
 
-          <button id="seeds-close" class="seeds-close" data-i18n="close">Fermer</button>
-        </div>
+        <button id="seeds-close" class="seeds-close" data-i18n="close">Fermer</button>
       </div>
-    </template>
+    </div>
     <!-- La pop‑up d’achat du skin Aubergine est désormais générée dynamiquement par
          le script lorsque l’utilisateur clique sur l’offre spéciale. Elle n’est
          plus définie statiquement dans le HTML afin d’éviter tout affichage
          intempestif au chargement. -->
-    <!-- Settings overlay template -->
-    <template id="settings-overlay-template">
-      <div id="settings-overlay" class="settings-overlay" hidden>
-        <div class="settings-content">
-          <h2 id="settings-title" data-i18n="settingsTitle">Options</h2>
-          <div class="settings-item">
-            <span data-i18n="optSound">Son</span>
-            <label class="switch">
-              <input type="checkbox" id="settings-sound" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="settings-item">
-            <span data-i18n="optAnim">Animations</span>
-            <label class="switch">
-              <input type="checkbox" id="settings-anim" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="settings-item">
-            <span data-i18n="optContrast">Contraste élevé</span>
-            <label class="switch">
-              <input type="checkbox" id="settings-contrast" />
-              <span class="slider"></span>
-            </label>
-          </div>
-          <div class="settings-item">
-            <span data-i18n="optLang">Langue</span>
-            <!-- Utilisation d'un menu déroulant pour la sélection de langue.
-                 Chaque option affiche l’emoji du drapeau correspondant plutôt
-                 qu’un simple code ISO.  Le sélecteur était auparavant
-                 masqué (style="display:none") et remplacé par des boutons
-                 drapeaux ; nous l’affichons désormais directement pour
-                 simplifier l’interface et répondre à la demande. -->
-            <select id="settings-language">
-              <option value="fr">🇫🇷 Français</option>
-              <option value="en">🇬🇧 English</option>
-              <option value="ru">🇷🇺 Русский</option>
-              <option value="zh">🇨🇳 中文</option>
-              <option value="ja">🇯🇵 日本語</option>
-              <!-- Nouvelle langue Capybara avec emoji castor 🦫 -->
-              <option value="capy">🦫 Capybara</option>
-            </select>
-          </div>
-          <!-- Conteneur pour le sélecteur de skin.  Le contenu est généré dynamiquement selon les skins débloqués. -->
-          <div class="settings-item" id="skin-setting" hidden></div>
-          <!-- Additional settings can be added here in the future -->
-
-          <!-- Champ de texte discret permettant d’activer le mode dieu.
-               Aucun texte descriptif n’explique sa fonction afin qu’il
-               ressemble à un simple champ libre.  Lorsque le joueur saisit
-               "dieu est grand" dans ce champ, le mode dieu s’active ; en
-               tapant "dieu est petit", il se désactive.  Voir main.js pour
-               la gestion de cet easter egg. -->
-          <div class="settings-item" style="margin-top:12px;">
-            <input type="text" id="god-input" aria-label="Champ secret" placeholder="" style="width:100%; background-color:#f4f4f4; border:1px solid #ccc; border-radius:8px; padding:6px; color:#333;" />
-          </div>
-
-          <!-- Bouton de réinitialisation. Permet au joueur d'effacer totalement sa progression. -->
-          <div class="settings-item">
-            <button id="reset-btn" class="reset-btn" data-i18n="optReset" style="width:100%; padding:8px; margin-top:8px; background-color:#e74c3c; color:#fff; border:none; border-radius:8px; cursor:pointer;">
-              Réinitialiser la partie
-            </button>
-          </div>
-          <button id="settings-close" class="settings-close" data-i18n="close">Fermer</button>
+    <!-- Settings overlay: configurable options such as sound, animations, contrast et langue -->
+    <div id="settings-overlay" class="settings-overlay" hidden>
+      <div class="settings-content">
+        <h2 id="settings-title" data-i18n="settingsTitle">Options</h2>
+        <div class="settings-item">
+          <span data-i18n="optSound">Son</span>
+          <label class="switch">
+            <input type="checkbox" id="settings-sound" />
+            <span class="slider"></span>
+          </label>
         </div>
+        <div class="settings-item">
+          <span data-i18n="optAnim">Animations</span>
+          <label class="switch">
+            <input type="checkbox" id="settings-anim" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <span data-i18n="optContrast">Contraste élevé</span>
+          <label class="switch">
+            <input type="checkbox" id="settings-contrast" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <span data-i18n="optLang">Langue</span>
+          <!-- Utilisation d'un menu déroulant pour la sélection de langue.
+               Chaque option affiche l’emoji du drapeau correspondant plutôt
+               qu’un simple code ISO.  Le sélecteur était auparavant
+               masqué (style="display:none") et remplacé par des boutons
+               drapeaux ; nous l’affichons désormais directement pour
+               simplifier l’interface et répondre à la demande. -->
+          <select id="settings-language">
+            <option value="fr">🇫🇷 Français</option>
+            <option value="en">🇬🇧 English</option>
+            <option value="ru">🇷🇺 Русский</option>
+            <option value="zh">🇨🇳 中文</option>
+            <option value="ja">🇯🇵 日本語</option>
+            <!-- Nouvelle langue Capybara avec emoji castor 🦫 -->
+            <option value="capy">🦫 Capybara</option>
+          </select>
+        </div>
+        <!-- Conteneur pour le sélecteur de skin.  Le contenu est généré dynamiquement selon les skins débloqués. -->
+        <div class="settings-item" id="skin-setting" hidden></div>
+        <!-- Additional settings can be added here in the future -->
+
+        <!-- Champ de texte discret permettant d’activer le mode dieu.
+             Aucun texte descriptif n’explique sa fonction afin qu’il
+             ressemble à un simple champ libre.  Lorsque le joueur saisit
+             "dieu est grand" dans ce champ, le mode dieu s’active ; en
+             tapant "dieu est petit", il se désactive.  Voir main.js pour
+             la gestion de cet easter egg. -->
+        <div class="settings-item" style="margin-top:12px;">
+          <input type="text" id="god-input" aria-label="Champ secret" placeholder="" style="width:100%; background-color:#f4f4f4; border:1px solid #ccc; border-radius:8px; padding:6px; color:#333;" />
+        </div>
+
+        <!-- Bouton de réinitialisation. Permet au joueur d'effacer totalement sa progression. -->
+        <div class="settings-item">
+          <button id="reset-btn" class="reset-btn" data-i18n="optReset" style="width:100%; padding:8px; margin-top:8px; background-color:#e74c3c; color:#fff; border:none; border-radius:8px; cursor:pointer;">
+            Réinitialiser la partie
+          </button>
+        </div>
+        <button id="settings-close" class="settings-close" data-i18n="close">Fermer</button>
       </div>
-    </template>
     </main>
 
     <!-- L’aide contextuelle a été supprimée pour simplifier l’interface : les joueurs découvrent les mécanismes en jouant. -->
