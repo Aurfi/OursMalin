@@ -13,7 +13,9 @@
 // cache and ignore the newly added capybara language file, causing the
 // dropdown to revert to French.  See README for details.
 // Cache version bumped to include news.json for offline news headlines.
-const CACHE_NAME = 'courgette-cache-v18';
+// Incrémenter le nom du cache pour invalider l'ancien et forcer le service
+// worker à récupérer les nouvelles versions des scripts et feuilles de style.
+const CACHE_NAME = 'courgette-cache-v19';
 const urlsToCache = [
   '/',
   'clicker.html',
@@ -82,7 +84,9 @@ const urlsToCache = [
   // the version number in clicker.html later on, remember to update
   // these entries and increment CACHE_NAME accordingly.
   'css/style.css?v=18',
-  'js/main.js?v=33'
+  // Prise en compte de la nouvelle version du script principal afin que
+  // l’application récupère bien main.js?v=35 lors du précaching.
+  'js/main.js?v=35'
   ,
   // Gear icon used for the settings button
   'assets/icon_gear.png'
