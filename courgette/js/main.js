@@ -7,6 +7,23 @@
 // interact with the game state.
 (function() {
 
+// When defined before this script executes, setting window.COURGETTE_NO_CSS
+// to true prevents the game from altering page-wide CSS. This is useful when
+// the host page wants to fully control styling without interference.
+const CSS_LOCKED = Boolean(window.COURGETTE_NO_CSS);
+
+function safeAppend(parent, el) {
+  if (!CSS_LOCKED) parent.appendChild(el);
+}
+
+function safeAddClass(el, cls) {
+  if (!CSS_LOCKED) el.classList.add(cls);
+}
+
+function safeRemoveClass(el, cls) {
+  if (!CSS_LOCKED) el.classList.remove(cls);
+}
+
 // Default locale and runtime dictionary. The language can be changed via the
 // settings menu; currentLocale holds the active locale.
 const DEFAULT_LOCALE = 'fr';
@@ -785,7 +802,7 @@ function showPrestigeAnimation() {
   // pointer-events est désactivé dans la classe CSS.
   const overlay = document.createElement('div');
   overlay.className = 'prestige-overlay';
-  document.body.appendChild(overlay);
+  safeAppend(document.body, overlay);
   // Retirer le voile après 2 secondes pour libérer la vue.  La disparition
   // progressive est gérée via CSS.
   setTimeout(() => {
@@ -2098,9 +2115,9 @@ function initGame() {
     sContrast.addEventListener('change', () => {
       state.settings.contrast = sContrast.checked;
       if (state.settings.contrast) {
-        document.body.classList.add('high-contrast');
+        safeAddClass(document.body, 'high-contrast');
       } else {
-        document.body.classList.remove('high-contrast');
+        safeRemoveClass(document.body, 'high-contrast');
       }
       saveSettings();
     });
@@ -3216,7 +3233,7 @@ function openSkinPopup(ev) {
     // Insérer l'overlay au début du corps afin qu'il ne soit pas dans
     // d'autres conteneurs aux styles spécifiques. Cela garantit que le
     // positionnement fixed couvre l'écran.
-    document.body.appendChild(popup);
+    safeAppend(document.body, popup);
     // Appliquer les traductions sur les nouveaux éléments
     applyTranslations();
   }
@@ -3882,9 +3899,9 @@ function loadSavedGame() {
     // dès le chargement. Inversement, si le mode n'était pas activé, on veille
     // à retirer la classe pour éviter un état incohérent entre le bouton et l'affichage.
     if (state.settings.contrast) {
-      document.body.classList.add('high-contrast');
+      safeAddClass(document.body, 'high-contrast');
     } else {
-      document.body.classList.remove('high-contrast');
+      safeRemoveClass(document.body, 'high-contrast');
     }
 
     // Offline progress: compute production since last session (max 24h)
