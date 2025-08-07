@@ -146,18 +146,10 @@
         <button id="seeds-close" class="seeds-close" data-i18n="close">Fermer</button>
       </div>
     </div>
-    <!-- Pop-up pour l'achat du skin Aubergine. Affichée lorsque l'utilisateur
-         clique sur le bouton d'achat dans la boutique des graines. Contient
-         deux boutons : paiement PayPal (fictif) et retour. -->
-    <div id="skin-popup" class="popup-overlay" hidden>
-      <div class="popup-content">
-        <h3 data-i18n="paypalPopupTitle">Acheter le skin Aubergine pour 9,99 € ?</h3>
-        <div class="popup-buttons">
-          <button id="paypal-btn" class="paypal-btn" data-i18n="paypalBtn">Payer avec PayPal 😎💸</button>
-          <button id="skin-cancel-btn" class="cancel-btn" data-i18n="cancelBtn">💀 Retour</button>
-        </div>
-      </div>
-    </div>
+    <!-- La pop‑up d’achat du skin Aubergine est désormais générée dynamiquement par
+         le script lorsque l’utilisateur clique sur l’offre spéciale. Elle n’est
+         plus définie statiquement dans le HTML afin d’éviter tout affichage
+         intempestif au chargement. -->
     <!-- Settings overlay: configurable options such as sound, animations, contrast et langue -->
     <div id="settings-overlay" class="settings-overlay" hidden>
       <div class="settings-content">
