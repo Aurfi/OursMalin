@@ -3159,6 +3159,16 @@ function updateSkinSettingVisibility() {
 
 // Ouvrir la pop-up de paiement pour le skin Aubergine.  Cette fonction
 // affiche un overlay sombre et propose deux boutons : PayPal et Retour.
+// Masquer la pop‑up promotionnelle au démarrage, puis ne l'afficher que si
+// une condition explicite le demande.
+window.addEventListener('DOMContentLoaded', () => {
+  const popup = document.getElementById('skin-popup');
+  const shouldShowPopup = false; // changer à true pour l'afficher automatiquement
+  if (popup && shouldShowPopup) {
+    popup.removeAttribute('hidden');
+  }
+});
+
 function openSkinPopup(ev) {
   // Éviter d'ouvrir automatiquement la pop‑up si la fonction est appelée sans
   // interaction utilisateur. Certains navigateurs peuvent déclencher des
@@ -3210,9 +3220,8 @@ function openSkinPopup(ev) {
     // Appliquer les traductions sur les nouveaux éléments
     applyTranslations();
   }
-  // Afficher la pop‑up
-  popup.style.display = 'flex';
-  popup.hidden = false;
+  // Afficher la pop‑up uniquement si l'action est autorisée
+  popup.removeAttribute('hidden');
 }
 
 // Fermer la pop-up de paiement sans effectuer d'achat.  Utilisée lorsque
@@ -3220,8 +3229,7 @@ function openSkinPopup(ev) {
 function closeSkinPopup() {
   const popup = document.getElementById('skin-popup');
   if (!popup) return;
-  popup.style.display = 'none';
-  popup.hidden = true;
+  popup.setAttribute('hidden', '');
 }
 
 // Confirmer l'achat du skin Aubergine.  Cette fonction simule un paiement
