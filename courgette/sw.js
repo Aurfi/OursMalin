@@ -12,12 +12,14 @@
 // bumping the version the service worker might continue serving the old
 // cache and ignore the newly added capybara language file, causing the
 // dropdown to revert to French.  See README for details.
-const CACHE_NAME = 'courgette-cache-v16';
+// Cache version bumped to include news.json for offline news headlines.
+const CACHE_NAME = 'courgette-cache-v18';
 const urlsToCache = [
   '/',
   'clicker.html',
   'css/style.css',
   'js/main.js',
+  'news.json', // Dynamic news feed
   'manifest.webmanifest',
   'locales/fr.json',
   'locales/en.json',
@@ -80,7 +82,7 @@ const urlsToCache = [
   // the version number in clicker.html later on, remember to update
   // these entries and increment CACHE_NAME accordingly.
   'css/style.css?v=18',
-  'js/main.js?v=32'
+  'js/main.js?v=33'
   ,
   // Gear icon used for the settings button
   'assets/icon_gear.png'

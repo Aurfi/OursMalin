@@ -151,30 +151,57 @@
     alert('Vos Capys ont été soignés à la tente du marais.');
   }
 
+  // Définition des objets possibles et de leurs descriptions pour le Dex.
+  const itemDefinitions = {
+    'super-carotte': {
+      name: 'Super-carotte',
+      desc: 'un légume brillant qui fait gagner un niveau à un Capy.',
+      rate: 0.02
+    },
+    potion: {
+      name: 'Potion de soin',
+      desc: 'un onguent qui restaure complètement les PV d’un Capy.',
+      rate: 0.15
+    },
+    revolver: {
+      name: 'Revolver',
+      desc: 'un instrument déraisonnable qui abat instantanément un animal.',
+      rate: 0.03
+    },
+    caillou: {
+      name: 'Caillou',
+      desc: 'un simple caillou à lancer pour distraire l’ennemi.',
+      rate: 0.2
+    },
+    filet: {
+      name: 'Filet',
+      desc: 'un filet robuste qui augmentera la chance de capture du prochain Capy.',
+      rate: 0.05
+    },
+    sifflet: {
+      name: 'Sifflet',
+      desc: 'un sifflet strident qui effraie les animaux sauvages et met fin au combat.',
+      rate: 0.06
+    }
+  };
+
   /**
    * Fait apparaître des objets aléatoirement lorsqu'une zone est chargée.
    * Chaque objet possède un taux de spawn.  Si un objet apparaît, il est
    * ajouté à l'inventaire et un message d'alerte informe le joueur.
    */
   function spawnItems() {
-    const itemsToSpawn = [
-      { key: 'super-carotte', name: 'Super-carotte', rate: 0.02, desc: 'un légume brillant qui fait gagner un niveau à un Capy.' },
-      { key: 'potion', name: 'Potion de soin', rate: 0.15, desc: 'un onguent qui restaure complètement les PV d’un Capy.' },
-      { key: 'revolver', name: 'Revolver', rate: 0.03, desc: 'un instrument déraisonnable qui abat instantanément un animal.' },
-      { key: 'caillou', name: 'Caillou', rate: 0.2, desc: 'un simple caillou à lancer pour distraire l’ennemi.' },
-      { key: 'filet', name: 'Filet', rate: 0.05, desc: 'un filet robuste qui augmentera la chance de capture du prochain Capy.' },
-      { key: 'sifflet', name: 'Sifflet', rate: 0.06, desc: 'un sifflet strident qui effraie les animaux sauvages et met fin au combat.' }
-    ];
-    itemsToSpawn.forEach((item) => {
-      if (Math.random() < item.rate) {
-        if (!inventory[item.key]) inventory[item.key] = 0;
-        inventory[item.key]++;
+    Object.keys(itemDefinitions).forEach((key) => {
+      const def = itemDefinitions[key];
+      if (Math.random() < (def.rate || 0)) {
+        if (!inventory[key]) inventory[key] = 0;
+        inventory[key]++;
         // Enregistrer l’objet dans le Dex des objets
-        recordItem(item.key);
+        recordItem(key);
         savePlayerData();
         // Son de notification lors de l'apparition d'un objet
         playEffect('notification');
-        alert('Vous trouvez ' + item.name + ' : ' + item.desc);
+        alert('Vous trouvez ' + def.name + ' : ' + def.desc);
       }
     });
   }
@@ -1741,7 +1768,7 @@
     document.body.appendChild(overlay);
   }
 
-  // Lier le bouton des réglages et la touche O au menu d'options
+  // Lier uniquement le bouton des réglages au menu d'options
   document.addEventListener('DOMContentLoaded', () => {
     const settingsBtn = document.getElementById('capymon-settings-btn');
     if (settingsBtn) {
@@ -1749,11 +1776,6 @@
         e.preventDefault();
         openSettingsMenu();
       });
-    }
-  });
-  document.addEventListener('keydown', (e) => {
-    if ((e.key === 'o' || e.key === 'O') && !inBattle) {
-      openSettingsMenu();
     }
   });
 
@@ -1872,6 +1894,9 @@
   // Inventaire des objets : clé = nom d'objet, valeur = quantité.
   let inventory = {};
 
+  // Dictionnaire des objets rencontrés pour l’ItemDex.
+  let itemDex = {};
+
   // Dictionnaire enregistrant toutes les espèces déjà rencontrées.  La clé
   // est l’identifiant de l’espèce et la valeur est true.  Cela sert
   // pour afficher le CapyDex.  Persisté dans localStorage sous la clé
@@ -1947,6 +1972,38 @@
     } catch (e) {
       /* ignore */
     }
+  }
+
+  /**
+   * Charge l’ItemDex (objets rencontrés) depuis le stockage local.
+   */
+  function loadItemDex() {
+    try {
+      const data = localStorage.getItem('itemDex');
+      if (data) itemDex = JSON.parse(data) || {};
+    } catch (e) {
+      itemDex = {};
+    }
+  }
+
+  /**
+   * Sauvegarde l’ItemDex dans le stockage local.
+   */
+  function saveItemDex() {
+    try {
+      localStorage.setItem('itemDex', JSON.stringify(itemDex));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  /**
+   * Enregistre un objet comme rencontré.
+   * @param {string} key Nom interne de l’objet
+   */
+  function recordItem(key) {
+    itemDex[key] = true;
+    saveItemDex();
   }
 
   /**
@@ -2186,6 +2243,7 @@
   // Charger les données du joueur (capys et inventaire) au démarrage
   loadPlayerData();
   loadCapyDex();
+  loadItemDex();
 
   /**
    * Donne de l’expérience au capybara du joueur.  Si suffisamment
@@ -3829,22 +3887,18 @@
   }
 
   // Contrôles clavier pour les boutons O et K (anciennement A et B).
-  // En dehors des combats, la touche O continue d’ouvrir les réglages via
-  // l’écouteur défini plus haut.  En combat, O simule un appui sur le
-  // premier bouton d’action (Attaques) et K simule le deuxième (Sac ou
-  // Retour/Fuir).  Les touches sont insensibles à la casse.
+  // La touche O simule en permanence l’appui sur le bouton O. En combat,
+  // la touche K simule l’appui sur le bouton K (Sac ou Retour/Fuir). Les
+  // touches sont insensibles à la casse.
   document.addEventListener('keydown', (e) => {
     if (!gameStarted) return;
-    // Ne traiter O/K que lorsqu’un combat est en cours et qu’un overlay existe
-    if (inBattle) {
-      // Empêcher d’interférer avec d’autres raccourcis (ex : modificateurs)
-      if (e.key === 'o' || e.key === 'O') {
-        const overlay = document.getElementById('capymon-battle');
-        if (overlay && btnA) {
-          e.preventDefault();
-          btnA.click();
-        }
-      } else if (e.key === 'k' || e.key === 'K') {
+    if (e.key === 'o' || e.key === 'O') {
+      if (btnA) {
+        e.preventDefault();
+        btnA.click();
+      }
+    } else if (e.key === 'k' || e.key === 'K') {
+      if (inBattle) {
         const overlay = document.getElementById('capymon-battle');
         if (overlay && btnB) {
           e.preventDefault();

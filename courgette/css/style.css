@@ -168,7 +168,8 @@ h1 {
   transition: background-color 0.2s, transform 0.1s;
 }
 
-.upgrade button:disabled {
+.upgrade button:disabled,
+.upgrade button.unaffordable {
   background-color: #bdc3c7;
   cursor: default;
 }
@@ -674,6 +675,24 @@ body.high-contrast .upgrade button {
 }
 body.high-contrast .upgrade button:not(:disabled):hover {
   background-color: #2e7d32;
+}
+body.high-contrast .upgrade button:disabled,
+body.high-contrast .upgrade button.unaffordable {
+  background-color: #555;
+  cursor: default;
+}
+
+body.high-contrast .seeds-item button {
+  background-color: #357a38;
+  color: #fff;
+}
+body.high-contrast .seeds-item button:not(:disabled):hover {
+  background-color: #2e7d32;
+}
+body.high-contrast .seeds-item button:disabled,
+body.high-contrast .seeds-item button.unaffordable {
+  background-color: #555;
+  cursor: default;
 }
 
 /* Icon inside upgrade cards */
@@ -1256,6 +1275,28 @@ body.high-contrast .upgrade button:not(:disabled):hover {
 .seeds-item.locked {
   opacity: 0.5;
 }
+.seeds-item button {
+  padding: 8px 16px;
+  font-size: 0.9rem;
+  border: none;
+  border-radius: 9999px;
+  cursor: pointer;
+  background-color: #4caf50;
+  color: #fff;
+  transition: background-color 0.2s, transform 0.1s;
+}
+.seeds-item button:disabled,
+.seeds-item button.unaffordable {
+  background-color: #bdc3c7;
+  cursor: default;
+}
+.seeds-item button:not(:disabled):hover {
+  background-color: #43a047;
+  transform: scale(1.05);
+}
+.seeds-item button:not(:disabled):active {
+  transform: scale(0.97);
+}
 .seeds-close {
   align-self: flex-end;
   padding: 6px 14px;
@@ -1502,6 +1543,10 @@ body.high-contrast .capygames-link a {
   justify-content: center;
   align-items: center;
   z-index: 3000;
+}
+
+.popup-overlay[hidden] {
+  display: none !important;
 }
 .popup-content {
   background-color: #fff;

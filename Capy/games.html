@@ -3,10 +3,22 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Capy Games : collection de mini-jeux gratuits mettant à l'honneur les capybaras." />
+    <meta name="keywords" content="capybara, jeux, arcade, logique, casino, capy games" />
     <title>Capy Games</title>
     <!-- La feuille de style principale se trouve un niveau au‑dessus du dossier Capy -->
-    <!-- Mettre à jour les chemins des ressources : le reste du site a été déplacé dans le dossier capy. -->
-    <link rel="stylesheet" href="../capy/style.css" />
+    <!-- Mettre à jour les chemins des ressources : le reste du site a été déplacé dans le dossier Capy. -->
+    <link rel="stylesheet" href="../Capy/style.css" />
+    <script>
+      (function() {
+        function setVh() {
+          document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
+        window.addEventListener('resize', setVh);
+        window.addEventListener('orientationchange', setVh);
+        setVh();
+      })();
+    </script>
   </head>
   <!-- Attribuer un identifiant au corps pour permettre au script de
        pré‑lancement de détecter la page d’accueil et de ne pas
@@ -24,20 +36,20 @@
              automatiquement en fonction du thème courant. -->
         <button id="dark-mode-toggle" class="audio-toggle" title="Mode sombre / clair">
           <!-- L’icône sera mise à jour dynamiquement par config.js -->
-          <img id="dark-mode-icon" src="../capy/assets/icon_moon.png" alt="mode" style="width:20px; height:20px;" />
+          <img id="dark-mode-icon" src="../Capy/assets/icon_moon.png" alt="icône mode sombre" style="width:20px; height:20px;" />
         </button>
       </div>
-      <div class="menu-card menu-flex">
+        <main class="menu-card menu-flex" role="main">
         <!-- Ruban promotionnel "NEW !" -->
         <div class="new-ribbon">NEW !</div>
         <!-- Mascotte d'accueil : image de capybara.  Le chemin doit remonter
              d’un niveau pour accéder au dossier assets. -->
-        <img id="hero-image" src="../capy/assets/capybara_unicorn.png" alt="capybara mascotte" class="menu-hero" style="cursor:pointer;" />
+        <img id="hero-image" src="../Capy/assets/capybara_unicorn.png" alt="capybara mascotte" class="menu-hero" style="cursor:pointer;" />
         <!-- Splash text inspiré de Minecraft : affiché en jaune et incliné -->
         <div id="splash-text" class="splash-text"></div>
         <h1>Capy Games</h1>
         <!-- Catégories de jeux -->
-        <div id="menu-categories" class="menu-categories">
+        <div id="menu-categories" class="menu-categories" role="navigation" aria-label="Catégories des jeux">
           <button class="category-btn" data-category="featured">⭐ En vedette ⭐</button>
           <button class="category-btn" data-category="arcade">Arcade</button>
           <button class="category-btn" data-category="logique">Logique</button>
@@ -50,15 +62,15 @@
         <p id="menu-quote" class="menu-quote"></p>
         <!-- Lien vers les mentions légales -->
         <p style="font-size:0.75em; margin-top:12px;">
-          <a href="../capy/legal.html" style="color:#607d8b; text-decoration:underline;">Mentions légales</a>
+          <a href="../Capy/legal.html" style="color:#607d8b; text-decoration:underline;">Mentions légales</a>
         </p>
         <!-- Bouton externe vers Courgette Clicker : placé sous les mentions légales -->
         <div id="courgette-button-container" style="text-align:center; margin-top:12px;">
           <!-- Le lien s'ouvre dans un nouvel onglet et pointe vers le dossier
                courgette/clicker qui contient un index.html -->
-          <a id="courgette-clicker-btn" href="../courgette/clicker" target="_blank" class="btn" style="text-decoration:none;">Courgette Clicker</a>
+          <a id="courgette-clicker-btn" href="../courgette/clicker/" target="_blank" class="btn" style="text-decoration:none;">Courgette Clicker</a>
         </div>
-      </div>
+      </main>
     </div>
     <!-- Message d'orientation pour les appareils mobiles -->
     <div id="orientation-warning" class="orientation-warning hidden">
@@ -66,8 +78,8 @@
     </div>
     <!-- Scripts nécessaires : config, menu et orientation.  Les chemins
          remontent d’un niveau car la page se trouve dans Capy/ -->
-    <script src="../capy/config.js"></script>
-    <script src="../capy/menu.js"></script>
-    <script src="../capy/orientation.js"></script>
+    <script src="../Capy/config.js"></script>
+    <script src="../Capy/menu.js"></script>
+    <script src="../Capy/orientation.js"></script>
   </body>
 </html>

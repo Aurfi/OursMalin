@@ -12,32 +12,15 @@
 // globale resize() définie dans courgette.js.
 
 (() => {
-  function checkOrientation() {
-    const forceLandscape = document.body.dataset.forceLandscape === 'true';
-    const isPortrait = window.innerHeight > window.innerWidth;
-    const warningEl = document.getElementById('orientation-warning');
-    if (!warningEl) return;
-    if (forceLandscape) {
-      if (isPortrait) {
-        // Afficher l'avertissement et mettre en pause toute animation
-        warningEl.classList.remove('hidden');
-      } else {
-        warningEl.classList.add('hidden');
-      }
-    } else {
-      // Pages non bloquées : aucune superposition, mais adapter
-      // éventuellement la mise en page via une fonction resize()
-      warningEl.classList.add('hidden');
-      if (typeof window.resize === 'function') {
-        try {
-          window.resize();
-        } catch (e) {
-          // ignore errors
-        }
+  function triggerResize() {
+    if (typeof window.resize === 'function') {
+      try {
+        window.resize();
+      } catch (e) {
+        // ignore errors
       }
     }
   }
-  window.addEventListener('resize', checkOrientation);
-  window.addEventListener('orientationchange', checkOrientation);
-  document.addEventListener('DOMContentLoaded', checkOrientation);
+  window.addEventListener('resize', triggerResize);
+  document.addEventListener('DOMContentLoaded', triggerResize);
 })();

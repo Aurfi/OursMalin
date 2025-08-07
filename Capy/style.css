@@ -3,12 +3,13 @@ html,
 body {
   margin: 0;
   padding: 0;
-  height: 100%;
+  min-height: calc(var(--vh, 1vh) * 100);
   /* Fond clair et chaleureux pour le site : dégradé pastel.  Ce fond
      améliore l'accueil et se marie avec les décors des jeux. */
   background: linear-gradient(#e3f2fd, #ffffff);
   font-family: Arial, sans-serif;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 /* Les canvas des différents jeux doivent être centrés et sans fond pour s'intégrer
@@ -95,11 +96,17 @@ body {
   top: 0;
   left: 0;
   width: 100%;
-  height: 100%;
+  min-height: calc(var(--vh, 1vh) * 100);
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Permettre le défilement et éviter que le haut de l'écran soit masqué
+     sur les petits appareils. La prise en compte du "safe area" garantit
+     que le contenu ne passe pas sous l'encoche sur iOS. */
+  overflow-y: auto;
+  padding-top: env(safe-area-inset-top);
+  box-sizing: border-box;
   /* Fond semi‑transparent par défaut : éclairci pour laisser transparaître
      davantage le décor tout en préservant la lisibilité des textes. */
   background: rgba(0, 0, 0, 0.35);
@@ -122,7 +129,7 @@ body {
   left: 0;
   width: 100%;
   height: 100%;
-  display: flex;
+  display: none;
   align-items: center;
   justify-content: center;
   background: rgba(0, 0, 0, 0.85);
@@ -133,8 +140,19 @@ body {
   z-index: 1000;
 }
 
-.orientation-warning.hidden {
-  display: none;
+/* Gérer l'orientation via CSS plutôt que JavaScript */
+@media (orientation: portrait) {
+  body[data-force-landscape="true"] #orientation-warning {
+    display: flex;
+  }
+  body[data-force-landscape="true"] #menu,
+  body[data-force-landscape="true"] canvas {
+    display: none;
+  }
+  /* Empiler les cartes du menu verticalement sur écran étroit */
+  .game-list {
+    grid-template-columns: 1fr;
+  }
 }
 
 .btn {
@@ -442,8 +460,8 @@ body[data-game="flappy"] .volume-btn {
  * garde une ombre pour un effet de relief.
  */
 .menu-hero {
-  width: 200px;
-  height: 200px;
+  width: min(200px, 50vw);
+  height: min(200px, 50vw);
   /* Zoom et recadrage sur le centre de l'image plutôt que l'intégralité */
   object-fit: cover;
   object-position: center;
@@ -527,7 +545,7 @@ body[data-game="flappy"] .volume-btn {
      La hauteur maximale est calculée en soustrayant une marge pour le titre,
      les catégories et les citations.  Sur les écrans plus grands, la
      grille adaptera automatiquement la hauteur. */
-  max-height: calc(100vh - 300px);
+  max-height: calc((var(--vh, 1vh) * 100) - 300px);
   overflow-y: auto;
 }
 
