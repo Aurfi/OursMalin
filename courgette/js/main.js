@@ -2913,7 +2913,9 @@ function renderUpgrades() {
     // Icon
     const iconImg = document.createElement('img');
     iconImg.className = 'icon';
-    iconImg.src = `assets/icon_${b.key}.png`;
+    // Utiliser getAssetPath afin de résoudre correctement le chemin quelle que
+    // soit la page (ex : clicker/index.html ajoute automatiquement « ../assets/ »)
+    iconImg.src = getAssetPath(`icon_${b.key}.png`);
     // Définir un texte alternatif pour l'accessibilité
     iconImg.alt = t(b.key);
     // Info
