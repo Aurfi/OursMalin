@@ -116,14 +116,13 @@
       scoreKey: 'capyPuzzleHighScore',
       page: 'puzzle.html',
       category: 'logique',
-      image: 'assets/puzzle_icon.png'
-    ,
+      image: 'assets/puzzle_icon.png',
       // Capy Puzzle figure dans la sélection des vedettes.  Un trophée
       // chocolat est affiché et la propriété featured permet de le
       // filtrer dans l’onglet dédié.
       featured: true,
-      trophy: 'chocolat'
-      , featuredIndex: 3
+      trophy: 'chocolat',
+      featuredIndex: 3
     },
     {
       id: 'memory',
