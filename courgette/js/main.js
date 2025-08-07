@@ -1992,14 +1992,28 @@ function initGame() {
     prestigeBtn.addEventListener('click', handlePrestige);
   }
 
+  // S’assurer que les overlays sont masqués au démarrage. Cela évite que l’overlay des boosts
+  // globaux reste visible après un rafraîchissement si l’utilisateur l’avait ouvert.
+  const globalOverlayInit = document.getElementById('global-upgrades-overlay');
+  if (globalOverlayInit) {
+    globalOverlayInit.hidden = true;
+    globalOverlayInit.style.display = 'none';
+  }
+  const achOverlayInit = document.getElementById('achievements-overlay');
+  if (achOverlayInit) {
+    achOverlayInit.hidden = true;
+    achOverlayInit.style.display = 'none';
+  }
+
   // -----------------------------------------------------------------------
   // Paramètres et boutiques : configuration des overlays et des boutons
   // Bouton des options (engrenage) : affiche l'overlay des paramètres
   const settingsBtn = document.getElementById('settings-btn');
-  if (settingsBtn) {
+  const settingsOverlay = document.getElementById('settings-overlay');
+  const settingsClose = document.getElementById('settings-close');
+  if (settingsBtn && settingsOverlay) {
     settingsBtn.addEventListener('click', () => {
-      const overlay = ensureSettingsOverlay();
-      if (!overlay) return;
+      // Mettre à jour l'état des cases à cocher et du sélecteur de langue selon les paramètres actuels
       const sSound = document.getElementById('settings-sound');
       const sAnim = document.getElementById('settings-anim');
       const sContrast = document.getElementById('settings-contrast');
@@ -2007,8 +2021,13 @@ function initGame() {
       if (sSound) sSound.checked = !!state.settings.sound;
       if (sAnim) sAnim.checked = !!state.settings.anim;
       if (sContrast) sContrast.checked = !!state.settings.contrast;
+
       if (sLang) {
         sLang.value = state.settings.language;
+        // Mettre à jour la mise en surbrillance des drapeaux en fonction de
+        // la langue courante dans les paramètres.  Cela garantit que le
+        // drapeau sélectionné est correctement indiqué à chaque ouverture
+        // du menu d'options.
         const flagsContainer = document.getElementById('language-flags');
         if (flagsContainer) {
           const buttons = flagsContainer.querySelectorAll('.lang-flag');
@@ -2017,9 +2036,17 @@ function initGame() {
           });
         }
       }
+
+      // Mettre à jour la visibilité et l'état de la case du skin Aubergine à chaque ouverture
       updateSkinSettingVisibility();
-      overlay.hidden = false;
-      overlay.style.display = 'flex';
+      settingsOverlay.hidden = false;
+      settingsOverlay.style.display = 'flex';
+    });
+  }
+  if (settingsClose && settingsOverlay) {
+    settingsClose.addEventListener('click', () => {
+      settingsOverlay.hidden = true;
+      settingsOverlay.style.display = 'none';
     });
   }
   // Bouton de réinitialisation de la partie.  Lorsqu'un joueur clique sur ce
@@ -2027,22 +2054,149 @@ function initGame() {
   // supprime la sauvegarde et on recharge la page.  Cela remet à zéro
   // complètement la progression tout en conservant les paramètres (sons,
   // animations, langue, contraste).
+  const resetBtn = document.getElementById('reset-btn');
+  if (resetBtn) {
+    resetBtn.addEventListener('click', () => {
+      const msg = t('resetConfirm');
+      const ok = window.confirm(msg);
+      if (!ok) return;
+      try {
+        localStorage.removeItem(SAVE_KEY);
+      } catch (err) {
+        console.warn('Erreur lors de la suppression de la sauvegarde', err);
+      }
+      // Informer l'utilisateur via la zone de news
+      const newsEl = document.getElementById('news-text');
+      if (newsEl) {
+        newsEl.textContent = t('resetDone');
+      }
+      // Recharger la page pour appliquer la réinitialisation
+      setTimeout(() => {
+        location.reload();
+      }, 200);
+    });
+  }
+  // Écouteurs de paramètres : mise à jour de state.settings et sauvegarde
+  const sSound = document.getElementById('settings-sound');
+  if (sSound) {
+    sSound.addEventListener('change', () => {
+      state.settings.sound = sSound.checked;
+      // Activer ou désactiver la musique de fond selon l'option
+      if (state.settings.sound) {
+        if (audioFiles.music) {
+          try {
+            audioFiles.music.currentTime = 0;
+            audioFiles.music.play().catch(() => {});
+          } catch (err) {
+            console.warn('Erreur lecture musique', err);
+          }
+        }
+      } else {
+        if (audioFiles.music) {
+          audioFiles.music.pause();
+        }
+      }
+      saveSettings();
+    });
+  }
+  const sAnim = document.getElementById('settings-anim');
+  if (sAnim) {
+    sAnim.addEventListener('change', () => {
+      state.settings.anim = sAnim.checked;
+      saveSettings();
+    });
+  }
+  const sContrast = document.getElementById('settings-contrast');
+  if (sContrast) {
+    // Appliquer immédiatement le contraste élevé en modifiant la classe du body
+    sContrast.addEventListener('change', () => {
+      state.settings.contrast = sContrast.checked;
+      if (state.settings.contrast) {
+        safeAddClass(document.body, 'high-contrast');
+      } else {
+        safeRemoveClass(document.body, 'high-contrast');
+      }
+      saveSettings();
+    });
+  }
+  const sLang = document.getElementById('settings-language');
+  if (sLang) {
+    sLang.addEventListener('change', () => {
+      state.settings.language = sLang.value;
+      saveSettings();
+      // Recharger la langue et appliquer les traductions
+      loadLocale(sLang.value);
+      // Mettre immédiatement à jour le message d’actualité dans la nouvelle langue
+      showRandomMessage();
+      // Mettre à jour la sélection visuelle des drapeaux lorsque la valeur change
+      const flagsContainer = document.getElementById('language-flags');
+      if (flagsContainer) {
+        const buttons = flagsContainer.querySelectorAll('.lang-flag');
+        buttons.forEach((btn) => {
+          btn.classList.toggle('selected', btn.dataset.lang === sLang.value);
+        });
+      }
+    });
+  }
+
+  // Gestion des clics sur les drapeaux de langue.  Chaque bouton de drapeau a
+  // un attribut data-lang correspondant au code ISO de la langue.  Lorsque
+  // l'utilisateur clique dessus, on met à jour le sélecteur caché et on
+  // déclenche son événement 'change' pour réutiliser la logique existante.
+  const flagsContainer = document.getElementById('language-flags');
+  if (flagsContainer && sLang) {
+    flagsContainer.addEventListener('click', (ev) => {
+      const target = ev.target.closest('.lang-flag');
+      if (!target) return;
+      const lang = target.getAttribute('data-lang');
+      if (!lang) return;
+      // Ne rien faire si la langue est déjà sélectionnée
+      if (sLang.value === lang) return;
+      // Mettre à jour la valeur du select caché
+      sLang.value = lang;
+      // Déclencher l'événement de changement pour appliquer la langue
+      const event = new Event('change');
+      sLang.dispatchEvent(event);
+    });
+    // Initialiser la sélection active lorsque la page est chargée
+    const initBtns = flagsContainer.querySelectorAll('.lang-flag');
+    initBtns.forEach((btn) => {
+      btn.classList.toggle('selected', btn.dataset.lang === state.settings.language);
+    });
+  }
   // Gestion de la boutique des graines : rétablir une boutique distincte. Lorsque le bouton
   // des graines (étoile violette) est cliqué, on affiche l’overlay des graines et on
-  // rend les améliorations disponibles.
+  // rend les améliorations disponibles. Un clic sur le bouton de fermeture la masque.
   const seedsBtn = document.getElementById('seeds-shop-btn');
-  if (seedsBtn) {
+  const seedsOverlay = document.getElementById('seeds-overlay');
+  const seedsClose = document.getElementById('seeds-close');
+  if (seedsBtn && seedsOverlay) {
     seedsBtn.addEventListener('click', () => {
-      const overlay = ensureSeedsOverlay();
-      if (!overlay) return;
+      // Rendre les améliorations de graines et afficher l’overlay
       renderSeedUpgrades();
-      overlay.hidden = false;
-      overlay.style.display = 'flex';
+      seedsOverlay.hidden = false;
+      seedsOverlay.style.display = 'flex';
+    });
+  }
+  if (seedsClose && seedsOverlay) {
+    seedsClose.addEventListener('click', () => {
+      seedsOverlay.hidden = true;
+      seedsOverlay.style.display = 'none';
     });
   }
   // Mettre à jour l’affichage du nombre de graines sur le bouton dès l’initialisation
   updateSeedsDisplay();
 
+  // Gestion du réglage du skin Aubergine.  Lorsqu'on change l'état de la case,
+  // on active ou désactive le skin immédiatement et on sauvegarde.
+  const skinToggle = document.getElementById('settings-skin');
+  if (skinToggle) {
+    skinToggle.addEventListener('change', () => {
+      state.skinAubergineActive = skinToggle.checked;
+      applyCourgetteSkin();
+      saveGame();
+    });
+  }
   // Gestion des boutons de la pop-up d'achat du skin Aubergine
   const paypalBtnEl = document.getElementById('paypal-btn');
   if (paypalBtnEl) {
@@ -2239,27 +2393,43 @@ function initGame() {
     });
   }
 
-  // Achievements overlay listener
+  // Achievements overlay listeners
   const achBtn = document.getElementById('achievements-btn');
-  if (achBtn) {
+  const achOverlay = document.getElementById('achievements-overlay');
+  const achClose = document.getElementById('achievements-close');
+  if (achBtn && achOverlay) {
     achBtn.addEventListener('click', () => {
-      const overlay = ensureAchievementsOverlay();
-      if (!overlay) return;
+      // Render the achievements list each time the overlay is opened
       renderAchievementsOverlay();
-      overlay.hidden = false;
-      overlay.style.display = 'flex';
+      achOverlay.hidden = false;
+      // Ensure overlay is visible (display flex) when shown
+      achOverlay.style.display = 'flex';
+    });
+  }
+  if (achClose && achOverlay) {
+    achClose.addEventListener('click', () => {
+      achOverlay.hidden = true;
+      // Hide overlay by removing display style
+      achOverlay.style.display = 'none';
     });
   }
 
-  // Global upgrades overlay listener
+  // Global upgrades overlay listeners
   const globalBtn = document.getElementById('global-upgrades-btn');
-  if (globalBtn) {
+  const globalOverlay = document.getElementById('global-upgrades-overlay');
+  const globalClose = document.getElementById('global-upgrades-close');
+  if (globalBtn && globalOverlay) {
     globalBtn.addEventListener('click', () => {
-      const overlay = ensureGlobalOverlay();
-      if (!overlay) return;
+      // Render the global upgrades list when opening the overlay
       renderGlobalUpgrades();
-      overlay.hidden = false;
-      overlay.style.display = 'flex';
+      globalOverlay.hidden = false;
+      globalOverlay.style.display = 'flex';
+    });
+  }
+  if (globalClose && globalOverlay) {
+    globalClose.addEventListener('click', () => {
+      globalOverlay.hidden = true;
+      globalOverlay.style.display = 'none';
     });
   }
 
@@ -3117,161 +3287,6 @@ function confirmSkinPurchase() {
   closeSkinPopup();
   // Sauvegarder le jeu
   saveGame();
-}
-
-function ensureOverlay(id, templateId, setupFn) {
-  let overlay = document.getElementById(id);
-  if (!overlay) {
-    const tpl = document.getElementById(templateId);
-    if (!tpl) return null;
-    overlay = tpl.content.firstElementChild.cloneNode(true);
-    safeAppend(document.body, overlay);
-    if (setupFn) setupFn(overlay);
-    applyTranslations();
-  }
-  return overlay;
-}
-
-function ensureSettingsOverlay() {
-  return ensureOverlay('settings-overlay', 'settings-overlay-template', (overlay) => {
-    const close = overlay.querySelector('#settings-close');
-    if (close) {
-      close.addEventListener('click', () => {
-        overlay.hidden = true;
-        overlay.style.display = 'none';
-      });
-    }
-    const resetBtn = overlay.querySelector('#reset-btn');
-    if (resetBtn) {
-      resetBtn.addEventListener('click', () => {
-        const msg = t('resetConfirm');
-        const ok = window.confirm(msg);
-        if (!ok) return;
-        try {
-          localStorage.removeItem(SAVE_KEY);
-        } catch (err) {
-          console.warn('Erreur lors de la suppression de la sauvegarde', err);
-        }
-        const newsEl = document.getElementById('news-text');
-        if (newsEl) newsEl.textContent = t('resetDone');
-        setTimeout(() => {
-          location.reload();
-        }, 200);
-      });
-    }
-    const sSound = overlay.querySelector('#settings-sound');
-    if (sSound) {
-      sSound.addEventListener('change', () => {
-        state.settings.sound = sSound.checked;
-        if (state.settings.sound) {
-          if (audioFiles.music) {
-            try {
-              audioFiles.music.currentTime = 0;
-              audioFiles.music.play().catch(() => {});
-            } catch (err) {
-              console.warn('Erreur lecture musique', err);
-            }
-          }
-        } else {
-          if (audioFiles.music) {
-            audioFiles.music.pause();
-          }
-        }
-        saveSettings();
-      });
-    }
-    const sAnim = overlay.querySelector('#settings-anim');
-    if (sAnim) {
-      sAnim.addEventListener('change', () => {
-        state.settings.anim = sAnim.checked;
-        saveSettings();
-      });
-    }
-    const sContrast = overlay.querySelector('#settings-contrast');
-    if (sContrast) {
-      sContrast.addEventListener('change', () => {
-        state.settings.contrast = sContrast.checked;
-        if (state.settings.contrast) {
-          safeAddClass(document.body, 'high-contrast');
-        } else {
-          safeRemoveClass(document.body, 'high-contrast');
-        }
-        saveSettings();
-      });
-    }
-    const sLang = overlay.querySelector('#settings-language');
-    if (sLang) {
-      sLang.addEventListener('change', () => {
-        state.settings.language = sLang.value;
-        saveSettings();
-        loadLocale(sLang.value);
-        showRandomMessage();
-        const flagsContainer = overlay.querySelector('#language-flags');
-        if (flagsContainer) {
-          const buttons = flagsContainer.querySelectorAll('.lang-flag');
-          buttons.forEach((btn) => {
-            btn.classList.toggle('selected', btn.dataset.lang === sLang.value);
-          });
-        }
-      });
-      const flagsContainer = overlay.querySelector('#language-flags');
-      if (flagsContainer) {
-        flagsContainer.addEventListener('click', (ev) => {
-          const target = ev.target.closest('.lang-flag');
-          if (!target) return;
-          const lang = target.getAttribute('data-lang');
-          if (!lang || sLang.value === lang) return;
-          sLang.value = lang;
-          const event = new Event('change');
-          sLang.dispatchEvent(event);
-        });
-      }
-    }
-    const skinToggle = overlay.querySelector('#settings-skin');
-    if (skinToggle) {
-      skinToggle.addEventListener('change', () => {
-        state.skinAubergineActive = skinToggle.checked;
-        applyCourgetteSkin();
-        saveGame();
-      });
-    }
-  });
-}
-
-function ensureSeedsOverlay() {
-  return ensureOverlay('seeds-overlay', 'seeds-overlay-template', (overlay) => {
-    const close = overlay.querySelector('#seeds-close');
-    if (close) {
-      close.addEventListener('click', () => {
-        overlay.hidden = true;
-        overlay.style.display = 'none';
-      });
-    }
-  });
-}
-
-function ensureAchievementsOverlay() {
-  return ensureOverlay('achievements-overlay', 'achievements-overlay-template', (overlay) => {
-    const close = overlay.querySelector('#achievements-close');
-    if (close) {
-      close.addEventListener('click', () => {
-        overlay.hidden = true;
-        overlay.style.display = 'none';
-      });
-    }
-  });
-}
-
-function ensureGlobalOverlay() {
-  return ensureOverlay('global-upgrades-overlay', 'global-upgrades-overlay-template', (overlay) => {
-    const close = overlay.querySelector('#global-upgrades-close');
-    if (close) {
-      close.addEventListener('click', () => {
-        overlay.hidden = true;
-        overlay.style.display = 'none';
-      });
-    }
-  });
 }
 
 // ---------- Gestion des améliorations globales ----------
