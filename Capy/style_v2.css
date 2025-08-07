@@ -1189,9 +1189,13 @@ body.dark-mode .dark-mode-toggle:hover {
   width: 60px;
   height: 60px;
   pointer-events: none;
+  opacity: 0;
 }
 .match-card.revealed {
   background: #fff;
+}
+.match-card.revealed img {
+  opacity: 1;
 }
 .match-card.matched {
   visibility: hidden;
