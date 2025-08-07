@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Capy Match</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body data-force-landscape="false">
+    <button id="volume-toggle" class="volume-btn">🔇</button>
+    <div id="match-container" class="courgette-container">
+      <div id="match-grid" class="match-grid"></div>
+      <div class="courgette-sidebar">
+        <p>Paires : <span id="match-pairs">0</span>/4</p>
+        <p>Temps : <span id="match-time">0</span>s</p>
+        <button id="match-restart" class="btn">Rejouer</button>
+        <button id="match-menu" class="btn">Menu</button>
+      </div>
+    </div>
+    <div id="match-gameover" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Bravo !</h1>
+        <p><strong>Temps :</strong> <span id="match-current-time">0</span>s</p>
+        <p><strong>Record :</strong> <span id="match-high-score">–</span>s</p>
+        <div class="button-group">
+          <button id="match-over-replay" class="btn">Rejouer</button>
+          <button id="match-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <div id="match-instructions" class="overlay hidden">
+      <div class="menu-card">
+        <h2>Capy Match – Règles</h2>
+        <p>Retournez les cartes et retrouvez toutes les paires de légumes identiques. Essayez de terminer en un minimum de temps !</p>
+        <button id="match-instructions-ok" class="btn">Ok</button>
+      </div>
+    </div>
+    <div id="orientation-warning" class="orientation-warning hidden">
+      Veuillez tourner votre appareil en mode paysage !
+    </div>
+    <script src="config.js"></script>
+    <script src="match.js"></script>
+    <script src="orientation.js"></script>
+  </body>
+</html>

@@ -1156,3 +1156,65 @@ body.dark-mode .dark-mode-toggle:hover {
   border-radius: 4px;
   pointer-events: none;
 }
+/* ---------------------- Capy Lights ---------------------- */
+#lightsCanvas {
+  background: #263238;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.3);
+}
+
+/* ---------------------- Capy Match ---------------------- */
+.match-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 70px);
+  gap: 8px;
+  padding: 8px;
+  justify-content: center;
+}
+.match-card {
+  width: 70px;
+  height: 70px;
+  background: #c8e6c9;
+  border-radius: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
+.match-card img {
+  width: 60px;
+  height: 60px;
+  pointer-events: none;
+}
+.match-card.revealed {
+  background: #fff;
+}
+.match-card.matched {
+  visibility: hidden;
+}
+
+/* ---------------------- Capy Scramble ---------------------- */
+.scramble-main {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 12px;
+  padding: 8px;
+}
+.scramble-word {
+  font-size: 1.4em;
+  letter-spacing: 4px;
+}
+.scramble-letters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  justify-content: center;
+}
+.scramble-letter {
+  padding: 8px 12px;
+  font-size: 1.2em;
+  border-radius: 4px;
+  cursor: pointer;
+}
