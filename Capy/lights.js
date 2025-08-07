@@ -8,8 +8,32 @@
   let time = 0;
   let timer = null;
 
+  function simulateClick(g, x, y) {
+    const toggleCell = (cx, cy) => {
+      if (cx >= 0 && cx < size && cy >= 0 && cy < size) {
+        g[cy][cx] = !g[cy][cx];
+      }
+    };
+    toggleCell(x, y);
+    toggleCell(x + 1, y);
+    toggleCell(x - 1, y);
+    toggleCell(x, y + 1);
+    toggleCell(x, y - 1);
+  }
+
+  function generateSolvableGrid() {
+    const g = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
+    const numClicks = Math.floor(Math.random() * 10) + 5;
+    for (let i = 0; i < numClicks; i++) {
+      const x = Math.floor(Math.random() * size);
+      const y = Math.floor(Math.random() * size);
+      simulateClick(g, x, y);
+    }
+    return g;
+  }
+
   function init() {
-    grid = Array.from({ length: size }, () => Array.from({ length: size }, () => Math.random() < 0.5));
+    grid = generateSolvableGrid();
     moves = 0;
     time = 0;
     updateUI();
