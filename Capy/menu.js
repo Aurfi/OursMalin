@@ -98,6 +98,14 @@
       image: 'assets/capybara_ninja_new.png'
     },
     {
+      id: 'tapcapy',
+      title: 'Tap Capy',
+      scoreKey: 'tapCapyHighScore',
+      page: 'tap_phaser.html',
+      category: 'arcade',
+      image: 'assets/capybara_running_clear.png'
+    },
+    {
       id: 'whack',
       title: 'Whack‑a‑Capy',
       scoreKey: 'capyWhackHighScore',
