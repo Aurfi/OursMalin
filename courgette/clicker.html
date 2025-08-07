@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="fr">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Courgette Clicker</title>
+    <!-- Empêcher l'indexation automatique de cette page afin de réduire sa
+         visibilité dans les moteurs de recherche et de compliquer les opérations
+         de scraping. -->
+    <meta name="robots" content="noindex, nofollow" />
+    <!-- Main stylesheet (versioned to bypass service worker cache) -->
+    <!-- Bump the version to force the browser to reload the updated CSS -->
+    <link rel="stylesheet" href="css/style.css?v=18" />
+    <!-- PWA manifest -->
+    <link rel="manifest" href="manifest.webmanifest" />
+  </head>
+  <body>
+    <div id="app" class="container">
+      <!-- Title of the game placed at the top of the container -->
+      <h1 id="game-title"></h1>
+
+      <!-- Stats -->
+      <div id="stats" class="stats">
+        <!-- Current stock of courgettes -->
+        <div class="main-score">
+          <span id="score">0</span> <span data-i18n="scoreCurrent"></span>
+        </div>
+        <!-- Additional metrics: production per minute and per click -->
+        <div class="sub-stats">
+          <div>
+            <span id="perMin" class="value">0</span> <span data-i18n="perMinute"></span>
+          </div>
+          <div>
+            <span id="perClick" class="value">0</span> <span data-i18n="perClick"></span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Barre de progression : indique le pourcentage vers le prochain bâtiment.
+           Une étiquette indique également le nom du prochain élément et l'avancement
+           numérique. -->
+      <div class="progress-container" aria-live="polite">
+        <span id="progress-label" class="progress-label">&nbsp;</span>
+        <div id="progress-bar" class="progress-bar"></div>
+      </div>
+
+        <!-- Options: sound, animation, language selection -->
+      <div id="options" class="options">
+        <!-- Boutons de navigation : options (settings), succès, boosts globaux -->
+        <button id="settings-btn" class="settings-btn" aria-label="Options">
+          <img src="assets/icon_gear.png" alt="" />
+        </button>
+        <button id="achievements-btn" class="achievements-btn" aria-label="Succès">
+          <img src="assets/trophy_icon.png" alt="" />
+        </button>
+      </div>
+      <div id="clicker-area" class="clicker-area">
+        <!-- Zone interactive : Courgette‑chan est composée de plusieurs calques (corps, bras, expression, overlay).
+             Les bras et le visage sont remplacés dynamiquement via JavaScript pour créer des animations.
+             Le conteneur conserve des proportions relatives pour rester responsive. -->
+        <button id="clicker" class="clicker">
+          <div id="courgette-wrapper" class="courgette-wrapper">
+            <!-- Corps principal : image de base sans visage. Le visage est superposé via un calque séparé. -->
+            <!-- Le corps principal utilise l’image de base sans visage fournie par l’utilisateur. -->
+            <img id="courgette-body" src="assets/courgette_base.png" alt="Courgette‑chan" class="courgette-layer body" />
+            <!-- Le visage est un calque séparé : sa source change dynamiquement selon l’expression (neutre, ouverte, demi‑yeux, clic).
+                 On commence par l’expression neutre. -->
+            <img id="courgette-face" src="assets/face_neutral_user_latest.png" alt="Visage de Courgette‑chan" class="courgette-layer face-img" />
+            <!-- Membres de Courgette‑chan dessinés comme des lignes pour un style stick‑figure. Ils sont positionnés
+                 relativement au conteneur et animés via JavaScript en réponse aux clics. -->
+            <div class="limb left-arm"></div>
+            <div class="limb right-arm"></div>
+            <div class="limb left-leg"></div>
+            <div class="limb right-leg"></div>
+            <!-- Overlay d’éclairage / profondeur pour accentuer le relief. Il atténue légèrement le corps lors des clics. -->
+            <img id="courgette-overlay" src="assets/courgette_overlay.png" alt="Overlay" class="courgette-layer overlay" />
+          </div>
+        </button>
+      </div>
+      <!-- Zone pour les messages humoristiques de type fil d'actualité -->
+      <!-- Zone pour les messages humoristiques de type fil d'actualité.
+           Un capybara journaliste apparaît sur le côté et "crie" les nouvelles dans une bulle façon bande dessinée. -->
+      <div id="news" class="news">
+        <div class="capybara-news">
+          <!-- The order of elements is reversed to accommodate the new capybara image facing left.
+               The news bubble comes first, followed by the capybara on the right so that the bubble
+               appears to emerge from the capybara’s mouth. -->
+          <div id="news-text" class="news-text"></div>
+          <div class="capybara-holder">
+            <div class="capybara-bg"></div>
+            <!-- New realistic capybara image with press hat. The id allows click handling for the easter egg. -->
+            <img src="assets/capybara.png" alt="Capybara journaliste" class="capybara-img" id="capybara-img" />
+          </div>
+        </div>
+      </div>
+      <div id="upgrades" class="upgrades"></div>
+
+      <!-- Challenges section: displays daily and weekly challenges with progress
+           indicators and rewards. Initially populated by JavaScript. -->
+      <div id="challenges" class="challenges"></div>
+      <!-- Section des améliorations globales est désormais accessible via un overlay -->
+      <!-- Le conteneur global-upgrades n’est plus affiché ici. Il est rendu dans un overlay séparé. -->
+      <!-- Section prestige pour la mécanique de reset -->
+      <div id="prestige" class="prestige">
+        <div class="prestige-actions">
+          <button id="prestige-btn" class="prestige-btn" data-i18n="prestigeBtn"></button>
+          <!-- Button to open the seeds shop. Shows the amount of seeds owned. -->
+          <button id="seeds-shop-btn" class="seeds-btn" aria-label="Boutique des graines">
+            <img src="assets/icon_seeds.png" alt="" />
+            <span id="seeds-amount">0</span>
+          </button>
+
+          <!-- Button to open the boutique (global upgrades). The text is translated via data-i18n. -->
+          <button id="global-upgrades-btn" class="global-btn" aria-label="Boutique">
+            <img src="assets/icon_global.png" alt="" />
+            <span data-i18n="globalBtn">Boutique</span>
+          </button>
+        </div>
+        <div id="prestige-info" class="prestige-info"></div>
+      </div>
+
+    <!-- L’aide contextuelle a été supprimée pour simplifier l’interface : les joueurs découvrent les mécanismes en jouant. -->
+
+    <!-- Achievements overlay: shows all unlocked and locked achievements along with progress. Initially hidden. -->
+    <div id="achievements-overlay" class="achievements-overlay" hidden>
+      <div class="achievements-content">
+        <h2 data-i18n="achievementsTitle">Succès</h2>
+        <p id="achievements-progress" class="achievements-progress"></p>
+        <!-- Additional statistics about the current run (clicks, time spent, etc.) -->
+        <div id="achievements-stats" class="achievements-stats"></div>
+        <div id="achievements-list" class="achievements-list"></div>
+        <button id="achievements-close" class="achievements-close" data-i18n="close">Fermer</button>
+      </div>
+    </div>
+
+    <!-- Global upgrades overlay: displays available and purchased boosts. Hidden by default -->
+    <div id="global-upgrades-overlay" class="global-upgrades-overlay" hidden>
+      <div class="global-upgrades-content">
+        <h2 id="global-upgrades-title" data-i18n="globalUpgradesTitle">Boosts globaux</h2>
+        <div id="global-upgrades-list" class="upgrades"></div>
+        <button id="global-upgrades-close" class="global-upgrades-close" data-i18n="close">Fermer</button>
+      </div>
+    </div>
+
+    <!-- Seeds overlay: dedicated shop for cosmic seeds. Hidden by default -->
+    <div id="seeds-overlay" class="seeds-overlay" hidden>
+      <div class="seeds-content">
+        <h2 data-i18n="seedsTitle">Boutique des graines</h2>
+        <p id="seeds-count" class="seeds-count"></p>
+        <div id="seeds-list" class="seeds-list"></div>
+        <!-- Message displayed when no seed upgrades are available -->
+        <div id="seeds-empty-msg" class="seeds-empty" hidden></div>
+        <button id="seeds-close" class="seeds-close" data-i18n="close">Fermer</button>
+      </div>
+    </div>
+    <!-- Settings overlay: configurable options such as sound, animations, contrast et langue -->
+    <div id="settings-overlay" class="settings-overlay" hidden>
+      <div class="settings-content">
+        <h2 id="settings-title" data-i18n="settingsTitle">Options</h2>
+        <div class="settings-item">
+          <span data-i18n="optSound">Son</span>
+          <label class="switch">
+            <input type="checkbox" id="settings-sound" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <span data-i18n="optAnim">Animations</span>
+          <label class="switch">
+            <input type="checkbox" id="settings-anim" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <span data-i18n="optContrast">Contraste élevé</span>
+          <label class="switch">
+            <input type="checkbox" id="settings-contrast" />
+            <span class="slider"></span>
+          </label>
+        </div>
+        <div class="settings-item">
+          <span data-i18n="optLang">Langue</span>
+          <!-- Le sélecteur de langue affiche désormais un menu déroulant unique avec les emojis
+               correspondants. Les anciens boutons drapeaux sont conservés mais masqués afin
+               de ne pas perturber la logique existante dans le script. -->
+          <div id="language-flags" class="language-flags" style="display:none;">
+            <!-- Boutons d'origine masqués -->
+            <button type="button" class="lang-flag" data-lang="fr" title="Français">🇫🇷</button>
+            <button type="button" class="lang-flag" data-lang="en" title="English">🇬🇧</button>
+            <button type="button" class="lang-flag" data-lang="ru" title="Русский">🇷🇺</button>
+            <button type="button" class="lang-flag" data-lang="zh" title="中文">🇨🇳</button>
+            <button type="button" class="lang-flag" data-lang="ja" title="日本語">🇯🇵</button>
+          </div>
+          <!-- Menu déroulant avec les emojis de drapeau ou mascotte pour chaque langue.
+               Chaque option utilise la valeur ISO de la langue pour que la logique
+               existante continue de fonctionner. -->
+          <select id="settings-language">
+            <option value="fr">🇫🇷</option>
+            <option value="en">🇬🇧</option>
+            <option value="ru">🇷🇺</option>
+            <option value="zh">🇨🇳</option>
+            <option value="ja">🇯🇵</option>
+            <!-- Nouvelle langue Capybara avec un emoji castor pour la représenter -->
+            <option value="capy">🦫</option>
+          </select>
+        </div>
+        <!-- Additional settings can be added here in the future -->
+        <!-- Container for the skin selector.  Its content is generated
+             dynamically in JavaScript when at least one additional skin
+             (Aubergine or Banane) is unlocked.  Initially hidden. -->
+        <div class="settings-item" id="skin-setting" hidden></div>
+
+        <!-- Champ de texte discret permettant d’activer le mode dieu.
+             Aucun texte descriptif n’explique sa fonction afin qu’il
+             ressemble à un simple champ libre.  Lorsque le joueur saisit
+             "dieu est grand" dans ce champ, le mode dieu s’active ; en
+             tapant "dieu est petit", il se désactive.  Voir main.js pour
+             la gestion de cet easter egg. -->
+        <div class="settings-item" style="margin-top:12px;">
+          <input type="text" id="god-input" aria-label="Champ secret" placeholder="" style="width:100%; background-color:#f4f4f4; border:1px solid #ccc; border-radius:8px; padding:6px; color:#333;" />
+        </div>
+
+        <!-- Bouton de réinitialisation. Permet au joueur d'effacer totalement sa progression. -->
+        <div class="settings-item">
+          <button id="reset-btn" class="reset-btn" data-i18n="optReset" style="width:100%; padding:8px; margin-top:8px; background-color:#e74c3c; color:#fff; border:none; border-radius:8px; cursor:pointer;">
+            Réinitialiser la partie
+          </button>
+        </div>
+        <button id="settings-close" class="settings-close" data-i18n="close">Fermer</button>
+      </div>
+    </div>
+
+    <!-- La boutique des graines est fusionnée avec la boutique principale. Pas d'overlay dédié. -->
+    </div>
+    <!-- Main game script
+         Ajout d'un paramètre de version à l'URL pour contourner le cache du service worker.
+         Lorsqu'on modifie le script principal, incrémentez la valeur après v= afin que la
+         requête récupère la nouvelle version au lieu de servir une version obsolète. -->
+    <!-- Incrémenter le paramètre de version lorsque le script change pour forcer la mise à jour à travers le service worker -->
+    <!-- Incrémenter le paramètre de version lorsque le script change pour forcer la mise à jour à travers le service worker -->
+    <!-- Bump the version to force the browser to reload the updated JS -->
+    <!-- Ajout d'un bouton de retour vers CapyGames. Ce lien s'ouvre dans un nouvel onglet. -->
+    <div class="capygames-link">
+      <a href="https://oursmalin.ovh/Capy/games.html" target="_blank">Retour vers CapyGames</a>
+    </div>
+    <!-- Mettez à jour le paramètre de version lorsque le script principal change afin de
+         contourner le cache du service worker. -->
+    <!-- Charger d'abord le fichier de news statiques pour alimenter le capybara journaliste.
+         Ce script définit les constantes ALL_NEWS_FR et ALL_NEWS_EN générées à partir du JSON fourni -->
+    <!-- Mettez à jour le paramètre de version lorsque le script principal change afin de
+         contourner le cache du service worker. -->
+    <!-- Augmentez ce numéro à chaque fois que le fichier js/main.js est modifié afin d'invalider le cache du service worker. -->
+    <script src="js/main.js?v=32"></script>
+
+  <!-- Honeypot : lien invisible destiné à piéger les scrapers et robots. Aucun
+       fichier ne correspond à cette URL ; les humains ne verront pas cet élément. -->
+  <div style="display:none">
+    <a href="/secret/9e2f7d.html">Ne pas cliquer</a>
+  </div>
+  </body>
+</html>
