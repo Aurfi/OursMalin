@@ -1,4 +1,4 @@
-// Bump the cache version whenever core files such as main.js or style.css change.
+// Bump the cache version whenever core files such as main.js or style_v2.css change.
 // This invalidates the previous cache and forces the service worker to fetch
 // updated files from disk instead of serving stale resources. Without this, any
 // changes to the JavaScript or styling would be ignored until the user clears
@@ -19,7 +19,7 @@ const CACHE_NAME = 'courgette-cache-v19';
 const urlsToCache = [
   '/',
   'clicker.html',
-  'css/style.css',
+  'css/style_v2.css',
   'js/main.js',
   'news.json', // Dynamic news feed
   'manifest.webmanifest',
@@ -83,7 +83,7 @@ const urlsToCache = [
   // up-to-date CSS and JS rather than the older v8/v14.  Should you bump
   // the version number in clicker.html later on, remember to update
   // these entries and increment CACHE_NAME accordingly.
-  'css/style.css?v=18',
+  'css/style_v2.css?v=19',
   // Prise en compte de la nouvelle version du script principal afin que
   // l’application récupère bien main.js?v=35 lors du précaching.
   'js/main.js?v=35'

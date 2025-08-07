@@ -281,7 +281,7 @@
       container.appendChild(piece);
       // déclencher la chute après une micro tâche
       setTimeout(() => {
-        piece.style.top = `${100 + Math.random() * 20}vh`;
+        piece.style.top = `${100 + Math.random() * 20}dvh`;
         piece.style.transform = `rotate(${360 + Math.random() * 360}deg)`;
         piece.style.opacity = '0';
       }, 20);
