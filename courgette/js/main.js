@@ -1,11 +1,8 @@
 // Courgette Clicker main script
-console.log(">>> VERSION DEBUG 99 <<<");
-// Encapsulate all game logic inside an IIFE to prevent direct access to internal
-// variables from the browser console. This adds a basic layer of protection
-// against cheating by hiding the state object and helper functions from the
-// global scope. Only the DOM event handlers defined within this function
-// interact with the game state.
-(function() {
+
+// Main script runs in global scope so game state and helpers are directly
+// accessible. This simplifies debugging and integration at the cost of
+// exposing the internals publicly.
 
 // When defined before this script executes, setting window.COURGETTE_NO_CSS
 // to true prevents the game from altering page-wide CSS. This is useful when
@@ -3955,5 +3952,3 @@ function loadSavedGame() {
 // Start the locale loading
 loadLocale();
 
-// Immediately invoked function expression closure end
-})();

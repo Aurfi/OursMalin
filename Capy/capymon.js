@@ -1847,19 +1847,13 @@
   // Enregistrement des attaques
   //
   // Dans la version originale du jeu, chaque attaque effectuée par le joueur
-  // ou l’ennemi était enregistrée dans un journal interne pour alimenter le
-  // CapyDex.  Lors des refactorisations précédentes, la définition de
-  // recordMove() a été omise, ce qui provoquait une erreur de référence et
-  // bloquait complètement les combats (les clics sur les attaques ne
-  // faisaient plus rien et les animaux sauvages restaient figés).  Pour
-  // restaurer un comportement fonctionnel, nous définissons ici une fonction
-  // recordMove() qui accepte un nom d’attaque et ne fait rien.  Cette
-  // implémentation de substitution peut être enrichie ultérieurement pour
-  // consigner les attaques utilisées dans le CapyDex ou pour d’autres
-  // fonctionnalités de suivi.
+  // ou l’ennemi devait être consignée afin d’alimenter un MoveDex.
+  // Lors d’une refactorisation, cette fonction avait été laissée vide,
+  // empêchant l’ouverture du sous-menu « Attaques ».  Nous rétablissons ici
+  // l’enregistrement effectif des attaques rencontrées.
   function recordMove(moveName) {
-    // Cette fonction est intentionnellement vide.
-    // Elle sert de placeholder afin d’éviter une erreur ReferenceError.
+    moveDex[moveName] = true;
+    saveMoveDex();
   }
 
   // Après la déclaration des attaques, on redéfinit les puissances selon
@@ -1893,6 +1887,9 @@
   let currentCapyIndex = 0;
   // Inventaire des objets : clé = nom d'objet, valeur = quantité.
   let inventory = {};
+
+  // Dictionnaire des attaques rencontrées pour le MoveDex.
+  let moveDex = {};
 
   // Dictionnaire des objets rencontrés pour l’ItemDex.
   let itemDex = {};
@@ -1992,6 +1989,29 @@
   function saveItemDex() {
     try {
       localStorage.setItem('itemDex', JSON.stringify(itemDex));
+    } catch (e) {
+      /* ignore */
+    }
+  }
+
+  /**
+   * Charge le MoveDex (attaques rencontrées) depuis le stockage local.
+   */
+  function loadMoveDex() {
+    try {
+      const data = localStorage.getItem('moveDex');
+      if (data) moveDex = JSON.parse(data) || {};
+    } catch (e) {
+      moveDex = {};
+    }
+  }
+
+  /**
+   * Sauvegarde le MoveDex dans le stockage local.
+   */
+  function saveMoveDex() {
+    try {
+      localStorage.setItem('moveDex', JSON.stringify(moveDex));
     } catch (e) {
       /* ignore */
     }
@@ -2244,6 +2264,7 @@
   loadPlayerData();
   loadCapyDex();
   loadItemDex();
+  loadMoveDex();
 
   /**
    * Donne de l’expérience au capybara du joueur.  Si suffisamment
@@ -4069,22 +4090,40 @@
     movesBtn.className = 'btn';
     movesBtn.textContent = 'Attaques';
     movesBtn.style.marginTop = '10px';
-    movesBtn.addEventListener('click', () => {
+    movesBtn.addEventListener('click', (e) => {
+      // Empêcher la propagation afin d'éviter la fermeture immédiate du nouveau menu
+      e.preventDefault();
+      e.stopPropagation();
       // Fermer le CapyDex avant d’ouvrir le menu des attaques
       overlay.remove();
-      openMoveDex();
+      // Ouvrir le MoveDex dans une nouvelle page
+      setTimeout(openMoveDex, 0);
     });
     // Bouton pour ouvrir le dex des objets
     const itemsBtn = document.createElement('button');
     itemsBtn.className = 'btn';
     itemsBtn.textContent = 'Objets';
     itemsBtn.style.marginTop = '10px';
-    itemsBtn.addEventListener('click', () => {
+    itemsBtn.addEventListener('click', (e) => {
+      // Empêcher la propagation pour que l'ItemDex reste affiché
+      e.preventDefault();
+      e.stopPropagation();
       overlay.remove();
-      openItemDex();
+      // Ouvrir l'ItemDex après la fermeture du CapyDex
+      setTimeout(openItemDex, 0);
+    });
+    // Bouton pour accéder aux options depuis le CapyDex
+    const optionsBtn = document.createElement('button');
+    optionsBtn.className = 'btn';
+    optionsBtn.textContent = 'Options';
+    optionsBtn.style.marginTop = '10px';
+    optionsBtn.addEventListener('click', () => {
+      overlay.remove();
+      openOptions();
     });
     card.appendChild(movesBtn);
     card.appendChild(itemsBtn);
+    card.appendChild(optionsBtn);
     card.appendChild(closeBtn);
     overlay.appendChild(card);
     document.body.appendChild(overlay);
