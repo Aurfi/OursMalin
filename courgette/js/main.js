@@ -15,6 +15,12 @@ let dict = {};
 // Slightly lower cost multiplier to make early progression more addictive
 const costMultiplier = 1.13;
 
+// Absolute URL for the external news feed so it can be fetched
+// regardless of the current page's directory.
+const NEWS_JSON_URL = document.currentScript
+  ? new URL('../news.json', document.currentScript.src).href
+  : 'news.json';
+
 // LocalStorage key for saving
 // Bump the save key to force a complete reset on the next load.  By changing
 // this key and incrementing the version below we ensure that any previous
@@ -1309,7 +1315,7 @@ const fallbackDict = {
    */
   async function loadNewsJSON(locale) {
     try {
-      const res = await fetch('news.json');
+      const res = await fetch(NEWS_JSON_URL);
       if (!res.ok) throw new Error(`HTTP ${res.status}`);
       const newsData = await res.json();
       // Build the list of messages for the given locale. Fallback to FR, then EN.

@@ -243,13 +243,8 @@
     <div class="capygames-link">
       <a href="https://oursmalin.ovh/Capy/games.html" target="_blank">Retour vers CapyGames</a>
     </div>
-    <!-- Mettez à jour le paramètre de version lorsque le script principal change afin de
-         contourner le cache du service worker. -->
-    <!-- Charger d'abord le fichier de news statiques pour alimenter le capybara journaliste.
-         Ce script définit les constantes ALL_NEWS_FR et ALL_NEWS_EN générées à partir du JSON fourni -->
-    <!-- Mettez à jour le paramètre de version lorsque le script principal change afin de
-         contourner le cache du service worker. -->
     <!-- Augmentez ce numéro à chaque fois que le fichier js/main.js est modifié afin d'invalider le cache du service worker. -->
+    <!-- main.js récupère désormais les news dynamiques depuis news.json -->
     <script src="js/main.js?v=32"></script>
 
   <!-- Honeypot : lien invisible destiné à piéger les scrapers et robots. Aucun
