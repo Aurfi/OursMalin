@@ -101,6 +101,12 @@ body {
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  /* Permettre le défilement et éviter que le haut de l'écran soit masqué
+     sur les petits appareils. La prise en compte du "safe area" garantit
+     que le contenu ne passe pas sous l'encoche sur iOS. */
+  overflow-y: auto;
+  padding-top: env(safe-area-inset-top);
+  box-sizing: border-box;
   /* Fond semi‑transparent par défaut : éclairci pour laisser transparaître
      davantage le décor tout en préservant la lisibilité des textes. */
   background: rgba(0, 0, 0, 0.35);
