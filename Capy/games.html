@@ -9,6 +9,16 @@
     <!-- La feuille de style principale se trouve un niveau au‑dessus du dossier Capy -->
     <!-- Mettre à jour les chemins des ressources : le reste du site a été déplacé dans le dossier Capy. -->
     <link rel="stylesheet" href="../Capy/style.css" />
+    <script>
+      (function() {
+        function setVh() {
+          document.documentElement.style.setProperty('--vh', `${window.innerHeight * 0.01}px`);
+        }
+        window.addEventListener('resize', setVh);
+        window.addEventListener('orientationchange', setVh);
+        setVh();
+      })();
+    </script>
   </head>
   <!-- Attribuer un identifiant au corps pour permettre au script de
        pré‑lancement de détecter la page d’accueil et de ne pas
