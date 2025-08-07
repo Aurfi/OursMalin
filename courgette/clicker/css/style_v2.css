@@ -1092,29 +1092,11 @@ body.high-contrast .seeds-item button.unaffordable {
 }
 
 /* Achievements button near the settings: rendered as a circular icon with a trophy image inside. */
-.achievements-btn {
-  background: none;
-  border: none;
-  width: 40px;
-  height: 40px;
-  padding: 0;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-.achievements-btn:hover {
-  background-color: rgba(0, 0, 0, 0.08);
-}
-.achievements-btn img {
-  width: 28px;
-  height: 28px;
-}
 
-/* Paramètres (settings) button */
-.settings-btn {
+/* Boutons circulaires dans la barre d'options (succès, paramètres, boutique) */
+.achievements-btn,
+.settings-btn,
+.global-upgrades-btn {
   background: none;
   border: none;
   width: 40px;
@@ -1127,10 +1109,14 @@ body.high-contrast .seeds-item button.unaffordable {
   cursor: pointer;
   transition: background-color 0.2s;
 }
-.settings-btn:hover {
+.achievements-btn:hover,
+.settings-btn:hover,
+.global-upgrades-btn:hover {
   background-color: rgba(0, 0, 0, 0.08);
 }
-.settings-btn img {
+.achievements-btn img,
+.settings-btn img,
+.global-upgrades-btn img {
   width: 28px;
   height: 28px;
 }
