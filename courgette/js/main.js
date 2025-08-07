@@ -119,7 +119,11 @@ let faceLock = false;
   // haut, dans « ../assets/ ». Pour éviter des liens brisés, on calcule un
   // préfixe en fonction du chemin courant puis on l’utilise via une fonction
   // helper pour composer les chemins vers les fichiers.
-  const ASSET_PREFIX = window.location.pathname.includes('/clicker/') ? '../assets/' : 'assets/';
+  const currentPath = window.location.pathname;
+  const ASSET_PREFIX =
+    currentPath.includes('/clicker/') || currentPath.endsWith('/clicker')
+      ? '../assets/'
+      : 'assets/';
 
   /**
    * Construit le chemin complet vers une ressource en préfixant son nom par
