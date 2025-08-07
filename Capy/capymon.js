@@ -206,6 +206,112 @@
     });
   }
 
+  // ---------------------------------------------------------------------------
+  // Simple battle system using shared Capy Battle engine
+  let battleCssInjected = false;
+  function injectBattleCss() {
+    if (battleCssInjected) return;
+    const style = document.createElement('style');
+    style.textContent = `
+      .battle-container { max-width: 480px; margin: 0 auto; text-align: center; padding: 8px; }
+      .battle-arena { position: relative; width: 100%; height: 240px; background: url('assets/swamp_background.png') center/cover no-repeat; border-radius: 12px; overflow: hidden; margin-bottom: 12px; }
+      .fighter { position: absolute; bottom: 0; width: 120px; transition: transform 0.3s; }
+      #player { left: 20px; }
+      #enemy { right: 20px; transform: scaleX(-1); }
+      .hp-label { font-weight: bold; margin-top: 4px; }
+      .hp-bar { height: 16px; background: #f44336; border-radius: 8px; overflow: hidden; margin-bottom: 8px; }
+      .hp-fill { height: 100%; width: 100%; background: #4caf50; transition: width 0.3s; }
+      #message { min-height: 40px; }
+      .attack-anim { transform: translateX(40px); }
+      .enemy-attack-anim { transform: translateX(-40px) scaleX(-1); }
+      .hit-anim { animation: hit 0.3s; }
+      @keyframes hit { 0% { transform: translateX(0); } 50% { transform: translateX(-10px); } 100% { transform: translateX(0); } }
+      .victory-overlay { position: absolute; top: 0; left: 0; right: 0; bottom: 0; display: none; flex-direction: column; align-items: center; justify-content: center; background: rgba(0,0,0,0.6); color: #fff; font-size: 2em; gap: 16px; }
+      .victory-overlay.visible { display: flex; }
+      .star { width: 80px; animation: spin 2s linear infinite; }
+      @keyframes spin { from { transform: rotate(0deg); } to { transform: rotate(360deg); } }
+    `;
+    document.head.appendChild(style);
+    battleCssInjected = true;
+  }
+
+  function launchCapyBattle(playerSrc, enemySrc, onEnd) {
+    injectBattleCss();
+    const overlay = document.createElement('div');
+    overlay.id = 'capy-simple-battle';
+    overlay.innerHTML = `
+      <div class="battle-container">
+        <div class="battle-arena">
+          <img id="player" class="fighter" src="${playerSrc}" alt="capy joueur" />
+          <img id="enemy" class="fighter" src="${enemySrc}" alt="capy ennemi" />
+          <div id="result-overlay" class="victory-overlay">
+            <img src="assets/celebration_star.png" alt="étoile" class="star" />
+            <div id="result-text">Victoire !</div>
+            <button id="restart-btn" class="btn">Continuer</button>
+          </div>
+        </div>
+        <div class="hp-label">Capy HP</div>
+        <div class="hp-bar"><div id="player-hp" class="hp-fill"></div></div>
+        <div class="hp-label">Ennemi HP</div>
+        <div class="hp-bar"><div id="enemy-hp" class="hp-fill"></div></div>
+        <p id="message">La bataille commence !</p>
+        <div>
+          <button id="attack-btn" class="btn">Attaquer</button>
+          <button id="menu-btn" class="btn">Fuir</button>
+        </div>
+      </div>`;
+    document.body.appendChild(overlay);
+    CapyBattle({
+      playerImg: overlay.querySelector('#player'),
+      enemyImg: overlay.querySelector('#enemy'),
+      playerHpEl: overlay.querySelector('#player-hp'),
+      enemyHpEl: overlay.querySelector('#enemy-hp'),
+      msgEl: overlay.querySelector('#message'),
+      attackBtn: overlay.querySelector('#attack-btn'),
+      menuBtn: overlay.querySelector('#menu-btn'),
+      resultOverlay: overlay.querySelector('#result-overlay'),
+      restartBtn: overlay.querySelector('#restart-btn'),
+      resultText: overlay.querySelector('#result-text'),
+      starImg: overlay.querySelector('.star'),
+      menuAction: () => {
+        overlay.remove();
+        if (onEnd) onEnd(false);
+      },
+      onEnd: (victory) => {
+        overlay.remove();
+        if (onEnd) onEnd(victory);
+      }
+    });
+  }
+
+  function startCapyBattle(enemySpeciesKey, isTrainer = false, callback) {
+    if (inBattle) return;
+    inBattle = true;
+    playBattleMusic(isTrainer);
+    let speciesKey = enemySpeciesKey;
+    if (!speciesKey) {
+      const distribution = zones[currentZoneIndex % zones.length].encounters;
+      const r = Math.random();
+      let cumulative = 0;
+      for (const entry of distribution) {
+        cumulative += entry.prob;
+        if (r <= cumulative) {
+          speciesKey = entry.key;
+          break;
+        }
+      }
+      if (!speciesKey) speciesKey = 'capybara';
+    }
+    const playerSrc = (playerCapys[currentCapyIndex] && speciesImages[playerCapys[currentCapyIndex].species]) ? speciesImages[playerCapys[currentCapyIndex].species].src : 'assets/capybara_super.png';
+    const enemySrc = speciesImages[speciesKey] ? speciesImages[speciesKey].src : 'assets/capybara_turtle.png';
+    launchCapyBattle(playerSrc, enemySrc, (victory) => {
+      stopBattleMusic();
+      inBattle = false;
+      draw();
+      if (callback) callback(victory);
+    });
+  }
+
   // Position du joueur en tuiles
   const player = { x: 2, y: 2 };
 
@@ -2066,40 +2172,31 @@
    */
   function startTrainerBattle(zIndex) {
     trainerBattle = true;
-    trainerZoneIndex = zIndex;
-    trainerTeamIndex = 0;
-    trainerTeam = generateTrainerTeam(zIndex);
-    // Choisir une phrase d’introduction pour ce braconnier
-    const introPhrases = [
-      'Hé toi ! Personne ne passe sans me battre !',
-      'Je protège cette zone avec mes animaux, prépare‑toi !',
-      'Tu ne franchiras pas cette porte tant que je serai là !',
-      'Mes créatures sont invincibles ! Approche si tu l’oses !',
-      'Le chemin est bloqué. Défi moi pour continuer !'
-    ];
-    const intro = introPhrases[zIndex % introPhrases.length];
-    // Initialiser la structure battle avec le premier ennemi
-    const first = trainerTeam[0];
-    battle = {
-      enemy: {
-        species: first.species,
-        level: first.level,
-        maxHP: first.maxHP,
-        currentHP: first.currentHP
-      },
-      playerTurn: true
+    const team = generateTrainerTeam(zIndex);
+    let idx = 0;
+    const fightNext = () => {
+      if (idx >= team.length) {
+        braconniersDefeated[zIndex] = true;
+        saveBraconniers();
+        trainerBattle = false;
+        inBattle = false;
+        stopBattleMusic();
+        draw();
+        return;
+      }
+      startCapyBattle(team[idx].species, true, (victory) => {
+        if (victory) {
+          idx++;
+          fightNext();
+        } else {
+          trainerBattle = false;
+          inBattle = false;
+          stopBattleMusic();
+          teleportToStart();
+        }
+      });
     };
-    inBattle = true;
-    // Musique de combat contre un dresseur ou un braconnier
-    playBattleMusic(true);
-    // Jouer une introduction personnalisée avant de créer l’interface
-    showBattleIntro(true, first.species, false, () => {
-      createBattleOverlay('Braconnier');
-      updateBattleUI(intro);
-      setTimeout(() => {
-        showBattleActions();
-      }, 1200);
-    });
+    fightNext();
   }
 
   /**
@@ -3593,7 +3690,9 @@
   function tryRandomBattle() {
     if (inBattle) return;
     if (Math.random() < 0.15) {
-      startBattle();
+      startCapyBattle(undefined, false, (victory) => {
+        if (!victory) teleportToStart();
+      });
     }
   }
 
