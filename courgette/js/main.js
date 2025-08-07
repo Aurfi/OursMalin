@@ -125,6 +125,16 @@ let faceLock = false;
       ? '../assets/'
       : 'assets/';
 
+  // Comme pour les assets, les fichiers de traduction se trouvent à un
+  // emplacement différent selon que le jeu est chargé depuis la page
+  // clicker.html à la racine ou depuis clicker/index.html dans un
+  // sous-dossier.  On calcule donc un préfixe équivalent pour les locales
+  // afin d'éviter des requêtes vers un dossier inexistant (ex. clicker/locales).
+  const LOCALE_PREFIX =
+    currentPath.includes('/clicker/') || currentPath.endsWith('/clicker')
+      ? '../locales/'
+      : 'locales/';
+
   /**
    * Construit le chemin complet vers une ressource en préfixant son nom par
    * le chemin calculé précédemment.  Cela permet de référencer correctement
@@ -1609,7 +1619,9 @@ async function loadLocale(locale) {
   const targetLocale = locale || state.settings.language || DEFAULT_LOCALE;
   currentLocale = targetLocale;
   try {
-    const res = await fetch(`locales/${targetLocale}.json`);
+    // Utiliser le préfixe calculé pour accéder au dossier de traductions
+    // correct, que l'on soit sur clicker.html ou sur clicker/index.html.
+    const res = await fetch(`${LOCALE_PREFIX}${targetLocale}.json`);
     if (!res.ok) throw new Error(`HTTP ${res.status}`);
     dict = await res.json();
   } catch (err) {
