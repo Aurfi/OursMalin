@@ -119,21 +119,22 @@ let faceLock = false;
   // haut, dans « ../assets/ ». Pour éviter des liens brisés, on calcule un
   // préfixe en fonction du chemin courant puis on l’utilise via une fonction
   // helper pour composer les chemins vers les fichiers.
-  const currentPath = window.location.pathname;
-  const ASSET_PREFIX =
-    currentPath.includes('/clicker/') || currentPath.endsWith('/clicker')
-      ? '../assets/'
-      : 'assets/';
+  // Détermination des préfixes des ressources et des fichiers de traduction.
+  // Plutôt que de se baser sur window.location (qui dépend du chemin de la
+  // page courante et peut produire des chemins incorrects lorsqu’on accède
+  // à «\u202f/clicker\u202f» sans slash final), on dérive le dossier racine à partir
+  // de l’URL du script.  De cette manière, les chemins vers «\u202fassets/\u202f» et
+  // «\u202flocales/\u202f» restent valides quel que soit l’URL utilisée pour
+  // consulter le jeu.
+  const SCRIPT_ROOT = document.currentScript
+    ? new URL('..', document.currentScript.src)
+    : new URL(window.location.href);
+  const ASSET_PREFIX = new URL('assets/', SCRIPT_ROOT).href;
 
-  // Comme pour les assets, les fichiers de traduction se trouvent à un
-  // emplacement différent selon que le jeu est chargé depuis la page
-  // clicker.html à la racine ou depuis clicker/index.html dans un
-  // sous-dossier.  On calcule donc un préfixe équivalent pour les locales
-  // afin d'éviter des requêtes vers un dossier inexistant (ex. clicker/locales).
-  const LOCALE_PREFIX =
-    currentPath.includes('/clicker/') || currentPath.endsWith('/clicker')
-      ? '../locales/'
-      : 'locales/';
+  // Comme pour les assets, les fichiers de traduction sont résolus à partir
+  // du dossier racine déduit du script, garantissant l'utilisation des JSON
+  // locaux sans déclencher le dictionnaire de secours.
+  const LOCALE_PREFIX = new URL('locales/', SCRIPT_ROOT).href;
 
   /**
    * Construit le chemin complet vers une ressource en préfixant son nom par
