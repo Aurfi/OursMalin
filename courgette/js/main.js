@@ -1169,9 +1169,6 @@ const fallbackDict = {
   specialOfferAubergine: 'Skin Aubergine',
   specialOfferPrice: 'Seulement 9,99 €',
   buySkinBtn: 'Acheter',
-  paypalPopupTitle: 'Acheter le skin Aubergine pour 9,99 € ?',
-  paypalBtn: 'Payer avec PayPal 😎💸',
-  cancelBtn: '💀 Retour',
   skinPurchased: 'Skin Aubergine débloqué !',
   // Libellé pour l’option qui permet d’activer ou de désactiver le skin
   // Aubergine.  On ajoute une note humoristique “mode super‑légume” pour
@@ -2042,15 +2039,6 @@ function initGame() {
   }
   // Mettre à jour l’affichage du nombre de graines sur le bouton dès l’initialisation
   updateSeedsDisplay();
-
-  // Gestion des boutons de la pop-up d'achat du skin Aubergine
-  const paypalBtnEl = document.getElementById('paypal-btn');
-  if (paypalBtnEl) {
-    paypalBtnEl.addEventListener('click', confirmSkinPurchase);
-  }
-  const cancelSkinBtn = document.getElementById('skin-cancel-btn');
-  if (cancelSkinBtn) {
-    cancelSkinBtn.addEventListener('click', closeSkinPopup);
   }
 
   // -----------------------------------------------------------------------
@@ -3014,108 +3002,21 @@ function updateSkinSettingVisibility() {
   applyTranslations();
 }
 
-// Ouvrir la pop-up de paiement pour le skin Aubergine.  Cette fonction
-// affiche un overlay sombre et propose deux boutons : PayPal et Retour.
-// Sur certaines versions du jeu, une variable interne pouvait être modifiée
-// accidentellement provoquant l'affichage immédiat de la pop‑up à
-// l'ouverture de la page. Pour prévenir tout affichage non désiré,
-// on force désormais le masquage de la pop‑up à l'initialisation.
-// La pop‑up ne s'affichera ensuite que suite à une interaction utilisateur via
-// openSkinPopup().
-window.addEventListener('DOMContentLoaded', () => {
-  const popup = document.getElementById('skin-popup');
-  if (popup) {
-    // Le fait de définir l'attribut hidden garantit un affichage masqué.
-    // Même si le code HTML initial ne comporte pas l'attribut hidden ou qu'un
-    // autre script l'a retiré, cette instruction s'assure qu'à l'initialisation
-    // le composant reste invisible tant qu'un utilisateur ne le demande pas.
-    popup.setAttribute('hidden', '');
-  }
-});
-
-function openSkinPopup(ev) {
-  // Éviter d'ouvrir automatiquement la pop‑up si la fonction est appelée sans
-  // interaction utilisateur. Certains navigateurs peuvent déclencher des
-  // appels programmatiques lors du chargement ; dans ce cas on quitte
-  // immédiatement pour que l'offre ne s'affiche pas à l'ouverture de la page.
-  if (!ev || !ev.isTrusted) return;
-
-  // Certaines pages (comme clicker.html) ne contiennent pas la pop‑up de skin
-  // dans leur HTML statique. Si elle est absente, on la génère dynamiquement
-  // ici afin d'ouvrir un overlay cohérent pour l'achat du skin Aubergine.
-  let popup = document.getElementById('skin-popup');
-  if (!popup) {
-    // Créer la structure de la pop‑up conformément à clicker/index.html
-    popup = document.createElement('div');
-    popup.id = 'skin-popup';
-    popup.className = 'popup-overlay';
-    popup.hidden = true;
-    // Contenu de la pop‑up
-    const content = document.createElement('div');
-    content.className = 'popup-content';
-    const title = document.createElement('h3');
-    title.setAttribute('data-i18n', 'paypalPopupTitle');
-    title.textContent = t('paypalPopupTitle');
-    const buttons = document.createElement('div');
-    buttons.className = 'popup-buttons';
-    // Bouton PayPal (confirm)
-    const paypalBtn = document.createElement('button');
-    paypalBtn.id = 'paypal-btn';
-    paypalBtn.className = 'paypal-btn';
-    paypalBtn.setAttribute('data-i18n', 'paypalBtn');
-    paypalBtn.textContent = t('paypalBtn');
-    paypalBtn.addEventListener('click', confirmSkinPurchase);
-    // Bouton Annuler
-    const cancelBtn = document.createElement('button');
-    cancelBtn.id = 'skin-cancel-btn';
-    cancelBtn.className = 'cancel-btn';
-    cancelBtn.setAttribute('data-i18n', 'cancelBtn');
-    cancelBtn.textContent = t('cancelBtn');
-    cancelBtn.addEventListener('click', closeSkinPopup);
-    buttons.appendChild(paypalBtn);
-    buttons.appendChild(cancelBtn);
-    content.appendChild(title);
-    content.appendChild(buttons);
-    popup.appendChild(content);
-    // Insérer l'overlay au début du corps afin qu'il ne soit pas dans
-    // d'autres conteneurs aux styles spécifiques. Cela garantit que le
-    // positionnement fixed couvre l'écran.
-    safeAppend(document.body, popup);
-    // Appliquer les traductions sur les nouveaux éléments
-    applyTranslations();
-  }
-  // Afficher la pop‑up uniquement si l'action est autorisée
-  popup.removeAttribute('hidden');
-}
-
-// Fermer la pop-up de paiement sans effectuer d'achat.  Utilisée lorsque
-// l'utilisateur clique sur le bouton Retour.
-function closeSkinPopup() {
-  const popup = document.getElementById('skin-popup');
-  if (!popup) return;
-  popup.setAttribute('hidden', '');
-}
-
-// Confirmer l'achat du skin Aubergine.  Cette fonction simule un paiement
-// PayPal : on joue un son de réussite, on débloque le skin et on l'active
-// automatiquement.  L'information est sauvegardée et un message est
-// affiché dans la bulle d'actualités.  La pop-up est fermée ensuite.
+// Débloquer et activer le skin Aubergine lorsque le joueur clique sur le
+// bouton d'achat de l'offre spéciale. Aucun paiement ni pop-up n'est
+// désormais affiché : le skin est accordé instantanément et sauvegardé.
 function confirmSkinPurchase() {
-  // Débloquer et activer le skin
   state.skinAubergineUnlocked = true;
   state.skinAubergineActive = true;
   applyCourgetteSkin();
   updateSkinSettingVisibility();
-  // Jouer un son d'achievement
   playAchievementSound();
-  // Afficher un message dans la bulle de news
   const newsEl = document.getElementById('news-text');
   if (newsEl) {
     newsEl.textContent = t('skinPurchased');
   }
-  // Fermer la pop-up
-  closeSkinPopup();
-  // Sauvegarder le jeu
+  const card = document.getElementById('special-offer-js');
+  if (card) card.remove();
   saveGame();
 }
 
@@ -3442,8 +3343,8 @@ function renderSeedUpgrades() {
   // ---------------------------------------------------------------------
   // Ajout d'une offre spéciale pour le skin Aubergine.  Cette carte
   // s'affiche sous les améliorations de graines tant que le skin n'a pas été
-  // acheté. Elle comporte un bouton qui ouvre une pop-up pour simuler
-  // l'achat. Si le skin est déjà débloqué, la carte n'est pas affichée.
+  // acheté. Le bouton d'achat débloque immédiatement le skin.
+  // Si le skin est déjà débloqué, la carte n'est pas affichée.
   const seedsContent = document.querySelector('#seeds-overlay .seeds-content');
   if (seedsContent) {
     // Retirer la carte existante si elle a été générée lors d'un rendu précédent.
@@ -3476,7 +3377,7 @@ function renderSeedUpgrades() {
       btn.className = 'special-buy-btn';
       btn.setAttribute('data-i18n', 'buySkinBtn');
       btn.textContent = t('buySkinBtn');
-      btn.addEventListener('click', openSkinPopup);
+      btn.addEventListener('click', confirmSkinPurchase);
       card.appendChild(h3);
       card.appendChild(img);
       card.appendChild(p);
