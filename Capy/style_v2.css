@@ -3,7 +3,9 @@ html,
 body {
   margin: 0;
   padding: 0;
+  height: -webkit-fill-available;
   min-height: calc(var(--vh, 1vh) * 100);
+  min-height: 100dvh;
   /* Fond clair et chaleureux pour le site : dégradé pastel.  Ce fond
      améliore l'accueil et se marie avec les décors des jeux. */
   background: linear-gradient(#e3f2fd, #ffffff);
@@ -97,6 +99,7 @@ body {
   left: 0;
   width: 100%;
   min-height: calc(var(--vh, 1vh) * 100);
+  min-height: 100dvh;
   display: flex;
   flex-direction: column;
   align-items: center;
