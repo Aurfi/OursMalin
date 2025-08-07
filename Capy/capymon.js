@@ -4096,8 +4096,8 @@
       e.stopPropagation();
       // Fermer le CapyDex avant d’ouvrir le menu des attaques
       overlay.remove();
-      // Ouvrir le MoveDex dans une nouvelle page
-      setTimeout(openMoveDex, 0);
+      // Ouvrir le MoveDex immédiatement après la fermeture du CapyDex
+      openMoveDex();
     });
     // Bouton pour ouvrir le dex des objets
     const itemsBtn = document.createElement('button');
@@ -4108,9 +4108,9 @@
       // Empêcher la propagation pour que l'ItemDex reste affiché
       e.preventDefault();
       e.stopPropagation();
+      // Fermer le CapyDex puis ouvrir l'ItemDex
       overlay.remove();
-      // Ouvrir l'ItemDex après la fermeture du CapyDex
-      setTimeout(openItemDex, 0);
+      openItemDex();
     });
     // Bouton pour accéder aux options depuis le CapyDex
     const optionsBtn = document.createElement('button');
