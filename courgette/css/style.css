@@ -1504,12 +1504,12 @@ body.high-contrast .capygames-link a {
   width: 100vw;
   height: 100vh;
   background-color: rgba(0, 0, 0, 0.6);
-  /* Masquer l'overlay par défaut et l'afficher via openSkinPopup() */
-  display: none;
+  display: flex;
   justify-content: center;
   align-items: center;
   z-index: 3000;
 }
+
 .popup-overlay[hidden] {
   display: none !important;
 }
