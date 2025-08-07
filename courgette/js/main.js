@@ -1,5 +1,5 @@
 // Courgette Clicker main script
-
+console.log(">>> VERSION DEBUG 99 <<<");
 // Encapsulate all game logic inside an IIFE to prevent direct access to internal
 // variables from the browser console. This adds a basic layer of protection
 // against cheating by hiding the state object and helper functions from the
