@@ -205,6 +205,9 @@
   "specialOfferAubergine": "ナスのスキン",
   "specialOfferPrice": "たったの€9.99",
   "buySkinBtn": "購入",
+  "paypalPopupTitle": "ナスのスキンを€9.99で購入しますか？",
+  "paypalBtn": "PayPalで支払う 😎💸",
+  "cancelBtn": "💀 戻る",
   "skinPurchased": "ナスのスキンをアンロックしました！",
   "skinOption": "ナスのスキンを有効にする",
   "skinLocked": "ナスのスキンは未購入です"
