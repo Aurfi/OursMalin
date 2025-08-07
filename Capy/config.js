@@ -132,7 +132,7 @@ window.applyTheme = function () {
       // Si on se trouve dans le dossier « capy », les ressources (icônes)
       // résident également dans ce dossier.  On doit donc remonter
       // d'un niveau et entrer dans capy/ au lieu de se rendre à la racine.
-      if (loc.includes('/capy/')) prefix = '../capy/';
+      if (loc.includes('/capy/')) prefix = '../Capy/';
     } catch (e) {
       prefix = '';
     }
@@ -189,7 +189,7 @@ document.addEventListener('DOMContentLoaded', () => {
       // Lorsqu'on est dans le dossier « capy », les assets sont situés dans ce même
       // dossier.  On remonte donc d'un répertoire puis on va dans capy/ plutôt
       // que dans la racine du site.
-      if (loc.includes('/capy/')) prefix = '../capy/';
+      if (loc.includes('/capy/')) prefix = '../Capy/';
       const isDark = localStorage.getItem('capyDarkMode') === 'true';
       iconImg.src = prefix + (isDark ? 'assets/icon_sun.png' : 'assets/icon_moon.png');
     } catch (e) {

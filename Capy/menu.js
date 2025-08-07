@@ -203,7 +203,7 @@
       // internes (pages et images) se trouvent dans le dossier "capy" au
       // même niveau que Capy.  On remonte donc d’un niveau et on entre
       // dans capy/ pour accéder aux jeux et aux assets.
-      const prefix = inCapy ? '../capy/' : '';
+      const prefix = inCapy ? '../Capy/' : '';
       games.forEach((game) => {
         // Ajuster le chemin de la page si ce n’est pas un lien externe
         if (game.page && !game.external) {
@@ -255,7 +255,7 @@
           const inCapy = loc.includes('/capy/');
           // Lorsque le menu est servi depuis /Capy/, l’image de l’étoile est
           // située dans le dossier capy/assets.  On ajuste en conséquence.
-          const starPrefix = inCapy ? '../capy/' : '';
+          const starPrefix = inCapy ? '../Capy/' : '';
           star.src = starPrefix + 'assets/celebration_star.png';
         } catch (e) {
           star.src = 'assets/celebration_star.png';
@@ -278,7 +278,7 @@
         try {
           const loc = window.location.pathname.toLowerCase();
           const inCapy = loc.includes('/capy/');
-          const trophyPrefix = inCapy ? '../capy/' : '';
+          const trophyPrefix = inCapy ? '../Capy/' : '';
           trophyInline.src = `${trophyPrefix}assets/trophies/trophy_${game.trophy}.png`;
         } catch (e) {
           trophyInline.src = `assets/trophies/trophy_${game.trophy}.png`;
@@ -412,8 +412,8 @@
       // Lorsque la page est servie depuis un sous-répertoire « /capy/ »,
       // l'arborescence contient un dossier capy/ au même niveau que Capy.
       // Afin de pointer correctement vers l'image de la mascotte, on
-      // préfixe le chemin par '../capy/' au lieu de simplement '../'.
-      const heroPrefix = inCapy ? '../capy/' : '';
+      // préfixe le chemin par '../Capy/' au lieu de simplement '../'.
+      const heroPrefix = inCapy ? '../Capy/' : '';
       heroEl.src = heroPrefix + 'assets/capybara_unicorn.png';
     } catch (e) {
       heroEl.src = 'assets/capybara_unicorn.png';
@@ -435,7 +435,7 @@
         // Depuis la page située dans /Capy/, il faut remonter d'un niveau pour
         // atteindre capy/credits.html.  L'utilisation d'un chemin relatif sans
         // ce préfixe entraînerait la recherche de /Capy/credits.html qui n'existe plus.
-        window.location.href = '../capy/credits.html';
+        window.location.href = '../Capy/credits.html';
       }
     });
   }
