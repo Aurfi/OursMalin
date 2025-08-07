@@ -1,5 +1,5 @@
 // Courgette Clicker main script
-
+console.log(">>> VERSION DEBUG 99 <<<");
 // Main script runs in global scope so game state and helpers are directly
 // accessible. This simplifies debugging and integration at the cost of
 // exposing the internals publicly.
