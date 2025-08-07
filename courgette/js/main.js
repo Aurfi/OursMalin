@@ -3002,8 +3002,14 @@ function updateUpgradeButtons() {
     const discount = state.costReduction || 0;
     const realCost = Math.ceil(b.cost * (1 - discount));
     costEl.textContent = t('costUnits', { cost: formatNumber(realCost) });
-    // En mode Dieu, ne désactivez pas le bouton même si le joueur n’a pas assez de courgettes.
-    btn.disabled = !state.godMode && state.score < realCost;
+    // Déterminer si le joueur peut se permettre l'achat. En mode Dieu, les achats
+    // restent toujours possibles.
+    const cannotAfford = !state.godMode && state.score < realCost;
+    btn.disabled = cannotAfford;
+    // Ajout d'une classe spécifique afin d'appliquer un style visuel gris lorsque
+    // le bouton est inabordable. Cela complète l'attribut disabled, qui peut être
+    // surchargé par certains styles (ex. contraste élevé).
+    btn.classList.toggle('unaffordable', cannotAfford);
   });
 }
 
