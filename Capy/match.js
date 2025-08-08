@@ -21,6 +21,7 @@
   let pairs = 0;
   let timeLeft = 0;
   let elapsed = 0;
+  let attemptsLeft = 0;
   let timer = null;
   const baseTime = 60;
   let isMuted = false;
@@ -78,6 +79,8 @@
           pairs++;
           document.getElementById('match-pairs').textContent = pairs;
           if (pairs === deck.length / 2) endGame();
+          first = null;
+          lock = false;
         } else {
           first.classList.add('shake');
           second.classList.add('shake');
@@ -86,10 +89,13 @@
             second.classList.remove('shake');
             first.classList.remove('revealed');
             second.classList.remove('revealed');
+            attemptsLeft--;
+            document.getElementById('match-attempts').textContent = attemptsLeft;
+            first = null;
+            lock = false;
+            if (attemptsLeft <= 0) loseGame();
           }, 300);
         }
-        first = null;
-        lock = false;
       }, 600);
     }
   }
@@ -124,10 +130,12 @@
     elapsed = 0;
     first = null;
     lock = false;
+    attemptsLeft = pairsTarget * 2;
     document.getElementById('match-pairs').textContent = '0';
     document.getElementById('match-total').textContent = pairsTarget;
     document.getElementById('match-level').textContent = level;
     document.getElementById('match-time').textContent = timeLeft;
+    document.getElementById('match-attempts').textContent = attemptsLeft;
     if (timer) clearInterval(timer);
     timer = setInterval(() => {
       timeLeft--;
