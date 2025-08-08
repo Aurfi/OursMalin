@@ -4,7 +4,7 @@
 courgette-clicker/
 ├── index.html              # Page principale du jeu
 ├── css/
-│   └── style_v2.css           # Feuille de styles du jeu
+│   └── style_v3.css           # Feuille de styles du jeu
 ├── js/
 │   └── main.js             # Script principal contenant la logique du jeu
 ├── locales/

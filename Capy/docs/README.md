@@ -53,7 +53,7 @@ La structure générale est décrite dans le fichier `tree.txt` généré à cha
 
 * `index.html` : page web principale qui charge le jeu.
 * `main.js` : logique JavaScript du jeu (mouvement, collisions, interface, bonus, etc.).
-* `style_v2.css` : styles CSS pour l’interface.
+* `style_v3.css` : styles CSS pour l’interface.
 * `assets/` : contient les images SVG/PNG et éventuellement les sons générés.
 * `progress_log.md` : journal chronologique des étapes réalisées, avec date et explications.
 * `agents.md` : description des rôles et tâches lors de la conception.

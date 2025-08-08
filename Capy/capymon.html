@@ -4,7 +4,7 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
     <title>Capy Mon</title>
-    <link rel="stylesheet" href="style_v2.css" />
+    <link rel="stylesheet" href="style_v3.css" />
     <style>
       /* Styles spécifiques pour Capy Mon */
       .capymon-container {
@@ -56,11 +56,20 @@
         border: 2px solid #ffb74d;
         background: #ffffff;
         box-shadow: 0 2px 4px rgba(0,0,0,0.2);
-        font-size: 20px;
-        color: #333;
+        display: flex;
+        align-items: center;
+        justify-content: center;
         cursor: pointer;
         transition: background 0.2s;
       }
+      .dpad-btn svg {
+        width: 24px;
+        height: 24px;
+        fill: #333;
+      }
+      #capymon-left svg { transform: rotate(-90deg); }
+      #capymon-right svg { transform: rotate(90deg); }
+      #capymon-down svg { transform: rotate(180deg); }
       .dpad-btn:hover {
         background: #fff4e5;
       }
@@ -170,11 +179,19 @@
            canvas et s'adapte à la largeur de l'écran. -->
       <div id="capymon-controls" class="capymon-controls">
         <div class="dpad">
-          <button id="capymon-up" class="dpad-btn">↑</button>
+          <button id="capymon-up" class="dpad-btn" aria-label="Haut">
+            <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h16z" /></svg>
+          </button>
           <div class="dpad-middle">
-            <button id="capymon-left" class="dpad-btn">←</button>
-            <button id="capymon-down" class="dpad-btn">↓</button>
-            <button id="capymon-right" class="dpad-btn">→</button>
+            <button id="capymon-left" class="dpad-btn" aria-label="Gauche">
+              <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h16z" /></svg>
+            </button>
+            <button id="capymon-down" class="dpad-btn" aria-label="Bas">
+              <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h16z" /></svg>
+            </button>
+            <button id="capymon-right" class="dpad-btn" aria-label="Droite">
+              <svg viewBox="0 0 24 24"><path d="M12 4l-8 8h16z" /></svg>
+            </button>
           </div>
         </div>
         <div class="gameboy-buttons">
