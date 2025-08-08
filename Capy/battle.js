@@ -16,10 +16,12 @@
     onEnd = null,
     menuAction = null,
     playerName = 'Capy',
-    enemyName = 'Ennemi'
+    enemyName = 'Ennemi',
+    playerHpStart = 100,
+    enemyHpStart = 100
   } = {}) {
-    let playerHp = 100;
-    let enemyHp = 100;
+    let playerHp = playerHpStart;
+    let enemyHp = enemyHpStart;
     if (playerNameEl) playerNameEl.textContent = playerName;
     if (enemyNameEl) enemyNameEl.textContent = enemyName;
     let inBattle = true;
