@@ -555,6 +555,9 @@ body[data-game="flappy"] .volume-btn {
   max-height: calc(100dvh - 300px);
   max-height: calc(-webkit-fill-available - 300px);
   overflow-y: auto;
+  /* Éviter que les gestes de défilement entrent en conflit avec les cartes. */
+  touch-action: pan-y;
+  overscroll-behavior: contain;
 }
 
 /* Carte représentant un jeu dans la liste du menu */

@@ -369,12 +369,10 @@
       categoryButtons.forEach((b) => b.classList.toggle('active', b === btn));
       document.querySelectorAll('.game-card').forEach((card) => {
         // Filtrage par catégorie : pour l’onglet “featured”, on sélectionne
-        // uniquement les cartes marquées data-featured=true.  Pour “all”,
-        // on affiche tout.  Sinon on compare la catégorie de la carte.
+        // uniquement les cartes marquées data-featured=true.  Sinon on compare
+        // simplement la catégorie de la carte.
         if (target === 'featured') {
           card.style.display = card.dataset.featured === 'true' ? '' : 'none';
-        } else if (target === 'all') {
-          card.style.display = '';
         } else {
           card.style.display = (card.dataset.category === target) ? '' : 'none';
         }
@@ -399,6 +397,10 @@
       }
     });
   });
+
+  // Afficher par défaut les jeux en vedette à l’arrivée sur la page
+  const defaultBtn = document.querySelector('.category-btn[data-category="featured"]');
+  if (defaultBtn) defaultBtn.click();
 
   // Afficher une citation drôle sous le menu.  Quelques phrases sont
   // sélectionnées aléatoirement parmi une liste définie ci‑dessous.  Seules

@@ -235,7 +235,7 @@
     battleCssInjected = true;
   }
 
-  function launchCapyBattle(playerSrc, enemySrc, onEnd) {
+  function launchCapyBattle(playerSrc, enemySrc, playerName, enemyName, playerHp, enemyHp, onEnd) {
     injectBattleCss();
     const overlay = document.createElement('div');
     overlay.id = 'capy-simple-battle';
@@ -273,6 +273,10 @@
       restartBtn: overlay.querySelector('#restart-btn'),
       resultText: overlay.querySelector('#result-text'),
       starImg: overlay.querySelector('.star'),
+      playerName: playerName,
+      enemyName: enemyName,
+      playerHpStart: playerHp,
+      enemyHpStart: enemyHp,
       menuAction: () => {
         overlay.remove();
         if (onEnd) onEnd(false);
@@ -302,9 +306,14 @@
       }
       if (!speciesKey) speciesKey = 'capybara';
     }
-    const playerSrc = (playerCapys[currentCapyIndex] && speciesImages[playerCapys[currentCapyIndex].species]) ? speciesImages[playerCapys[currentCapyIndex].species].src : 'assets/capybara_super.png';
+    const playerCapy = playerCapys[currentCapyIndex];
+    const playerSrc = (playerCapy && speciesImages[playerCapy.species]) ? speciesImages[playerCapy.species].src : 'assets/capybara_super.png';
     const enemySrc = speciesImages[speciesKey] ? speciesImages[speciesKey].src : 'assets/capybara_turtle.png';
-    launchCapyBattle(playerSrc, enemySrc, (victory) => {
+    const playerName = playerCapy ? playerCapy.name : 'Capy';
+    const enemyName = speciesData[speciesKey] ? speciesData[speciesKey].name : speciesKey;
+    const playerHp = playerCapy ? Math.round((playerCapy.currentHP / playerCapy.maxHP) * 100) : 100;
+    const enemyHp = 100;
+    launchCapyBattle(playerSrc, enemySrc, playerName, enemyName, playerHp, enemyHp, (victory) => {
       stopBattleMusic();
       inBattle = false;
       draw();
