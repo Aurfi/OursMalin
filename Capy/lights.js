@@ -22,12 +22,15 @@
   }
 
   function generateSolvableGrid() {
+    // Start from an empty grid (all lights off)
     const g = Array.from({ length: size }, () => Array.from({ length: size }, () => false));
-    const numClicks = Math.floor(Math.random() * 10) + 5;
+
+    // Perform a series of valid random moves so the grid is always solvable
+    const numClicks = Math.floor(Math.random() * 8) + 8; // 8-15 random clicks
     for (let i = 0; i < numClicks; i++) {
-      const x = Math.floor(Math.random() * size);
-      const y = Math.floor(Math.random() * size);
-      simulateClick(g, x, y);
+      const row = Math.floor(Math.random() * size);
+      const col = Math.floor(Math.random() * size);
+      simulateClick(g, col, row);
     }
     return g;
   }
