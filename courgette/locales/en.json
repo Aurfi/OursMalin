@@ -206,8 +206,8 @@
   "specialOfferPrice": "Only €9.99",
   "buySkinBtn": "Buy",
   "paypalPopupTitle": "Buy the Aubergine skin for €9.99?",
-  "paypalBtn": "Pay with PayPal 😎💸",
-  "cancelBtn": "💀 Return",
+  "paypalBtn": "PayPal",
+  "cancelBtn": "Return",
   "skinPurchased": "Aubergine skin unlocked!",
   "skinOption": "Enable Aubergine skin",
   "skinLocked": "Aubergine skin not purchased"

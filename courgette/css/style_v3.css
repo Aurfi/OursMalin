@@ -1477,6 +1477,10 @@ body.high-contrast .capygames-link a {
  * clés de traduction « specialOfferTitle », « specialOfferAubergine » et
  * « specialOfferPrice ».
  */
+.special-offers {
+  display: flex;
+  flex-direction: column;
+}
 .special-offer-card {
   display: flex;
   flex-direction: column;
