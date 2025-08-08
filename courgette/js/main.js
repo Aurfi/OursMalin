@@ -42,6 +42,11 @@ const NEWS_JSON_URL = document.currentScript
 // everything clean for the new New Game+ experience.
 const SAVE_KEY = 'courgetteClickerSaveV2';
 
+// URL fictive utilisée pour simuler un paiement PayPal lors de l'achat du skin
+// Aubergine. Aucun traitement réel n'est effectué : le lien s'ouvre simplement
+// dans un nouvel onglet avant de débloquer le skin.
+const FAKE_PAYPAL_URL = 'https://www.paypal.com/paypalme/example/9.99';
+
 // Game state. It includes persistent settings for sound, animations and
 // language; these values are saved to and loaded from localStorage.
 const state = {
@@ -2061,9 +2066,8 @@ function initGame() {
   }
   // Bouton de réinitialisation de la partie.  Lorsqu'un joueur clique sur ce
   // bouton dans le menu des paramètres, on affiche une confirmation puis on
-  // supprime la sauvegarde et on recharge la page.  Cela remet à zéro
-  // complètement la progression tout en conservant les paramètres (sons,
-  // animations, langue, contraste).
+  // supprime toutes les données locales relatives au jeu et recharge la page.
+  // Cela efface la progression ainsi que les paramètres et défis stockés.
   const resetBtn = document.getElementById('reset-btn');
   if (resetBtn) {
     resetBtn.addEventListener('click', () => {
@@ -2071,7 +2075,21 @@ function initGame() {
       const ok = window.confirm(msg);
       if (!ok) return;
       try {
-        localStorage.removeItem(SAVE_KEY);
+        // Supprimer toutes les entrées localStorage liées à Courgette Clicker
+        for (let i = localStorage.length - 1; i >= 0; i--) {
+          const key = localStorage.key(i);
+          if (key && key.toLowerCase().includes('courgette')) {
+            localStorage.removeItem(key);
+          }
+        }
+        // Effacer les caches du service worker liés au jeu
+        if (window.caches) {
+          caches.keys().then((names) => {
+            names.forEach((n) => {
+              if (n.includes('courgette')) caches.delete(n);
+            });
+          });
+        }
       } catch (err) {
         console.warn('Erreur lors de la suppression de la sauvegarde', err);
       }
@@ -2209,9 +2227,7 @@ function initGame() {
   }
   // Gestion des boutons de la pop-up d'achat du skin Aubergine
   const paypalBtnEl = document.getElementById('paypal-btn');
-  if (paypalBtnEl) {
-    paypalBtnEl.addEventListener('click', confirmSkinPurchase);
-  }
+  attachPaypalHandler(paypalBtnEl);
   const cancelSkinBtn = document.getElementById('skin-cancel-btn');
   if (cancelSkinBtn) {
     cancelSkinBtn.addEventListener('click', closeSkinPopup);
@@ -3213,6 +3229,18 @@ window.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// Attache au bouton PayPal l'ouverture d'un faux lien PayPal puis la
+// confirmation d'achat du skin. Utilisé aussi bien pour une pop-up créée
+// dynamiquement que pour une pop-up présente dans le HTML initial.
+function attachPaypalHandler(el) {
+  if (!el) return;
+  el.addEventListener('click', (e) => {
+    e.preventDefault();
+    window.open(FAKE_PAYPAL_URL, '_blank');
+    confirmSkinPurchase();
+  });
+}
+
 function openSkinPopup(ev) {
   // Éviter d'ouvrir automatiquement la pop‑up si la fonction est appelée sans
   // interaction utilisateur. Certains navigateurs peuvent déclencher des
@@ -3239,12 +3267,15 @@ function openSkinPopup(ev) {
     const buttons = document.createElement('div');
     buttons.className = 'popup-buttons';
     // Bouton PayPal (confirm)
-    const paypalBtn = document.createElement('button');
+    const paypalBtn = document.createElement('a');
     paypalBtn.id = 'paypal-btn';
     paypalBtn.className = 'paypal-btn';
+    paypalBtn.setAttribute('href', FAKE_PAYPAL_URL);
+    paypalBtn.setAttribute('target', '_blank');
+    paypalBtn.setAttribute('rel', 'noopener noreferrer');
     paypalBtn.setAttribute('data-i18n', 'paypalBtn');
     paypalBtn.textContent = t('paypalBtn');
-    paypalBtn.addEventListener('click', confirmSkinPurchase);
+    attachPaypalHandler(paypalBtn);
     // Bouton Annuler
     const cancelBtn = document.createElement('button');
     cancelBtn.id = 'skin-cancel-btn';
