@@ -2071,7 +2071,12 @@ function initGame() {
       const ok = window.confirm(msg);
       if (!ok) return;
       try {
+        // Remove all locally stored data related to the game.  In addition to
+        // the main save data we clear user settings and weekly challenges so a
+        // reset truly wipes the slate clean.
         localStorage.removeItem(SAVE_KEY);
+        localStorage.removeItem('courgetteClickerSettingsV1');
+        localStorage.removeItem('courgetteChallengesWeekV1');
       } catch (err) {
         console.warn('Erreur lors de la suppression de la sauvegarde', err);
       }
@@ -2210,7 +2215,14 @@ function initGame() {
   // Gestion des boutons de la pop-up d'achat du skin Aubergine
   const paypalBtnEl = document.getElementById('paypal-btn');
   if (paypalBtnEl) {
+    paypalBtnEl.removeAttribute('data-i18n');
     paypalBtnEl.addEventListener('click', confirmSkinPurchase);
+    // S'assurer que le bouton statique possède aussi le logo PayPal.
+    paypalBtnEl.innerHTML =
+      "<img src='https://www.paypalobjects.com/webstatic/icon/pp258.png' alt='PayPal' " +
+      "class='paypal-logo'><span data-i18n='paypalBtn'>" +
+      t('paypalBtn') +
+      '</span>';
   }
   const cancelSkinBtn = document.getElementById('skin-cancel-btn');
   if (cancelSkinBtn) {
@@ -3242,8 +3254,12 @@ function openSkinPopup(ev) {
     const paypalBtn = document.createElement('button');
     paypalBtn.id = 'paypal-btn';
     paypalBtn.className = 'paypal-btn';
-    paypalBtn.setAttribute('data-i18n', 'paypalBtn');
-    paypalBtn.textContent = t('paypalBtn');
+    // Inclure un logo PayPal pour donner l'illusion d'un vrai paiement.
+    paypalBtn.innerHTML =
+      "<img src='https://www.paypalobjects.com/webstatic/icon/pp258.png' " +
+      "alt='PayPal' class='paypal-logo'><span data-i18n='paypalBtn'>" +
+      t('paypalBtn') +
+      '</span>';
     paypalBtn.addEventListener('click', confirmSkinPurchase);
     // Bouton Annuler
     const cancelBtn = document.createElement('button');
@@ -3281,6 +3297,9 @@ function closeSkinPopup() {
 // automatiquement.  L'information est sauvegardée et un message est
 // affiché dans la bulle d'actualités.  La pop-up est fermée ensuite.
 function confirmSkinPurchase() {
+  // Simule un paiement PayPal sans quitter la page ni ouvrir de nouvelle
+  // fenêtre. Le simple clic sur le bouton suffit à valider l'achat factice.
+
   // Débloquer et activer le skin
   state.skinAubergineUnlocked = true;
   state.skinAubergineActive = true;
