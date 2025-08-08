@@ -206,8 +206,8 @@
   "specialOfferPrice": "仅售€9.99",
   "buySkinBtn": "购买",
   "paypalPopupTitle": "以9.99欧元购买茄子皮肤？",
-  "paypalBtn": "使用PayPal支付 😎💸",
-  "cancelBtn": "💀 返回",
+  "paypalBtn": "PayPal",
+  "cancelBtn": "返回",
   "skinPurchased": "茄子皮肤已解锁！",
   "skinOption": "启用茄子皮肤",
   "skinLocked": "茄子皮肤未购买"

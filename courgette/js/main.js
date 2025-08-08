@@ -3305,6 +3305,8 @@ function confirmSkinPurchase() {
   state.skinAubergineActive = true;
   applyCourgetteSkin();
   updateSkinSettingVisibility();
+  // Retirer la carte d'offre spéciale en réaffichant la boutique
+  renderSeedUpgrades();
   // Jouer un son d'achievement
   playAchievementSound();
   // Afficher un message dans la bulle de news
@@ -3490,9 +3492,16 @@ function renderSeedUpgrades() {
   // l'achat. Si le skin est déjà débloqué, la carte n'est pas affichée.
   const seedsContent = document.querySelector('#seeds-overlay .seeds-content');
   if (seedsContent) {
-    // Retirer la carte existante si elle a été générée lors d'un rendu précédent.
-    const existing = document.getElementById('special-offer-js');
-    if (existing) existing.remove();
+    const closeBtn = document.getElementById('seeds-close');
+    // Supprimer l'ancien conteneur d'offres spéciales s'il existe.
+    const oldContainer = document.getElementById('special-offers-container');
+    if (oldContainer) oldContainer.remove();
+
+    const offersContainer = document.createElement('div');
+    offersContainer.id = 'special-offers-container';
+    offersContainer.className = 'special-offers';
+
+    // Offre Aubergine
     if (!state.skinAubergineUnlocked) {
       const card = document.createElement('div');
       card.id = 'special-offer-js';
@@ -3501,8 +3510,6 @@ function renderSeedUpgrades() {
       h3.setAttribute('data-i18n', 'specialOfferTitle');
       h3.textContent = t('specialOfferTitle');
       const img = document.createElement('img');
-      // Utiliser getAssetPath pour que l’aperçu du skin Aubergine se charge
-      // correctement aussi bien depuis clicker.html que depuis clicker/index.html.
       img.setAttribute('src', getAssetPath('courgette_aubergine.png'));
       img.setAttribute('alt', 'Aubergine skin');
       const p = document.createElement('p');
@@ -3515,7 +3522,6 @@ function renderSeedUpgrades() {
       p.appendChild(span);
       p.appendChild(document.createTextNode(' — '));
       p.appendChild(strong);
-      // Bouton d'achat
       const btn = document.createElement('button');
       btn.className = 'special-buy-btn';
       btn.setAttribute('data-i18n', 'buySkinBtn');
@@ -3525,62 +3531,48 @@ function renderSeedUpgrades() {
       card.appendChild(img);
       card.appendChild(p);
       card.appendChild(btn);
-      // Insérer la carte juste avant le bouton de fermeture pour qu'elle soit
-      // visible en bas de l'overlay, après la liste des améliorations.
-      const closeBtn = document.getElementById('seeds-close');
+      offersContainer.appendChild(card);
+    }
+
+    // Offre Banane (SOON)
+    if (!state.skinBananeUnlocked) {
+      const bCard = document.createElement('div');
+      bCard.id = 'banane-offer-js';
+      bCard.className = 'special-offer-card banana-offer';
+      const bH3 = document.createElement('h3');
+      bH3.setAttribute('data-i18n', 'specialOfferTitle');
+      bH3.textContent = t('specialOfferTitle');
+      const bImg = document.createElement('img');
+      bImg.setAttribute('src', getAssetPath('courgette_banane.png'));
+      bImg.setAttribute('alt', 'Banane skin');
+      const pBan = document.createElement('p');
+      const spanBan = document.createElement('span');
+      spanBan.setAttribute('data-i18n', 'specialOfferBanane');
+      spanBan.textContent = t('specialOfferBanane');
+      const strongBan = document.createElement('strong');
+      strongBan.setAttribute('data-i18n', 'specialOfferBananePrice');
+      strongBan.textContent = t('specialOfferBananePrice');
+      pBan.appendChild(spanBan);
+      pBan.appendChild(document.createTextNode(' — '));
+      pBan.appendChild(strongBan);
+      bCard.appendChild(bH3);
+      bCard.appendChild(bImg);
+      bCard.appendChild(pBan);
+      const overlay = document.createElement('div');
+      overlay.className = 'soon-banner';
+      overlay.textContent = 'SOON';
+      bCard.appendChild(overlay);
+      offersContainer.appendChild(bCard);
+    }
+
+    // Insérer les offres si au moins une carte existe
+    if (offersContainer.children.length > 0) {
       if (closeBtn) {
-        seedsContent.insertBefore(card, closeBtn);
+        seedsContent.insertBefore(offersContainer, closeBtn);
       } else {
-        seedsContent.appendChild(card);
+        seedsContent.appendChild(offersContainer);
       }
       applyTranslations();
-    }
-    // Insérer une carte pour le skin Banane.  Cette carte indique que le
-    // contenu est à venir (SOON) et n’est pas cliquable.  Elle apparaît
-    // uniquement si le skin Banane n’a pas encore été débloqué par le
-    // joueur. On retire toute carte précédente identifiée par banane-offer-js
-    // avant de créer une nouvelle instance.
-    {
-      const existingBan = document.getElementById('banane-offer-js');
-      if (existingBan) existingBan.remove();
-      if (!state.skinBananeUnlocked) {
-        const bCard = document.createElement('div');
-        bCard.id = 'banane-offer-js';
-        bCard.className = 'special-offer-card banana-offer';
-        const bH3 = document.createElement('h3');
-        bH3.setAttribute('data-i18n', 'specialOfferTitle');
-        bH3.textContent = t('specialOfferTitle');
-        const bImg = document.createElement('img');
-        bImg.setAttribute('src', getAssetPath('courgette_banane.png'));
-        bImg.setAttribute('alt', 'Banane skin');
-        const pBan = document.createElement('p');
-        const spanBan = document.createElement('span');
-        spanBan.setAttribute('data-i18n', 'specialOfferBanane');
-        spanBan.textContent = t('specialOfferBanane');
-        const strongBan = document.createElement('strong');
-        strongBan.setAttribute('data-i18n', 'specialOfferBananePrice');
-        strongBan.textContent = t('specialOfferBananePrice');
-        pBan.appendChild(spanBan);
-        pBan.appendChild(document.createTextNode(' — '));
-        pBan.appendChild(strongBan);
-        bCard.appendChild(bH3);
-        bCard.appendChild(bImg);
-        bCard.appendChild(pBan);
-        // Bandeau SOON non cliquable
-        const overlay = document.createElement('div');
-        overlay.className = 'soon-banner';
-        overlay.textContent = 'SOON';
-        bCard.appendChild(overlay);
-        // Insérer la carte avant le bouton de fermeture pour qu'elle apparaisse
-        // en bas de l'overlay, après la liste des améliorations.
-        const closeBtn2 = document.getElementById('seeds-close');
-        if (closeBtn2) {
-          seedsContent.insertBefore(bCard, closeBtn2);
-        } else {
-          seedsContent.appendChild(bCard);
-        }
-        applyTranslations();
-      }
     }
   }
   // Display a message if no seed upgrades are available (all purchased or unavailable)
