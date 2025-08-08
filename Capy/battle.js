@@ -4,6 +4,8 @@
     enemyImg = document.getElementById('enemy'),
     playerHpEl = document.getElementById('player-hp'),
     enemyHpEl = document.getElementById('enemy-hp'),
+    playerNameEl = document.getElementById('player-name'),
+    enemyNameEl = document.getElementById('enemy-name'),
     msgEl = document.getElementById('message'),
     attackBtn = document.getElementById('attack-btn'),
     menuBtn = document.getElementById('menu-btn'),
@@ -12,10 +14,14 @@
     resultText = document.getElementById('result-text'),
     starImg = resultOverlay ? resultOverlay.querySelector('.star') : null,
     onEnd = null,
-    menuAction = null
+    menuAction = null,
+    playerName = 'Capy',
+    enemyName = 'Ennemi'
   } = {}) {
     let playerHp = 100;
     let enemyHp = 100;
+    if (playerNameEl) playerNameEl.textContent = playerName;
+    if (enemyNameEl) enemyNameEl.textContent = enemyName;
     let inBattle = true;
 
     const attackSound = new Audio('assets/sounds/beep6.wav');
@@ -31,59 +37,59 @@
     [attackSound, victorySound, bgMusic].forEach(applyVolume);
 
     function updateBars() {
-      if (playerHpEl) playerHpEl.style.width = `${playerHp}%`;
-      if (enemyHpEl) enemyHpEl.style.width = `${enemyHp}%`;
+      if (playerHpEl) playerHpEl.style.height = `${playerHp}%`;
+      if (enemyHpEl) enemyHpEl.style.height = `${enemyHp}%`;
     }
 
     function showMessage(text) {
       if (msgEl) msgEl.textContent = text;
     }
 
-    function enemyAttack() {
+    function delay(ms) { return new Promise(res => setTimeout(res, ms)); }
+
+    async function enemyAttack() {
       if (!inBattle) return;
+      showMessage(`${enemyName} attaque !`);
       enemyImg.classList.add('enemy-attack-anim');
       attackSound.currentTime = 0;
       attackSound.play();
       const dmg = Math.floor(Math.random() * 15) + 5;
-      setTimeout(() => {
-        enemyImg.classList.remove('enemy-attack-anim');
-        playerImg.classList.add('hit-anim');
-        playerHp = Math.max(0, playerHp - dmg);
-        updateBars();
-        showMessage(`L'ennemi inflige ${dmg} dégâts !`);
-        setTimeout(() => {
-          playerImg.classList.remove('hit-anim');
-          if (playerHp <= 0) {
-            endBattle(false);
-          } else {
-            attackBtn.disabled = false;
-          }
-        }, 300);
-      }, 300);
+      await delay(300);
+      enemyImg.classList.remove('enemy-attack-anim');
+      playerImg.classList.add('player-hit');
+      playerHp = Math.max(0, playerHp - dmg);
+      updateBars();
+      showMessage(`${enemyName} inflige ${dmg} dégâts !`);
+      await delay(300);
+      playerImg.classList.remove('player-hit');
+      if (playerHp <= 0) {
+        endBattle(false);
+      } else {
+        attackBtn.disabled = false;
+      }
     }
 
-    function playerAttack() {
+    async function playerAttack() {
       if (!inBattle) return;
       attackBtn.disabled = true;
+      showMessage(`${playerName} attaque !`);
       playerImg.classList.add('attack-anim');
       attackSound.currentTime = 0;
       attackSound.play();
       const dmg = Math.floor(Math.random() * 15) + 5;
-      setTimeout(() => {
-        playerImg.classList.remove('attack-anim');
-        enemyImg.classList.add('hit-anim');
-        enemyHp = Math.max(0, enemyHp - dmg);
-        updateBars();
-        showMessage(`Capy inflige ${dmg} dégâts !`);
-        setTimeout(() => {
-          enemyImg.classList.remove('hit-anim');
-          if (enemyHp <= 0) {
-            endBattle(true);
-          } else {
-            enemyAttack();
-          }
-        }, 300);
-      }, 300);
+      await delay(300);
+      playerImg.classList.remove('attack-anim');
+      enemyImg.classList.add('enemy-hit');
+      enemyHp = Math.max(0, enemyHp - dmg);
+      updateBars();
+      showMessage(`${playerName} inflige ${dmg} dégâts !`);
+      await delay(300);
+      enemyImg.classList.remove('enemy-hit');
+      if (enemyHp <= 0) {
+        endBattle(true);
+      } else {
+        await enemyAttack();
+      }
     }
 
     function endBattle(victory) {
