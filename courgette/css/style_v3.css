@@ -1567,6 +1567,13 @@ body.high-contrast .capygames-link a {
   font-weight: bold;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+.paypal-logo {
+  height: 24px;
 }
 .paypal-btn:hover {
   background-color: #d4ac0d;
