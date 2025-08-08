@@ -31,7 +31,7 @@ Toutes les modifications significatives apportées à ce projet seront consigné
 
 ### Changed
 
-* Ajout des fichiers `index.html`, `style_v2.css` et `main.js` implémentant la structure initiale du jeu, sa logique principale, la génération des obstacles et des bonus ainsi que les effets sonores.
+* Ajout des fichiers `index.html`, `style_v3.css` et `main.js` implémentant la structure initiale du jeu, sa logique principale, la génération des obstacles et des bonus ainsi que les effets sonores.
 * Mise à jour de `tree.txt` pour refléter la nouvelle arborescence et ajout de l’auto‑redimensionnement du canvas.
 
 ## [1.0.0] - 2025-08-04

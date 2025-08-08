@@ -1893,7 +1893,7 @@
   const moveDefinitions = {
     // Chaque attaque est dotée d’une puissance ou d’un soin ainsi que
     // d’une animation correspondante.  Les animations sont déclarées
-    // dans style_v2.css et activées lors des combats si animationsOn est
+    // dans style_v3.css et activées lors des combats si animationsOn est
     // vrai dans les options.
     Charge: { power: 5, anim: 'anim-shake' },
     'Carapace': { power: 3, anim: 'anim-pulse' },

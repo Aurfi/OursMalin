@@ -715,7 +715,7 @@ function playAchievementSound() {
 }
 
 // Spawn a floating particle above the clicker showing the amount gained. Uses
-// CSS animations defined in style_v2.css. The particle is removed after
+// CSS animations defined in style_v3.css. The particle is removed after
 // animation completes.
 function spawnParticle(amount) {
   if (!state.settings.anim) return;

@@ -23,6 +23,9 @@
     if (playerNameEl) playerNameEl.textContent = playerName;
     if (enemyNameEl) enemyNameEl.textContent = enemyName;
     let inBattle = true;
+    let buttons = [];
+    let selectedIdx = 0;
+    let handleKey;
 
     const attackSound = new Audio('assets/sounds/beep6.wav');
     const victorySound = new Audio('assets/sounds/fireworks.wav');
@@ -35,6 +38,50 @@
       } catch (e) {}
     }
     [attackSound, victorySound, bgMusic].forEach(applyVolume);
+
+    function updateFocus() {
+      buttons.forEach((btn, i) => {
+        if (!btn) return;
+        if (i === selectedIdx) {
+          btn.classList.add('selected');
+          btn.focus();
+        } else {
+          btn.classList.remove('selected');
+        }
+      });
+    }
+
+    function setupKeyboard() {
+      buttons = [attackBtn, menuBtn].filter(Boolean);
+      selectedIdx = 0;
+      updateFocus();
+      handleKey = (e) => {
+        if (inBattle) {
+          if (['ArrowLeft', 'ArrowUp'].includes(e.key)) {
+            selectedIdx = (selectedIdx + buttons.length - 1) % buttons.length;
+            updateFocus();
+            e.preventDefault();
+          } else if (['ArrowRight', 'ArrowDown'].includes(e.key)) {
+            selectedIdx = (selectedIdx + 1) % buttons.length;
+            updateFocus();
+            e.preventDefault();
+          } else if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            buttons[selectedIdx].click();
+          }
+        } else if (resultOverlay && resultOverlay.classList.contains('visible')) {
+          if ((e.key === 'Enter' || e.key === ' ') && restartBtn) {
+            e.preventDefault();
+            restartBtn.click();
+          }
+        }
+      };
+      document.addEventListener('keydown', handleKey);
+    }
+
+    function cleanupKeyboard() {
+      document.removeEventListener('keydown', handleKey);
+    }
 
     function updateBars() {
       if (playerHpEl) playerHpEl.style.height = `${playerHp}%`;
@@ -105,12 +152,17 @@
       }
       if (resultOverlay) resultOverlay.classList.add('visible');
       if (restartBtn) {
+        buttons = [restartBtn];
+        selectedIdx = 0;
+        updateFocus();
         restartBtn.textContent = 'Continuer';
         restartBtn.addEventListener('click', () => {
+          cleanupKeyboard();
           if (resultOverlay) resultOverlay.classList.remove('visible');
           if (typeof onEnd === 'function') onEnd(victory);
         }, { once: true });
       } else if (typeof onEnd === 'function') {
+        cleanupKeyboard();
         onEnd(victory);
       }
     }
@@ -120,6 +172,7 @@
     }
     if (menuBtn) {
       menuBtn.addEventListener('click', () => {
+        cleanupKeyboard();
         if (typeof menuAction === 'function') {
           menuAction();
         } else {
@@ -127,6 +180,8 @@
         }
       });
     }
+
+    setupKeyboard();
 
     window.addEventListener('capyGameStart', () => {
       applyVolume(bgMusic);
