@@ -9,9 +9,10 @@
   <body data-force-landscape="false">
     <button id="volume-toggle" class="volume-btn">🔇</button>
     <div id="match-container" class="courgette-container">
-      <div id="match-grid" class="match-grid"></div>
+      <div id="match-grid" class="match-grid courgette-board"></div>
       <div class="courgette-sidebar">
-        <p>Paires : <span id="match-pairs">0</span>/4</p>
+        <p>Niveau : <span id="match-level">1</span></p>
+        <p>Paires : <span id="match-pairs">0</span>/<span id="match-total">0</span></p>
         <p>Temps : <span id="match-time">0</span>s</p>
         <button id="match-restart" class="btn">Rejouer</button>
         <button id="match-menu" class="btn">Menu</button>
@@ -23,8 +24,18 @@
         <p><strong>Temps :</strong> <span id="match-current-time">0</span>s</p>
         <p><strong>Record :</strong> <span id="match-high-score">–</span>s</p>
         <div class="button-group">
-          <button id="match-over-replay" class="btn">Rejouer</button>
+          <button id="match-over-next" class="btn">Suivant</button>
           <button id="match-over-menu" class="btn">Menu</button>
+        </div>
+      </div>
+    </div>
+    <div id="match-lose" class="overlay hidden">
+      <div class="menu-card">
+        <h1>Perdu !</h1>
+        <p>Réessayez pour améliorer votre score.</p>
+        <div class="button-group">
+          <button id="match-lose-replay" class="btn">Rejouer</button>
+          <button id="match-lose-menu" class="btn">Menu</button>
         </div>
       </div>
     </div>
